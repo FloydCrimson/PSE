@@ -10,4 +10,4 @@ Example:
 <ROUTE> = /echo
 <PACKAGE> = com.floydcrimson.pse
 
-Run `adb shell am start -W -a android.intent.action.VIEW -d "pse://pse.com/echo?params=ciaone" com.floydcrimson.pse` command.
+Run `adb shell am start -W -a android.intent.action.VIEW -d "pse://pse.com/echo?params=eyJjcmVkZW50aWFscyI6IlUyRnNkR1ZrWDE5MFNhcCtyTGMyL1N3L3Vpc2w2NzJ4YjY3bHJNQzBPYVhpUS9WdHBobE9TZEp3Z3pKRVhWY3Q6VTJGc2RHVmtYMStGNUpUWFI0Vk9oSGc3T3NiUkJoZ0hsMkFTZFArb2lzSW9LWVo0d3FIWjdpRVF6VnF4blFpQTBLUjZqblFyRDZnaERSQzBLTVBSbWc9PSJ9" com.floydcrimson.pse` command.

@@ -43,7 +43,7 @@ export class AppComponent {
       await this.storageFactory.get('TempOutData').set('initialized', true);
     } catch (error) {
       console.log(error);
-      await this.storageFactory.get('TempOutData').set('initialized', true);
+      await this.storageFactory.get('TempOutData').set('initialized', false);
     } finally {
       this.router.initialNavigation();
     }
