@@ -34,3 +34,10 @@ node scripts\command-wrapper.js ionic cordova build android -- --co=en --env=dev
 
 node scripts\command-wrapper.js ionic cordova run android -l -- --country=en --environment=dev --environment-extra="{ \"enableRouterTracing\": false }" --domain=localhost-android
 node scripts\command-wrapper.js ionic cordova run android -l -- --co=en --env=dev --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android
+
+# Extra
+
+| Parameters                        | Value                                  | Description        |
+|:---------------------------------:|:--------------------------------------:|:------------------:|
+| `--environment-extra`, `--env-ex` | `"{ \"enableRouterTracing\": false }"` | Disable router log |
+| `--domain-extra`, `--dom-ex`      | `"{ \"url\": \"10.0.0.7\" }"`          | Change endpoint    |
