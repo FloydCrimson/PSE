@@ -1,5 +1,5 @@
 import { EnvironmentImplementation } from 'environments/common/implementations/environment.implementation';
-import * as extra from '../common/extra/environment.json';
+import * as extra from '../environment-extra.json';
 
 const environmentExtra: EnvironmentImplementation = {
   ...(<any>extra as { default: any }).default

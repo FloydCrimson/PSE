@@ -8,13 +8,15 @@ module.exports = (config, options) => {
 
     const placeholder = '{{ALIAS}}';
     const aliases = [
-        { parameter: '--country', alias: '@countries', url: `countries/${placeholder}` },
-        { parameter: '--environment', alias: '@environments', url: `environments/${placeholder}` },
-        { parameter: '--domain', alias: '@domains', url: `domains/${placeholder}` }
+        { parameters: ['--country', '--co'], alias: '@countries', url: `countries/${placeholder}` },
+        { parameters: ['--environment', '--env'], alias: '@environments', url: `environments/${placeholder}` },
+        { parameters: ['--domain', '--dom'], alias: '@domains', url: `domains/${placeholder}` }
     ];
     for (const alias of aliases) {
-        if (alias.parameter in parameters) {
-            config.resolve.alias[alias.alias] = alias.url.replace(placeholder, parameters[alias.parameter]);
+        for (const parameter of alias.parameters) {
+            if (parameter in parameters) {
+                config.resolve.alias[alias.alias] = alias.url.replace(placeholder, parameters[parameter]);
+            }
         }
     };
 

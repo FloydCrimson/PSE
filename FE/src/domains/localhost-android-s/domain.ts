@@ -1,5 +1,5 @@
 import { DomainImplementation } from 'domains/common/implementations/domains.implementation';
-import * as extra from '../common/extra/domain.json';
+import * as extra from '../domain-extra.json';
 
 const domainExtra: DomainImplementation = {
     ...(<any>extra as { default: any }).default

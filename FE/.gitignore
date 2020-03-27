@@ -33,5 +33,5 @@ npm-debug.log*
 # Customs
 
 config/parameters.json
-src/domains/common/extra/domain.json
-src/environments/common/extra/environment.json
+src/domains/domain-extra.json
+src/environments/environment-extra.json
