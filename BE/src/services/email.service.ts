@@ -1,34 +1,23 @@
 import * as nodemailer from 'nodemailer';
+import * as mailerconfig from '../../mailerconfig.json';
 
 export class EmailService {
 
-    private readonly user: string = '';
-    private readonly pass: string = '';
-
     constructor() { }
 
-    public send(options: { to: string, subject: string, body: string }): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    public send(options: { from: string, to: string, subject: string, text: string, html: string }): Promise<{ data: any; success: boolean; }> {
+        return new Promise<{ data: any; success: boolean; }>(async (resolve, reject) => {
             try {
-                const transport = nodemailer.createTransport({
-                    host: 'smtp.gmail.com',
-                    port: 465,
-                    secure: true, // true for 465, false for other ports
-                    auth: {
-                        user: this.user,
-                        pass: this.pass
-                    }
-                });
-                const info = transport.sendMail(options, (error, info) => {
+                const transport = nodemailer.createTransport(mailerconfig);
+                transport.sendMail(options, (error, info) => {
                     if (error) {
-                        reject(error);
+                        resolve({ data: error, success: false });
                     } else {
-                        resolve(info);
+                        resolve({ data: info, success: true });
                     }
                 });
-                console.log(info);
             } catch (error) {
-                reject(error);
+                resolve({ data: error, success: false });
             }
         });
     }

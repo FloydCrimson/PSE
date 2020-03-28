@@ -38,12 +38,12 @@ export class RepositoryService {
         }
         if (request.options.cached && array[0].getValue().response) {
             return array[0].asObservable().pipe(
+                take(1),
                 exhaustMap(response => {
                     delete response.error;
                     response.success = true;
                     return of(response);
-                }),
-                take(1)
+                })
             );
         } if (!request.options.wait || array[1] === 0) {
             array[1]++;
@@ -93,7 +93,7 @@ export class RepositoryService {
     //
 
     private generateHashEndpoint<K extends keyof RepositoryFactoryTypes, B, P, O>(type: K, endpoint: EndpointImplementation<B, P, O>): string {
-        return CoderProvider.encode(type + endpoint.method + endpoint.url);
+        return `${type}:${endpoint.method}/${endpoint.url}`;
     }
 
     private generateHashRequest<B, P>(request: RequestImplementation<B, P>): string {

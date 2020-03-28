@@ -8,3 +8,4 @@ temp/
 # Customs
 
 database.*
+mailerconfig.json
