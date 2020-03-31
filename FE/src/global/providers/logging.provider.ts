@@ -6,7 +6,31 @@ export class LoggingProvider {
 
     constructor() { }
 
-    public static log(type: LoggingTypeEnum, message?: any, ...optionalParams: any[]): void {
+    public static TRACE(message?: any, ...optionalParams: any[]): void {
+        this.log(LoggingTypeEnum.TRACE, message, optionalParams);
+    }
+
+    public static DEBUG(message?: any, ...optionalParams: any[]): void {
+        this.log(LoggingTypeEnum.DEBUG, message, optionalParams);
+    }
+
+    public static INFO(message?: any, ...optionalParams: any[]): void {
+        this.log(LoggingTypeEnum.INFO, message, optionalParams);
+    }
+
+    public static WARN(message?: any, ...optionalParams: any[]): void {
+        this.log(LoggingTypeEnum.WARN, message, optionalParams);
+    }
+
+    public static ERROR(message?: any, ...optionalParams: any[]): void {
+        this.log(LoggingTypeEnum.ERROR, message, optionalParams);
+    }
+
+    public static FATAL(message?: any, ...optionalParams: any[]): void {
+        this.log(LoggingTypeEnum.FATAL, message, optionalParams);
+    }
+
+    private static log(type: LoggingTypeEnum, message?: any, ...optionalParams: any[]): void {
         if (environment.loggingLevel > 0 && type >= environment.loggingLevel) {
             switch (type) {
                 case LoggingTypeEnum.TRACE:
