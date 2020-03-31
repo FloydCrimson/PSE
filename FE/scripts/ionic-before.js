@@ -25,15 +25,19 @@ const extras = [
     { parameters: ['--domain-extra', '--dom-ex'], path: path.join(projectDirectory, 'src', 'domains', 'domain-extra.json') }
 ];
 for (const extra of extras) {
+    let found = false;
     for (const parameter of extra.parameters) {
         if (parameter in parameters) {
-            let config = {};
             try {
-                config = JSON.parse(parameters[parameter]);
+                const config = JSON.parse(parameters[parameter]);
+                fs.writeFileSync(extra.path, JSON.stringify(config, undefined, '\t'));
+                found = true;
             } catch (error) {
-                console.warn('[ionic-before] unable to parse "' + parameter + '" json:   ' + parameters[parameter]);
+                console.warn('[ionic-before] unable to write "' + parameter + '" into json:   ' + parameters[parameter]);
             }
-            fs.writeFileSync(extra.path, JSON.stringify(config, undefined, '\t'));
         }
+    }
+    if (!found) {
+        fs.writeFileSync(extra.path, JSON.stringify({}, undefined, '\t'));
     }
 };
