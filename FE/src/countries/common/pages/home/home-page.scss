@@ -1,1 +1,36 @@
+ion-content {
+    ion-list.torrent-list {
+        ion-item-group.torrent-group {
+            ion-item.torrent-item {
+                div.torrent-item-container {
+                    display: flex;
+                    flex-direction: row;
 
+                    ion-icon {
+                        align-self: center;
+                    }
+
+                    div.torrent-info-container {
+                        flex-basis: 100%;
+                    }
+                }
+            }
+
+            ion-list.file-list {
+
+                ion-item.file-item {
+                    div.file-item-container {
+                        display: flex;
+                        flex-direction: row;
+
+                        div.file-info-container {
+                            flex-basis: 100%;
+                        }
+                    }
+                }
+            }
+
+            &.accordion-opened {}
+        }
+    }
+}

@@ -20,5 +20,9 @@ module.exports = (config, options) => {
         }
     };
 
+    config.target = 'web';
+    config.node = config.node || {};
+    config.node.fs = 'empty';
+
     return config;
 };

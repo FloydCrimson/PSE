@@ -33,7 +33,7 @@ for (const extra of extras) {
                 fs.writeFileSync(extra.path, JSON.stringify(config, undefined, '\t'));
                 found = true;
             } catch (error) {
-                console.warn('[ionic-before] unable to write "' + parameter + '" into json:   ' + parameters[parameter]);
+                console.warn('[ionic-before] unable to write "' + parameters[parameter] + '" of "' + parameter + '" into "' + extra.path + '":   ' + (typeof error === 'string' ? error : error.message));
             }
         }
     }

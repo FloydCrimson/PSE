@@ -5,6 +5,48 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content>
-  LOGGED!
+<ion-content fullscreen="true">
+  <ion-list class="torrent-list">
+    <ion-item-group class="torrent-group" [ngClass]="{ 'accordion-opened': torrentUI.accordionOpened }" *ngFor="let torrentUI of torrentUIList">
+      <ion-item-sliding>
+        <ion-item class="torrent-item">
+          <ion-label>
+            <div class="torrent-item-container">
+              <ion-icon class="icon-play" [name]="torrentUI.paused ? 'play-outline' : 'pause-outline'" (click)="startOrPauseTorrent(torrentUI)"></ion-icon>
+              <div class="torrent-info-container">
+                <p>Name {{ torrentUI.name }}</p>
+                <p>Download {{ torrentUI.downloadSpeed }}</p>
+                <p>Upload {{ torrentUI.uploadSpeed }}</p>
+                <p>Progress {{ torrentUI.progress * 100 }}%</p>
+              </div>
+              <ion-icon class="icon-accordion" name="arrow-down-circle-outline" (click)="openOrCloseAccordion(torrentUI)"></ion-icon>
+            </div>
+            <ion-progress-bar [value]="torrentUI.progress"></ion-progress-bar>
+          </ion-label>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option (click)="onItemOptionDeleteClicked(torrentUI)">Delete</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+      <ion-list class="file-list">
+        <ion-item class="file-item" *ngFor="let fileUI of torrentUI.fileUIList; let i = index">
+          <ion-checkbox slot="start" [(ngModel)]="fileUI.selected" (ionChange)="startOrPauseTorrent(torrentUI, i)"></ion-checkbox>
+          <ion-label>
+            <div class="file-item-container">
+              <div class="file-info-container">
+                <p>Name {{ fileUI.path }}</p>
+                <p>Progress {{ fileUI.progress * 100 }}%</p>
+              </div>
+            </div>
+            <ion-progress-bar [value]="fileUI.progress"></ion-progress-bar>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-item-group>
+  </ion-list>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="onFabAddClicked()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
