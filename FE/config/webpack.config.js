@@ -9,6 +9,7 @@ module.exports = (config, options) => {
     const placeholder = '{{ALIAS}}';
     const aliases = [
         { parameters: ['--country', '--co'], alias: '@countries', url: `countries/${placeholder}` },
+        { parameters: ['--platform', '--plt'], alias: '@platforms', url: `platforms/${placeholder}` },
         { parameters: ['--environment', '--env'], alias: '@environments', url: `environments/${placeholder}` },
         { parameters: ['--domain', '--dom'], alias: '@domains', url: `domains/${placeholder}` }
     ];

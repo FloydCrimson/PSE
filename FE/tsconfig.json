@@ -8,6 +8,11 @@
         "countries/en/*",
         "countries/it/*"
       ],
+      "@platforms/*": [
+        "platforms/browser/*",
+        "platforms/android/*",
+        "platforms/ios/*"
+      ],
       "@environments/*": [
         "environments/dev/*",
         "environments/prod/*"
