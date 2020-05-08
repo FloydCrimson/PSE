@@ -2,17 +2,17 @@ import * as EI from '../entities.index';
 
 export class SessionService {
 
-    private sessions: Map<string, { hawk: EI.HawkEntity, token: string }>;
+    private sessions: Map<string, { auth: EI.AuthEntity, token: string }>;
 
     constructor() {
-        this.sessions = new Map<string, { hawk: EI.HawkEntity, token: string }>();
+        this.sessions = new Map<string, { auth: EI.AuthEntity, token: string }>();
     }
 
-    getSession(id: string): { hawk: EI.HawkEntity, token: string } {
+    getSession(id: string): { auth: EI.AuthEntity, token: string } {
         return this.sessions.get(id);
     }
 
-    setSession(id: string, hawk: EI.HawkEntity): string {
+    setSession(id: string, auth: EI.AuthEntity): string {
         return '';
     }
 

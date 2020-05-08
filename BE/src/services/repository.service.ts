@@ -8,7 +8,7 @@ export class RepositoryService {
 
     constructor() {
         this.repositories = new Map<any, Repository<any>>();
-        this.set('HawkEntity', getRepository(EI.HawkEntity));
+        this.set('AuthEntity', getRepository(EI.AuthEntity));
         this.set('UserEntity', getRepository(EI.UserEntity));
     }
 
@@ -23,6 +23,6 @@ export class RepositoryService {
 }
 
 export interface RepositoryServiceImplementation {
-    HawkEntity: EI.HawkEntity;
+    AuthEntity: EI.AuthEntity;
     UserEntity: EI.UserEntity;
 }

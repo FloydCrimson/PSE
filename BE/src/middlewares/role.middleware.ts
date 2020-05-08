@@ -9,8 +9,8 @@ import * as EI from '../entities.index';
 export const RoleMiddleware: MiddlewareImplementation<{ roles: '*' | RoleType[] }> = (params = { roles: '*' }) => {
     return (dispatcherService: DispatcherService) => {
         return async (request: Request, response: Response, next: NextFunction) => {
-            const user: EI.UserEntity = response.locals.user;
-            if (params.roles !== '*' && params.roles.indexOf(user.role) < 0) {
+            const auth: EI.AuthEntity = response.locals.hawk.credentials;
+            if (params.roles !== '*' && params.roles.indexOf(auth.role) < 0) {
                 return SendProvider.sendError(request, response, 403, { statusCode: 403, error: 'Unauthorized', message: 'Unauthorized' });
             }
             next();

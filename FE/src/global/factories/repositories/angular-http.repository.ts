@@ -31,7 +31,7 @@ export class AngularHttpRepository implements RepositoryImplementation {
         request.input.params = request.input.params || {} as P;
         const method: (url: string, headers: HttpHeaders, input: { body: B, params: P }) => Observable<HttpResponse<O>> = this.getMethod(endpoint);
         const url: string = `${domain.protocol}://${domain.url}:${domain.port}${endpoint.url}`;
-        const credentials = { id: this.id, key: this.key, algorithm: this.algorithm };
+        const credentials = { id: CoderProvider.encode(JSON.stringify({ id: this.id })), key: this.key, algorithm: this.algorithm };
         let headers: HttpHeaders = new HttpHeaders();
         let artifacts;
         if (endpoint.auth) {

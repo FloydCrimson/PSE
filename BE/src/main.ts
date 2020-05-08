@@ -7,6 +7,8 @@ import { Request, Response, NextFunction } from 'express';
 import { RouteImplementation } from './common/implementations/route.implementation';
 import { DispatcherService } from './services/dispatcher.service';
 import { SendProvider } from './providers/send.provider';
+// import { RoleType } from './common/types/role.type';
+// import * as EI from './entities.index';
 import * as MI from './middlewares.index';
 import * as RI from './routes.index';
 
@@ -38,6 +40,17 @@ getConnectionOptions().then((connectionOptions) => createConnection(connectionOp
         }
     }
     const server = app.listen(3000);
+
+    // const authEntity = new EI.AuthEntity();
+    // authEntity.id = 'dh37fgj492je';
+    // authEntity.email = 'pippo@ciaone.com';
+    // authEntity.nickname = 'Pippo';
+    // authEntity.key = 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn';
+    // authEntity.algorithm = 'sha256';
+    // authEntity.role = RoleType.USER;
+    // authEntity.status = 'auth';
+    // const authEntityRepository = connection.getRepository(EI.AuthEntity);
+    // authEntityRepository.save(authEntity);
 
     console.log(`Express server has started on port ${server.address().port}. Open http://localhost:${server.address().port}/echo to see results`);
 

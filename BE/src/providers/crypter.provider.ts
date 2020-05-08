@@ -12,4 +12,9 @@ export class CrypterProvider {
         return CryptoJS.enc.Utf8.stringify(decrypted);
     }
 
+    public static hash(message: string): string {
+        const hashed = CryptoJS.SHA256(message);
+        return CryptoJS.enc.Utf8.stringify(CryptoJS.enc.Utf8.parse(hashed));
+    }
+
 }

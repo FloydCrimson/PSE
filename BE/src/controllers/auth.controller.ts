@@ -21,7 +21,7 @@ export class AuthController extends ControllerExtension<AuthRouteImplementation>
         let { body, params, output } = super.getArguments('EmailAvailablePOST', AuthRoute.EmailAvailablePOST, request);
         super.checkArgumentValidity(body, { email: 'string' });
         try {
-            const email = await this.dispatcherService.get('RepositoryService').get('UserEntity').findOne({ email: body.email });
+            const email = await this.dispatcherService.get('RepositoryService').get('AuthEntity').findOne({ email: body.email });
             output = { email: email === undefined };
         } catch (error) {
             throw { message: 'An unmanaged error occurred.' };
@@ -34,7 +34,7 @@ export class AuthController extends ControllerExtension<AuthRouteImplementation>
         let { body, params, output } = super.getArguments('NicknameAvailablePOST', AuthRoute.NicknameAvailablePOST, request);
         super.checkArgumentValidity(body, { nickname: 'string' });
         try {
-            const nickname = await this.dispatcherService.get('RepositoryService').get('UserEntity').findOne({ nickname: body.nickname });
+            const nickname = await this.dispatcherService.get('RepositoryService').get('AuthEntity').findOne({ nickname: body.nickname });
             output = { nickname: nickname === undefined };
         } catch (error) {
             throw { message: 'An unmanaged error occurred.' };
@@ -47,14 +47,14 @@ export class AuthController extends ControllerExtension<AuthRouteImplementation>
         let { body, params, output } = super.getArguments('SignInPOST', AuthRoute.SignInPOST, request);
         super.checkArgumentValidity(body, { email: 'string', nickname: 'string', password: 'string' });
         try {
-            const email = await this.dispatcherService.get('RepositoryService').get('UserEntity').findOne({ email: body.email });
-            const nickname = await this.dispatcherService.get('RepositoryService').get('UserEntity').findOne({ nickname: body.nickname });
+            const email = await this.dispatcherService.get('RepositoryService').get('AuthEntity').findOne({ email: body.email });
+            const nickname = await this.dispatcherService.get('RepositoryService').get('AuthEntity').findOne({ nickname: body.nickname });
             output = { email: email === undefined, nickname: nickname === undefined, success: false };
             if (output.email && output.nickname) {
                 let id;
                 do {
                     id = RandomProvider.base64(7);
-                } while (await this.dispatcherService.get('RepositoryService').get('HawkEntity').findOne({ id }));
+                } while (await this.dispatcherService.get('RepositoryService').get('AuthEntity').findOne({ id }));
                 const key = RandomProvider.base64(15);
                 const credentials = CrypterProvider.encrypt(id, body.password) + ':' + CrypterProvider.encrypt(key, body.password);
                 const link = 'pse://pse.com/echo?params=' + CoderProvider.encode(JSON.stringify({ credentials }));
@@ -71,19 +71,15 @@ export class AuthController extends ControllerExtension<AuthRouteImplementation>
                 });
                 output.success = result.success;
                 if (output.success) {
-                    const userEntity = new EI.UserEntity();
-                    userEntity.email = body.email;
-                    userEntity.nickname = body.nickname;
-                    userEntity.role = RoleType.USER;
-                    const hawkEntity = new EI.HawkEntity();
-                    hawkEntity.id = id;
-                    hawkEntity.key = key;
-                    hawkEntity.algorithm = 'sha256';
-                    hawkEntity.credentials = credentials;
-                    hawkEntity.authenticated = false;
-                    hawkEntity.attempts = 0;
-                    hawkEntity.user = userEntity;
-                    await this.dispatcherService.get('RepositoryService').get('HawkEntity').save(hawkEntity);
+                    const authEntity = new EI.AuthEntity();
+                    authEntity.id = id;
+                    authEntity.email = body.email;
+                    authEntity.nickname = body.nickname;
+                    authEntity.key = body.password;
+                    authEntity.algorithm = 'sha256';
+                    authEntity.role = RoleType.USER;
+                    authEntity.status = 'no_auth';
+                    await this.dispatcherService.get('RepositoryService').get('AuthEntity').save(authEntity);
                 }
             }
         } catch (error) {

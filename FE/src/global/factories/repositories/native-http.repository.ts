@@ -33,7 +33,7 @@ export class NativeHttpRepository implements RepositoryImplementation {
         request.input.params = request.input.params || {} as P;
         const method: (url: string, headers: { [key: string]: string }, input: { body: B, params: P }) => Observable<HTTPResponse> = this.getMethod(endpoint);
         const url: string = `${domain.protocol}://${domain.url}:${domain.port}${endpoint.url}`;
-        const credentials = { id: this.id, key: this.key, algorithm: this.algorithm };
+        const credentials = { id: CoderProvider.encode(JSON.stringify({ id: this.id })), key: this.key, algorithm: this.algorithm };
         let headers: { [key: string]: string } = {};
         let artifacts;
         if (endpoint.auth) {
