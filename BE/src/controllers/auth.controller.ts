@@ -19,33 +19,33 @@ export class AuthController extends ControllerExtension<AuthRouteImplementation>
 
     async emailAvailable(request: Request, response: Response): Promise<{ email: boolean; }> {
         let { body, params, output } = super.getArguments('EmailAvailablePOST', AuthRoute.EmailAvailablePOST, request);
-        super.checkArgumentValidity(body, { email: 'string' });
+        if (super.checkArgumentValidity(body, { email: 'string' })) throw "Bad arguments.";
         try {
             const email = await this.dispatcherService.get('RepositoryService').get('AuthEntity').findOne({ email: body.email });
             output = { email: email === undefined };
         } catch (error) {
             throw { message: 'An unmanaged error occurred.' };
         }
-        super.checkArgumentValidity(output, { email: 'boolean' });
+        if (super.checkArgumentValidity(output, { email: 'boolean' })) throw "Bad arguments.";
         return output;
     }
 
     async nicknameAvailable(request: Request, response: Response): Promise<{ nickname: boolean; }> {
         let { body, params, output } = super.getArguments('NicknameAvailablePOST', AuthRoute.NicknameAvailablePOST, request);
-        super.checkArgumentValidity(body, { nickname: 'string' });
+        if (super.checkArgumentValidity(body, { nickname: 'string' })) throw "Bad arguments.";
         try {
             const nickname = await this.dispatcherService.get('RepositoryService').get('AuthEntity').findOne({ nickname: body.nickname });
             output = { nickname: nickname === undefined };
         } catch (error) {
             throw { message: 'An unmanaged error occurred.' };
         }
-        super.checkArgumentValidity(output, { nickname: 'boolean' });
+        if (super.checkArgumentValidity(output, { nickname: 'boolean' })) throw "Bad arguments.";
         return output;
     }
 
     async signin(request: Request, response: Response): Promise<{ email: boolean; nickname: boolean; success: boolean; }> {
         let { body, params, output } = super.getArguments('SignInPOST', AuthRoute.SignInPOST, request);
-        super.checkArgumentValidity(body, { email: 'string', nickname: 'string', password: 'string' });
+        if (super.checkArgumentValidity(body, { email: 'string', nickname: 'string', password: 'string' })) throw "Bad arguments.";
         try {
             const email = await this.dispatcherService.get('RepositoryService').get('AuthEntity').findOne({ email: body.email });
             const nickname = await this.dispatcherService.get('RepositoryService').get('AuthEntity').findOne({ nickname: body.nickname });
@@ -85,7 +85,7 @@ export class AuthController extends ControllerExtension<AuthRouteImplementation>
         } catch (error) {
             throw { message: 'An unmanaged error occurred.' };
         }
-        super.checkArgumentValidity(output, { email: 'boolean', nickname: 'boolean', success: 'boolean' });
+        if (super.checkArgumentValidity(output, { email: 'boolean', nickname: 'boolean', success: 'boolean' })) throw "Bad arguments.";
         return output;
     }
 

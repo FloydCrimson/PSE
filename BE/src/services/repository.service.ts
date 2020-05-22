@@ -1,12 +1,15 @@
 import { Repository, getRepository } from 'typeorm';
 
+import { DispatcherService } from './dispatcher.service';
 import * as EI from '../entities.index';
 
 export class RepositoryService {
 
     private repositories: Map<any, Repository<any>>;
 
-    constructor() {
+    constructor(
+        private readonly dispatcherService: DispatcherService
+    ) {
         this.repositories = new Map<any, Repository<any>>();
         this.set('AuthEntity', getRepository(EI.AuthEntity));
         this.set('UserEntity', getRepository(EI.UserEntity));

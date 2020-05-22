@@ -9,8 +9,8 @@ export class DispatcherService {
     constructor() {
         this.services = new Map<any, any>();
         this.set('ControllerService', new ControllerService(this));
-        this.set('EmailService', new EmailService());
-        this.set('RepositoryService', new RepositoryService());
+        this.set('EmailService', new EmailService(this));
+        this.set('RepositoryService', new RepositoryService(this));
     }
 
     public set<K extends keyof DispatcherServiceImplementation>(type: K, service: DispatcherServiceImplementation[K]): void {
