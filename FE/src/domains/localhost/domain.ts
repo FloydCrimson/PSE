@@ -1,4 +1,5 @@
 import { DomainImplementation } from 'domains/common/implementations/domains.implementation';
+import { MergerProvider } from 'global/providers/merger.provider';
 import * as extra from '../domain-extra.json';
 
 const domainExtra: DomainImplementation = {
@@ -10,4 +11,4 @@ const domainOriginal: DomainImplementation = {
     port: 3000
 };
 
-export const domain: DomainImplementation = { ...domainOriginal, ...domainExtra };
+export const domain: DomainImplementation = MergerProvider.merger(domainOriginal, domainExtra);

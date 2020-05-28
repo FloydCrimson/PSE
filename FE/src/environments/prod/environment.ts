@@ -1,5 +1,6 @@
 import { EnvironmentImplementation } from 'environments/common/implementations/environment.implementation';
 import { LoggingLevelEnum } from 'global/common/enum/logging-level.enum';
+import { MergerProvider } from 'global/providers/merger.provider';
 import * as extra from '../environment-extra.json';
 
 const environmentExtra: EnvironmentImplementation = {
@@ -11,4 +12,4 @@ const environmentOriginal: EnvironmentImplementation = {
   loggingLevel: LoggingLevelEnum.MAIN
 };
 
-export const environment: EnvironmentImplementation = { ...environmentOriginal, ...environmentExtra };
+export const environment: EnvironmentImplementation = MergerProvider.merger(environmentOriginal, environmentExtra);

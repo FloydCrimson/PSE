@@ -56,4 +56,4 @@ export class ControllerExtension<T> {
 
 export type MaskType = 'bigint' | 'boolean' | 'function' | 'number' | 'object' | 'string' | 'symbol' | 'undefined';
 export type MaskObject = { [name: string]: MaskType | MaskObject | MaskArray };
-export type MaskArray = Array<MaskType | MaskObject>; // | MaskArray
+export type MaskArray = Array<MaskType | MaskObject>;
