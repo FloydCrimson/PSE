@@ -4,6 +4,7 @@ import { Platform } from '@ionic/angular';
 import { environment } from '@environments/environment';
 
 import { EnvironmentImplementation } from 'environments/common/implementations/environment.implementation';
+import { PlatformEnum } from 'global/common/enum/platform.enum';
 
 @Injectable({
     providedIn: 'root'
@@ -18,17 +19,20 @@ export class EnvironmentService {
         return environment;
     }
 
-    public getPlatform(): 'Android' | 'iOS' | 'Browser' {
-        if (this.platform.is('mobileweb')) { // WARNING: This just checks for mobile web (e.g. no desktop browser)
-            return 'Browser';
-        }
-        else if (this.platform.is('ios')) {
-            return 'iOS';
-        } else if (this.platform.is('android')) {
-            return 'Android';
+    public getPlatform(): PlatformEnum {
+        let platformEnum: PlatformEnum = PlatformEnum.Unknown;
+        if (this.platform.is('mobileweb')) {
+            platformEnum |= PlatformEnum.Mobile;
         } else {
-            return null;
+            platformEnum |= PlatformEnum.Browser;
         }
+        if (this.platform.is('android')) {
+            platformEnum |= PlatformEnum.Android;
+        }
+        if (this.platform.is('ios')) {
+            platformEnum |= PlatformEnum.iOS;
+        }
+        return platformEnum;
     }
 
 }

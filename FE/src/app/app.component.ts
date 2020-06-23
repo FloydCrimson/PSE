@@ -9,6 +9,7 @@ import { DeeplinksService } from 'global/services/deeplinks.service';
 import { EnvironmentService } from 'global/services/environment.service';
 import { StorageFactory } from 'global/factories/storage.factory';
 import { RepositoryFactory } from 'global/factories/repository.factory';
+import { PlatformEnum } from 'global/common/enum/platform.enum';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +27,7 @@ export class AppComponent {
     private readonly deeplinksService: DeeplinksService,
     private readonly environmentService: EnvironmentService,
     private readonly storageFactory: StorageFactory,
-    private readonly repositoryFactory: RepositoryFactory,
+    private readonly repositoryFactory: RepositoryFactory
   ) {
     this.start();
   }
@@ -50,7 +51,7 @@ export class AppComponent {
   }
 
   private async initialize(): Promise<void> {
-    if (this.environmentService.getPlatform() !== 'Browser') {
+    if (this.environmentService.getPlatform() === PlatformEnum.Mobile) {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
       this.deeplinksService.subscribe();

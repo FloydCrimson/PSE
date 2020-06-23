@@ -45,7 +45,8 @@ export class RepositoryService {
                     return of(response);
                 })
             );
-        } if (!request.options.wait || array[1] === 0) {
+        }
+        if (!request.options.wait || array[1] === 0) {
             array[1]++;
             this.repositoryFactory.get(type).call(endpoint, request).pipe(
                 timeout(endpoint.timeout || 60000),
@@ -70,16 +71,21 @@ export class RepositoryService {
         );
     }
 
-    public clearEndpointCache<K extends keyof RepositoryFactoryTypes, B, P, O>(type: K, endpoint: EndpointImplementation<B, P, O>): void {
+    public isCallCached<K extends keyof RepositoryFactoryTypes, B, P, O>(type: K, endpoint: EndpointImplementation<B, P, O>, request: RequestImplementation<B, P>): boolean {
         const hashEndpoint: string = this.generateHashEndpoint(type, endpoint);
-        const map = this.cache.get(hashEndpoint);
-        if (map) {
-            map.clear();
-            this.cache.delete(hashEndpoint);
+        const hashRequest: string = this.generateHashRequest(request);
+        let map = this.cache.get(hashEndpoint);
+        if (!map) {
+            return false;
         }
+        let array = map.get(hashRequest);
+        if (!array) {
+            return false;
+        }
+        return !!array[0].getValue().response;
     }
 
-    public clearAllCache(): void {
+    public clearCache(): void {
         for (const hashEndpoint of this.cache.keys()) {
             const map = this.cache.get(hashEndpoint);
             if (map) {

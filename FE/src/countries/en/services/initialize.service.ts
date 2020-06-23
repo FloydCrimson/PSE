@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { HTTP } from '@ionic-native/http/ngx';
 
 import { InitializeImplementation } from 'global/common/implementations/initialize.implementation';
+import { PlatformEnum } from 'global/common/enum/platform.enum';
 
 import { EnvironmentService } from 'global/services/environment.service';
 
@@ -54,7 +55,7 @@ export class InitializeService implements InitializeImplementation {
     private initializeStorages(): Promise<boolean>[] {
         this.storageFactory.clear();
         const storages: [keyof SFT.StorageFactoryTypes, StorageImplementation<SFT.StorageFactoryTypes[keyof SFT.StorageFactoryTypes]>][] = [];
-        storages.push(['PersOutData', this.environmentService.getPlatform() === 'Browser' ? new IonicStorage<SFT.StorageFactoryTypePersOutData>(this.storage) : new BuiltInStorage<SFT.StorageFactoryTypePersOutData>(this.nativeStorage)]);
+        storages.push(['PersOutData', this.environmentService.getPlatform() === PlatformEnum.Browser ? new IonicStorage<SFT.StorageFactoryTypePersOutData>(this.storage) : new BuiltInStorage<SFT.StorageFactoryTypePersOutData>(this.nativeStorage)]);
         storages.push(['TempOutData', new JSStorage<SFT.StorageFactoryTypesTempOutData>()]);
         storages.push(['TempInData', new JSStorage<SFT.StorageFactoryTypesTempInData>()]);
         const check = storages.reduce((r, s) => this.storageFactory.set(s[0], s[1]) && r, true);
@@ -68,7 +69,7 @@ export class InitializeService implements InitializeImplementation {
     private initializeRepositories(): Promise<boolean>[] {
         this.repositoryFactory.clear();
         const repositories: [keyof RFT.RepositoryFactoryTypes, RepositoryImplementation][] = [];
-        repositories.push(['Backend', this.environmentService.getPlatform() === 'Browser' ? new AngularHttpRepository(this.httpBrowser) : new NativeHttpRepository(this.httpNative)]);
+        repositories.push(['Backend', this.environmentService.getPlatform() === PlatformEnum.Browser ? new AngularHttpRepository(this.httpBrowser) : new NativeHttpRepository(this.httpNative)]);
         const check = repositories.reduce((r, s) => this.repositoryFactory.set(s[0], s[1]) && r, true);
         return [Promise.resolve(check)];
     }
