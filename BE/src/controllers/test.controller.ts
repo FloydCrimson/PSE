@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 
 import { ControllerExtension } from '../common/extensions/controller.extension';
-import { TestRouteImplementation, TestRoute } from '../routes/test.route';
+import { TestRoute } from '../routes/test.route';
 import { DispatcherService } from '../services/dispatcher.service';
 
-export class TestController extends ControllerExtension<TestRouteImplementation> {
+export class TestController extends ControllerExtension {
 
     constructor(
         private readonly dispatcherService: DispatcherService
@@ -13,7 +13,7 @@ export class TestController extends ControllerExtension<TestRouteImplementation>
     }
 
     async test(request: Request, response: Response): Promise<any> {
-        let { body, params, output } = super.getArguments('TestGET', TestRoute.TestGET, request);
+        let { body, params, output } = super.getArguments(TestRoute.TestGET, request);
         return output;
     }
 

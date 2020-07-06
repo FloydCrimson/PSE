@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 
 import { ControllerExtension } from '../common/extensions/controller.extension';
-import { EchoRouteImplementation, EchoRoute } from '../routes/echo.route';
+import { EchoRoute } from '../routes/echo.route';
 import { DispatcherService } from '../services/dispatcher.service';
 
-export class EchoController extends ControllerExtension<EchoRouteImplementation> {
+export class EchoController extends ControllerExtension {
 
     constructor(
         private readonly dispatcherService: DispatcherService
@@ -13,7 +13,7 @@ export class EchoController extends ControllerExtension<EchoRouteImplementation>
     }
 
     async echo(request: Request, response: Response): Promise<any> {
-        let { body, params, output } = super.getArguments('EchoGET', EchoRoute.EchoGET, request);
+        let { body, params, output } = super.getArguments(EchoRoute.EchoGET, request);
         output = Object.keys(params).length > 0 ? params : { echo: 'Hello World!' };
         return output;
     }
