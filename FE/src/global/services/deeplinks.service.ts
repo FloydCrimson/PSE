@@ -3,6 +3,7 @@ import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 
 import { Subscription } from 'rxjs';
 import { DeeplinksRepository, DeeplinksImplementation } from 'global/repositories/deeplinks.repository';
+import { LoggingService } from './logging.service';
 import { CoderProvider } from 'global/providers/coder.provider';
 
 @Injectable({
@@ -14,7 +15,8 @@ export class DeeplinksService {
 
     constructor(
         private readonly deeplinks: Deeplinks,
-        private readonly deeplinksRepository: DeeplinksRepository
+        private readonly deeplinksRepository: DeeplinksRepository,
+        private readonly loggingService: LoggingService
     ) { }
 
     public subscribe(): void {
@@ -25,10 +27,10 @@ export class DeeplinksService {
                     const params = JSON.parse(CoderProvider.decode(match.$args.params));
                     handler(match.$link, params);
                 } catch (error) {
-                    console.error('DeeplinksService', match, error);
+                    this.loggingService.LOG('ERROR', { class: DeeplinksService.name, function: this.subscribe.name }, match, error);
                 }
             }, unmatch => {
-                console.warn('DeeplinksService', unmatch);
+                this.loggingService.LOG('WARN', { class: DeeplinksService.name, function: this.subscribe.name }, unmatch);
                 this.subscription = undefined;
                 this.subscribe();
             });

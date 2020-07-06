@@ -1,16 +1,14 @@
-import { LoggingLevelEnum } from './logging-level.enum';
-
 export enum LoggingTypeEnum {
     /** Designates finer-grained informational events than the DEBUG. */
-    TRACE = LoggingLevelEnum.ALL,
+    TRACE = 1 << 0,
     /** Designates fine-grained informational events that are most useful to debug an application. */
-    DEBUG = LoggingLevelEnum.DEV,
+    DEBUG = 1 << 1,
     /** Designates informational messages that highlight the progress of the application at coarse-grained level. */
-    INFO = LoggingLevelEnum.DEV,
+    INFO = 1 << 2,
     /** Designates potentially harmful situations. */
-    WARN = LoggingLevelEnum.MAIN,
+    WARN = 1 << 3,
     /** Designates error events that might still allow the application to continue running. */
-    ERROR = LoggingLevelEnum.MAIN,
+    ERROR = 1 << 4,
     /** Designates very severe error events that will presumably lead the application to abort. */
-    FATAL = LoggingLevelEnum.MAIN
+    FATAL = 1 << 5
 }

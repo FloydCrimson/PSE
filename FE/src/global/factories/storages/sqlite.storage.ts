@@ -1,12 +1,14 @@
 import { StorageImplementation } from 'global/common/implementations/factories/storage.implementation';
 import { SQLitePluginImplementation, IDatabase, IResponse } from 'global/common/implementations/plugins/sqlite.plugin.implementation';
+import { LoggingService } from 'global/services/logging.service';
 
 export class SQLiteStorage<T> implements StorageImplementation<T> {
 
     private storage: IDatabase;
 
     constructor(
-        private readonly sqLitePlugin: SQLitePluginImplementation
+        private readonly sqLitePlugin: SQLitePluginImplementation,
+        private readonly loggingService: LoggingService
     ) { }
 
     public ready(): Promise<boolean> {
@@ -75,7 +77,7 @@ export class SQLiteStorage<T> implements StorageImplementation<T> {
                                 casted = value === 'true';
                                 break;
                             default:
-                                console.warn('Unrecognizable type found', type);
+                                this.loggingService.LOG('WARN', { class: SQLiteStorage.name, function: this.get.name, text: 'Unrecognizable type found' }, type);
                                 break;
                         }
                         path.split('/').slice(0, -1).reduce((r, n, i, a) => r[n] = (n in r) ? r[n] : (a.length === i + 1 ? casted : {}), result);
@@ -129,7 +131,7 @@ export class SQLiteStorage<T> implements StorageImplementation<T> {
     private setQueries(name: string, value: any, path: string): { query: string, values?: any[] }[] {
         const queries: { query: string, values?: any[] }[] = [];
         if (name.indexOf('/') >= 0) {
-            console.error('Incompatible name found', name);
+            this.loggingService.LOG('ERROR', { class: SQLiteStorage.name, function: this.setQueries.name, text: 'Incompatible name found' }, name);
             return queries;
         }
         if (value === undefined) {
@@ -155,7 +157,7 @@ export class SQLiteStorage<T> implements StorageImplementation<T> {
         } else if (value.constructor === Boolean) {
             queries.push({ query: 'INSERT INTO storage (name, value, type, path) VALUES (?,?,?,?)', values: [name, value.toString(), 'Boolean', path + name + '/'] });
         } else {
-            console.warn('Unrecognizable value found', value);
+            this.loggingService.LOG('WARN', { class: SQLiteStorage.name, function: this.setQueries.name, text: 'Unrecognizable value found' }, value);
         }
         return queries;
     }

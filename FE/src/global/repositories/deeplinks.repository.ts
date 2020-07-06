@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { LoggingService } from 'global/services/logging.service';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -7,7 +9,9 @@ export class DeeplinksRepository {
 
     private map: Map<keyof DeeplinksRepositoryTypes, DeeplinksImplementation<DeeplinksRepositoryTypes[keyof DeeplinksRepositoryTypes]>>;
 
-    constructor() {
+    constructor(
+        private readonly loggingService: LoggingService
+    ) {
         this.map = new Map<keyof DeeplinksRepositoryTypes, DeeplinksImplementation<DeeplinksRepositoryTypes[keyof DeeplinksRepositoryTypes]>>();
         this.map.set('/echo', this.echo.bind(this));
         this.map.set('/auth/signin', this.authSignin.bind(this));
@@ -24,11 +28,11 @@ export class DeeplinksRepository {
     //
 
     private echo(link: { extra: {}, host: string, path: string, scheme: string, url: string }, params: { [key: string]: string }): void {
-        console.log('echo', arguments);
+        this.loggingService.LOG('DEBUG', { class: DeeplinksRepository.name, function: this.echo.name }, arguments);
     }
 
     private authSignin(link: { extra: {}, host: string, path: string, scheme: string, url: string }, params: { credentials: string }): void {
-        console.log('authSignin', arguments);
+        this.loggingService.LOG('DEBUG', { class: DeeplinksRepository.name, function: this.authSignin.name }, arguments);
     }
 
 }
