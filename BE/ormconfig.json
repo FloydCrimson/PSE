@@ -8,20 +8,20 @@
    "synchronize": true,
    "logging": false,
    "entities": [
-      "BE/build/entities/**/*.entity.js",
-      "BE/build/src/entities/**/*.entity.js"
+      "BE/build/protocols/*/entities/**/*.entity.js",
+      "BE/build/src/protocols/*/entities/**/*.entity.js"
    ],
    "migrations": [
-      "BE/build/migrations/**/*.migration.js",
-      "BE/build/src/migrations/**/*.migration.js"
+      "BE/build/protocols/*/migrations/**/*.migration.js",
+      "BE/build/src/protocols/*/migrations/**/*.migration.js"
    ],
    "subscribers": [
-      "BE/build/subscribers/**/*.subscriber.js",
-      "BE/build/src/subscribers/**/*.subscriber.js"
+      "BE/build/protocols/*/subscribers/**/*.subscriber.js",
+      "BE/build/src/protocols/*/subscribers/**/*.subscriber.js"
    ],
    "cli": {
-      "entitiesDir": "src/entities",
-      "migrationsDir": "src/migrations",
-      "subscribersDir": "src/subscribers"
+      "entitiesDir": "src/protocols/*/entities",
+      "migrationsDir": "src/protocols/*/migrations",
+      "subscribersDir": "src/protocols/*/subscribers"
    }
 }

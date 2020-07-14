@@ -27,8 +27,8 @@
       <ion-button (click)="onSignInClicked()" [disabled]="signInForm?.status !== 'VALID'">Continue</ion-button>
     </ion-slide>
     <ion-slide>
-      <h1>Authentication</h1>
-      <form [formGroup]="authenticationForm">
+      <h1>Login</h1>
+      <form [formGroup]="loginForm">
         <ion-item>
           <ion-label>Nickname</ion-label>
           <ion-input type="text" formControlName="nickname"></ion-input>
@@ -38,8 +38,8 @@
           <ion-input type="password" formControlName="password"></ion-input>
         </ion-item>
       </form>
-      <p>{{ getErrorFromFormGroup(authenticationForm) }}</p>
-      <ion-button (click)="onAuthenticationClicked()" [disabled]="authenticationForm?.status !== 'VALID'">Continue</ion-button>
+      <p>{{ getErrorFromFormGroup(loginForm) }}</p>
+      <ion-button (click)="onLoginClicked()" [disabled]="loginForm?.status !== 'VALID'">Continue</ion-button>
     </ion-slide>
   </ion-slides>
 </ion-content>

@@ -1,57 +1,50 @@
-import 'reflect-metadata';
+import { InitializeImplementation } from './protocols/rest/implementations/initialize.implementation';
+import { InitializeService as InitializeRestService } from './protocols/rest/services/initialize.service';
 
-import { getConnectionOptions, createConnection } from 'typeorm';
-import * as express from 'express';
-import { Request, Response, NextFunction } from 'express';
+const initializeServices: { service: InitializeImplementation, port: number }[] = [
+    { service: new InitializeRestService(), port: 3001 }
+];
 
-import { RouteImplementation } from './common/implementations/route.implementation';
-import { DispatcherService } from './services/dispatcher.service';
-import { SendProvider } from './providers/send.provider';
-// import { RoleType } from './common/types/role.type';
-// import * as EI from './entities.index';
-import * as MI from './middlewares.index';
-import * as RI from './routes.index';
+// const openWebSocketServer: (port: number) => Promise<boolean> = (port: number) => {
+//     return new Promise<boolean>((resolve, reject) => {
 
-getConnectionOptions().then((connectionOptions) => createConnection(connectionOptions)).then((connection) => {
-    // console.log(resolved);
+//         const app = express();
 
-    const dispatcherService: DispatcherService = new DispatcherService();
+//         const server = http.createServer(app);
+//         const wss = new WebSocket.Server({ server });
+//         wss.on('connection', (ws: WebSocket) => {
+//             ws.on('message', (message: string) => {
+//                 console.log('received: %s', message);
+//                 ws.send(`Hello, you sent -> ${message}`);
+//             });
+//             ws.send('Hi there, I am a WebSocket server');
+//         });
 
-    const app = express();
-    app.use(express.json()); // Content-Type: application/json
-    // app.use(express.urlencoded({ extended: true })); // Content-Type: application/x-www-form-urlencoded
-    // app.use(express.text()); // Content-Type: text/plain
-    app.use(MI.LogMiddleware()(dispatcherService));
-    app.use(MI.ParamsMiddleware()(dispatcherService));
-    for (const group in RI) {
-        for (const item in RI[group]) {
-            const route: RouteImplementation<any, any, any> = RI[group][item];
-            app[route.endpoint.method](route.endpoint.route, (route.middlewares || []).map((middleware) => middleware(dispatcherService)), (request: Request, response: Response, next: NextFunction) => {
-                if (route.handler) {
-                    const result = dispatcherService.get('ControllerService').get(route.handler.controller)[route.handler.action](request, response, next);
-                    result.then(
-                        (resolved) => SendProvider.sendResponse(request, response, 200, resolved),
-                        (rejected) => SendProvider.sendError(request, response, 500, rejected)
-                    ).catch((caught) => SendProvider.sendError(request, response, 500, caught));
-                } else {
-                    SendProvider.sendResponse(request, response);
-                }
-            });
-        }
+//         server.listen(port, (...args: any[]) => {
+//             console.log(`Express WebSocket server has started on port ${server.address().port}.`);
+//             console.log('Params', args);
+//             resolve(true);
+//         });
+
+//     });
+// };
+
+const initialize: (promises: Promise<boolean>[]) => Promise<boolean> = (promises: Promise<boolean>[]) => {
+    return new Promise<boolean>((resolve, reject) => {
+        Promise.all(promises).then((resolved) => {
+            resolve(resolved.reduce((r, e) => r && e, true));
+        }, (rejected) => {
+            resolve(false);
+        }).catch((caught) => {
+            resolve(false);
+        });
+    });
+}
+
+initialize(initializeServices.map(is => is.service.initialize(is.port))).then(resolved => {
+    if (resolved) {
+        console.log('All servers have started.');
+    } else {
+        console.log('One or more servers have not started.');
     }
-    const server = app.listen(3000);
-
-    // const authEntity = new EI.AuthEntity();
-    // authEntity.id = 'dh37fgj492je';
-    // authEntity.email = 'pippo@ciaone.com';
-    // authEntity.nickname = 'Pippo';
-    // authEntity.key = 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn';
-    // authEntity.algorithm = 'sha256';
-    // authEntity.role = RoleType.USER;
-    // authEntity.status = 'auth';
-    // const authEntityRepository = connection.getRepository(EI.AuthEntity);
-    // authEntityRepository.save(authEntity);
-
-    console.log(`Express server has started on port ${server.address().port}. Open http://localhost:${server.address().port}/echo to see results`);
-
-}, (rejected) => console.log(rejected)).catch((caught) => console.log(caught));
+});

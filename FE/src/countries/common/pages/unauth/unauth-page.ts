@@ -30,8 +30,8 @@ export class UnauthPage implements OnInit, AfterViewInit {
     password: new FormControl('', [], [this.getPasswordValidator.bind(this)])
   });
 
-  authenticationForm = new FormGroup({
-    nickname: new FormControl('', [], []),
+  loginForm = new FormGroup({
+    nickname: new FormControl('', [], [this.getNicknameValidator.bind(this)]),
     password: new FormControl('', [], [this.getPasswordValidator.bind(this)])
   });
 
@@ -60,7 +60,7 @@ export class UnauthPage implements OnInit, AfterViewInit {
     return undefined;
   }
 
-  // Sign In
+  // Validators
 
   private getEmailValidator(control: AbstractControl): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
     if (!this.signInForm) {
@@ -123,12 +123,21 @@ export class UnauthPage implements OnInit, AfterViewInit {
     return of(null)
   }
 
+  // Events
+
   public onSignInClicked(): void {
     const email = this.signInForm.get('email').value;
     const nickname = this.signInForm.get('nickname').value;
     const password = this.signInForm.get('password').value;
     const request: RequestImplementation<{ email: string; nickname: string; password: string; }, undefined> = { input: { body: { email, nickname, password }, params: undefined }, options: { cached: false, wait: true } };
     this.repositoryService.call('Backend', RepositoryFactoryEndpoint.Backend.Auth.SignIn, request).subscribe(result => {
+      console.log(result);
+    });
+  }
+
+  public onLoginClicked(): void {
+    const request: RequestImplementation<undefined, undefined> = { input: undefined, options: { cached: false, wait: true } };
+    this.repositoryService.call('Backend', RepositoryFactoryEndpoint.Backend.Auth.LogIn, request).subscribe(result => {
       console.log(result);
     });
   }

@@ -3,20 +3,22 @@
    "version": "0.0.1",
    "description": "Awesome project developed with TypeORM.",
    "devDependencies": {
-      "@types/express": "^4.17.2",
+      "@types/express": "^4.17.7",
       "@types/node": "~8.9.4",
+      "@types/ws": "^7.2.6",
       "ts-node": "~7.0.0",
       "tslint": "~5.15.0",
-      "typescript": "~3.4.3"
+      "typescript": "^3.4.5"
    },
    "dependencies": {
       "@hapi/hawk": "^8.0.0",
       "crypto-js": "^4.0.0",
-      "express": "^4.15.4",
+      "express": "^4.17.1",
       "nodemailer": "^6.4.4",
       "reflect-metadata": "^0.1.10",
       "sqlite3": "^4.1.1",
-      "typeorm": "0.2.22"
+      "typeorm": "0.2.22",
+      "ws": "^7.3.1"
    },
    "scripts": {
       "start": "ts-node src/main.ts"
