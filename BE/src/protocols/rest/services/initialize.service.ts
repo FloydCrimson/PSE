@@ -4,7 +4,7 @@ import { getConnectionOptions, createConnection } from 'typeorm';
 import * as express from 'express';
 import { Request, Response, NextFunction } from 'express';
 
-import { InitializeImplementation } from '../implementations/initialize.implementation';
+import { InitializeImplementation } from '../../common/implementations/initialize.implementation';
 import { RouteImplementation } from '../implementations/route.implementation';
 import { DispatcherService } from './dispatcher.service';
 import { SendProvider } from '../../../global/common/providers/send.provider';

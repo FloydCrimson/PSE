@@ -1,33 +1,11 @@
-import { InitializeImplementation } from './protocols/rest/implementations/initialize.implementation';
+import { InitializeImplementation } from './protocols/common/implementations/initialize.implementation';
 import { InitializeService as InitializeRestService } from './protocols/rest/services/initialize.service';
+import { InitializeService as InitializeWebSocketService } from './protocols/web-socket/services/initialize.service';
 
 const initializeServices: { service: InitializeImplementation, port: number }[] = [
-    { service: new InitializeRestService(), port: 3001 }
+    { service: new InitializeRestService(), port: 3000 },
+    { service: new InitializeWebSocketService(), port: 4000 }
 ];
-
-// const openWebSocketServer: (port: number) => Promise<boolean> = (port: number) => {
-//     return new Promise<boolean>((resolve, reject) => {
-
-//         const app = express();
-
-//         const server = http.createServer(app);
-//         const wss = new WebSocket.Server({ server });
-//         wss.on('connection', (ws: WebSocket) => {
-//             ws.on('message', (message: string) => {
-//                 console.log('received: %s', message);
-//                 ws.send(`Hello, you sent -> ${message}`);
-//             });
-//             ws.send('Hi there, I am a WebSocket server');
-//         });
-
-//         server.listen(port, (...args: any[]) => {
-//             console.log(`Express WebSocket server has started on port ${server.address().port}.`);
-//             console.log('Params', args);
-//             resolve(true);
-//         });
-
-//     });
-// };
 
 const initialize: (promises: Promise<boolean>[]) => Promise<boolean> = (promises: Promise<boolean>[]) => {
     return new Promise<boolean>((resolve, reject) => {
