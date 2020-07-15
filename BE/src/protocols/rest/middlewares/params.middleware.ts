@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { MiddlewareImplementation } from '../implementations/middleware.implementation';
-import { DispatcherService } from '../services/dispatcher.service';
-import { CoderProvider } from '../../../global/common/providers/coder.provider';
-import { SendProvider } from '../../../global/common/providers/send.provider';
+import { DispatcherService } from '../../../global/services/dispatcher.service';
+import { CoderProvider } from '../../../global/providers/coder.provider';
+import { SendProvider } from '../providers/send.provider';
 
 export const ParamsMiddleware: MiddlewareImplementation<undefined> = () => {
     return (dispatcherService: DispatcherService) => {

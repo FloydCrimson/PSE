@@ -1,4 +1,4 @@
-import * as EI from '../entities.index';
+import * as EI from '../../database/entities.index';
 
 export class SessionService {
 

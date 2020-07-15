@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 import { ControllerExtension } from '../extensions/controller.extension';
 import { EchoRoute } from '../routes/echo.route';
-import { DispatcherService } from '../services/dispatcher.service';
+import { DispatcherService } from '../../../global/services/dispatcher.service';
 
 export class EchoController extends ControllerExtension {
 

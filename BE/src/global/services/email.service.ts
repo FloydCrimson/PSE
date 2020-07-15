@@ -1,5 +1,5 @@
 import * as nodemailer from 'nodemailer';
-import * as mailerconfig from '../../../../mailerconfig.json';
+import * as mailerconfig from '../../../mailerconfig.json';
 
 import { DispatcherService } from './dispatcher.service';
 

@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { MiddlewareImplementation } from '../implementations/middleware.implementation';
-import { RoleType } from '../types/role.type';
-import { DispatcherService } from '../services/dispatcher.service';
-import { SendProvider } from '../../../global/common/providers/send.provider';
-import * as EI from '../entities.index';
+import { DispatcherService } from '../../../global/services/dispatcher.service';
+import { SendProvider } from '../providers/send.provider';
+
+import { RoleType } from '../../database/types/role.type';
+import * as EI from '../../database/entities.index';
 
 export const RoleMiddleware: MiddlewareImplementation<{ roles: '*' | RoleType[] }> = (params = { roles: '*' }) => {
     return (dispatcherService: DispatcherService) => {

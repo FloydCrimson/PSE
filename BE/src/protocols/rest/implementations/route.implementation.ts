@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { ControllerServiceImplementation } from '../services/controller.service';
-import { DispatcherService } from '../services/dispatcher.service';
+import { DispatcherService } from '../../../global/services/dispatcher.service';
 import { MethodType } from '../types/method.type';
 
 export interface RouteImplementation<B, P, O> {

@@ -2,10 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import * as hawk from '@hapi/hawk';
 
 import { MiddlewareImplementation } from '../implementations/middleware.implementation';
-import { DispatcherService } from '../services/dispatcher.service';
-import { CoderProvider } from '../../../global/common/providers/coder.provider';
-import { NonceProvider } from '../../../global/common/providers/nonce.provider';
-import { SendProvider } from '../../../global/common/providers/send.provider';
+import { DispatcherService } from '../../../global/services/dispatcher.service';
+import { CoderProvider } from '../../../global/providers/coder.provider';
+import { NonceProvider } from '../../../global/providers/nonce.provider';
+import { SendProvider } from '../providers/send.provider';
 
 export const AuthMiddleware: MiddlewareImplementation<undefined> = () => {
     return (dispatcherService: DispatcherService) => {

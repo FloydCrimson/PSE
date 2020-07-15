@@ -46,6 +46,7 @@ module.exports = function (context) {
                     found = true;
                 } catch (error) {
                     console.warn('[ionic-before] unable to write "' + parameter + '" into json:   ' + parameters[parameter]);
+                    console.warn('[ionic-before] error:   ' + JSON.stringify(error));
                 }
             }
         }

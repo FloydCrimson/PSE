@@ -8,20 +8,20 @@
    "synchronize": true,
    "logging": false,
    "entities": [
-      "BE/build/protocols/*/entities/**/*.entity.js",
-      "BE/build/src/protocols/*/entities/**/*.entity.js"
+      "BE/build/protocols/database/entities/**/*.entity.js",
+      "BE/build/src/protocols/database/entities/**/*.entity.js"
    ],
    "migrations": [
-      "BE/build/protocols/*/migrations/**/*.migration.js",
-      "BE/build/src/protocols/*/migrations/**/*.migration.js"
+      "BE/build/protocols/database/migrations/**/*.migration.js",
+      "BE/build/src/protocols/database/migrations/**/*.migration.js"
    ],
    "subscribers": [
-      "BE/build/protocols/*/subscribers/**/*.subscriber.js",
-      "BE/build/src/protocols/*/subscribers/**/*.subscriber.js"
+      "BE/build/protocols/database/subscribers/**/*.subscriber.js",
+      "BE/build/src/protocols/database/subscribers/**/*.subscriber.js"
    ],
    "cli": {
-      "entitiesDir": "src/protocols/*/entities",
-      "migrationsDir": "src/protocols/*/migrations",
-      "subscribersDir": "src/protocols/*/subscribers"
+      "entitiesDir": "src/protocols/database/entities",
+      "migrationsDir": "src/protocols/database/migrations",
+      "subscribersDir": "src/protocols/database/subscribers"
    }
 }

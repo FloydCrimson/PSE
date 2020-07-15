@@ -1,13 +1,9 @@
 import { Request, Response } from 'express';
 
 import { ControllerExtension } from '../extensions/controller.extension';
-import { RoleType } from '../types/role.type';
 import { AuthRoute } from '../routes/auth.route';
-import { DispatcherService } from '../services/dispatcher.service';
-import { CrypterProvider } from '../../../global/common/providers/crypter.provider';
-import { CoderProvider } from '../../../global/common/providers/coder.provider';
-import { RandomProvider } from '../../../global/common/providers/random.provider';
-import * as EI from '../entities.index';
+import { DispatcherService } from '../../../global/services/dispatcher.service';
+import { RandomProvider } from '../../../global/providers/random.provider';
 
 export class AuthController extends ControllerExtension {
 

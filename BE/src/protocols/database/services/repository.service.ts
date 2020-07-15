@@ -1,7 +1,7 @@
 import { Repository, getRepository } from 'typeorm';
 
-import { FactoryExtension } from '../../common/extensions/factory.extension';
-import { DispatcherService } from './dispatcher.service';
+import { FactoryExtension } from '../../../global/common/extensions/factory.extension';
+import { DispatcherService } from '../../../global/services/dispatcher.service';
 import * as EI from '../entities.index';
 
 export class RepositoryService extends FactoryExtension<RepositoryServiceImplementation> {

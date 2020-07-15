@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 import { ControllerExtension } from '../extensions/controller.extension';
 import { TestRoute } from '../routes/test.route';
-import { DispatcherService } from '../services/dispatcher.service';
+import { DispatcherService } from '../../../global/services/dispatcher.service';
 
 export class TestController extends ControllerExtension {
 
