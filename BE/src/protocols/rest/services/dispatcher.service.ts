@@ -1,5 +1,6 @@
 import { FactoryExtension } from "../../common/extensions/factory.extension";
 import { ControllerService } from './controller.service';
+import { EmailService } from "./email.service";
 import { RepositoryService } from './repository.service';
 
 export class DispatcherService extends FactoryExtension<DispatcherServiceImplementation> {
@@ -11,6 +12,7 @@ export class DispatcherService extends FactoryExtension<DispatcherServiceImpleme
 
     private initialize(): void {
         super.set('ControllerService', new ControllerService(this));
+        super.set('EmailService', new EmailService(this));
         super.set('RepositoryService', new RepositoryService(this));
     }
 
@@ -18,5 +20,6 @@ export class DispatcherService extends FactoryExtension<DispatcherServiceImpleme
 
 export interface DispatcherServiceImplementation {
     ControllerService: ControllerService;
+    EmailService: EmailService;
     RepositoryService: RepositoryService;
 }
