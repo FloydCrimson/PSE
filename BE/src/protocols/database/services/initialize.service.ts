@@ -21,9 +21,9 @@ export class InitializeService implements InitializeImplementation {
                 console.log(`Express Database server has started.`);
                 // const authEntity = new EI.AuthEntity();
                 // authEntity.id = 'dh37fgj492je';
-                // authEntity.email = 'pippo@ciaone.com';
-                // authEntity.nickname = 'Pippo';
-                // authEntity.key = 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn';
+                // authEntity.email = 'floyd@crimson.com';
+                // authEntity.nickname = 'FloydCrimson';
+                // authEntity.key = 'password';
                 // authEntity.algorithm = 'sha256';
                 // authEntity.role = RoleType.USER;
                 // const authEntityRepository = connection.getRepository(EI.AuthEntity);

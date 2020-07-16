@@ -4,13 +4,14 @@ import { FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angu
 import { Observable, of, timer } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 
-import { RepositoryFactoryEndpoint } from '@countries/endpoints/repository-factory.endpoint';
-import * as RoutesIndex from '@countries/routes.index';
-
 import { RequestImplementation } from 'global/common/implementations/request.implementation';
 import { StorageFactory } from 'global/factories/storage.factory';
 import { RepositoryService } from 'global/services/repository.service';
 import { RoutingService } from 'global/services/routing.service';
+
+import { BackendAuthRepository } from 'countries/common/repositories/backend.auth.repository';
+import { RepositoryFactoryEndpoint } from '@countries/endpoints/repository-factory.endpoint';
+import * as RoutesIndex from '@countries/routes.index';
 
 @Component({
   selector: 'unauth-page',
@@ -38,11 +39,10 @@ export class UnauthPage implements OnInit, AfterViewInit {
   constructor(
     private readonly routingService: RoutingService,
     private readonly storageFactory: StorageFactory,
-    private readonly repositoryService: RepositoryService
+    private readonly backendAuthRepository: BackendAuthRepository
   ) { }
 
   public async ngOnInit(): Promise<void> {
-    this.credentials = await this.storageFactory.get('PersOutData').get('credentials');
     console.log(this.slides);
   }
 
@@ -63,19 +63,16 @@ export class UnauthPage implements OnInit, AfterViewInit {
   // Validators
 
   private getEmailValidator(control: AbstractControl): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
-    if (!this.signInForm) {
+    if (!this.signInForm || !this.loginForm) {
       return of({ message: 'Form not ready.', show: false });
     }
-    const email = this.signInForm.get('email').value;
+    const check = this.signInForm.get('email') === control;
+    const email = control.value;
     if (email.length === 0) {
       return of({ message: 'Email too short.', show: email.length > 0 });
     }
-    const request: RequestImplementation<{ email: string; }, undefined> = {
-      input: { body: { email }, params: undefined },
-      options: { cached: false, wait: true }
-    };
-    return timer(1000).pipe(
-      switchMap(_ => this.repositoryService.call('Backend', RepositoryFactoryEndpoint.Backend.Auth.EmailAvailable, request)),
+    return check ? timer(1000).pipe(
+      switchMap(_ => this.backendAuthRepository.EmailAvailable({ email })),
       map(result => {
         console.log(result);
         if (result.success) {
@@ -84,23 +81,20 @@ export class UnauthPage implements OnInit, AfterViewInit {
           return { message: 'An error occurred while checking the Email.', show: true };
         }
       })
-    );
+    ) : of(null);
   }
 
   private getNicknameValidator(control: AbstractControl): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
-    if (!this.signInForm) {
+    if (!this.signInForm || !this.loginForm) {
       return of({ message: 'Form not ready.', show: false });
     }
-    const nickname = this.signInForm.get('nickname').value;
+    const check = this.signInForm.get('nickname') === control;
+    const nickname = control.value;
     if (nickname.length < 6) {
       return of({ message: 'Nickname too short.', show: nickname.length > 0 });
     }
-    const request: RequestImplementation<{ nickname: string; }, undefined> = {
-      input: { body: { nickname }, params: undefined },
-      options: { cached: false, wait: true }
-    };
-    return timer(1000).pipe(
-      switchMap(_ => this.repositoryService.call('Backend', RepositoryFactoryEndpoint.Backend.Auth.NicknameAvailable, request)),
+    return check ? timer(1000).pipe(
+      switchMap(_ => this.backendAuthRepository.NicknameAvailable({ nickname })),
       map(result => {
         console.log(result);
         if (result.success) {
@@ -109,14 +103,14 @@ export class UnauthPage implements OnInit, AfterViewInit {
           return { message: 'An error occurred while checking the Nickname.', show: true };
         }
       })
-    );
+    ) : of(null);
   }
 
   private getPasswordValidator(control: AbstractControl): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
-    if (!this.signInForm) {
+    if (!this.signInForm || !this.loginForm) {
       return of({ message: 'Form not ready.', show: false });
     }
-    const password = this.signInForm.get('password').value;
+    const password = control.value;
     if (password.length === 0) {
       return of({ message: 'Password too short.', show: password.length > 0 });
     }
@@ -129,15 +123,15 @@ export class UnauthPage implements OnInit, AfterViewInit {
     const email = this.signInForm.get('email').value;
     const nickname = this.signInForm.get('nickname').value;
     const password = this.signInForm.get('password').value;
-    const request: RequestImplementation<{ email: string; nickname: string; password: string; }, undefined> = { input: { body: { email, nickname, password }, params: undefined }, options: { cached: false, wait: true } };
-    this.repositoryService.call('Backend', RepositoryFactoryEndpoint.Backend.Auth.SignIn, request).subscribe(result => {
+    this.backendAuthRepository.SignIn({ email, nickname, password }).subscribe(result => {
       console.log(result);
     });
   }
 
   public onLoginClicked(): void {
-    const request: RequestImplementation<undefined, undefined> = { input: undefined, options: { cached: false, wait: true } };
-    this.repositoryService.call('Backend', RepositoryFactoryEndpoint.Backend.Auth.LogIn, request).subscribe(result => {
+    const nickname = this.loginForm.get('nickname').value;
+    const password = this.loginForm.get('password').value;
+    this.backendAuthRepository.LogIn({ type: 'nickname', value: nickname, key: password, algorithm: 'sha256' }).subscribe(result => {
       console.log(result);
     });
   }

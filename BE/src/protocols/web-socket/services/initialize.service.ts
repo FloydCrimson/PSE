@@ -10,7 +10,6 @@ import { DispatcherService } from '../../../global/services/dispatcher.service';
 import { RequestImplementation } from '../implementations/request.implementation';
 import { ResponseImplementation } from '../implementations/response.implementation';
 import { ControllerService } from './controller.service';
-import { SendProvider } from '../providers/send.provider';
 import * as MI from '../middlewares.index';
 import * as RI from '../routes.index';
 

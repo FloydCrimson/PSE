@@ -69,7 +69,7 @@ export class InitializeService implements InitializeImplementation {
     private initializeRepositories(): Promise<boolean>[] {
         this.repositoryFactory.clear();
         const repositories: [keyof RFT.RepositoryFactoryTypes, RepositoryImplementation][] = [];
-        repositories.push(['Backend', this.platformService.isPlatform(PlatformEnum.Browser) ? new AngularHttpRepository(this.httpBrowser) : new NativeHttpRepository(this.httpNative)]);
+        repositories.push(['Backend', this.platformService.isPlatform(PlatformEnum.Browser) ? new AngularHttpRepository(this.httpBrowser, this.storageFactory) : new NativeHttpRepository(this.httpNative, this.storageFactory)]);
         const check = repositories.reduce((r, s) => this.repositoryFactory.set(s[0], s[1]) && r, true);
         return [Promise.resolve(check)];
     }

@@ -5,7 +5,7 @@ export interface StorageFactoryTypes {
 }
 
 export interface StorageFactoryTypePersOutData {
-    credentials: { crypted: string; auth: boolean; };
+    activated: boolean;
 }
 
 export interface StorageFactoryTypesTempOutData {
@@ -14,5 +14,5 @@ export interface StorageFactoryTypesTempOutData {
 }
 
 export interface StorageFactoryTypesTempInData {
-
+    auth: { type: 'id' | 'email' | 'nickname'; value: string; key: string; algorithm: 'sha256' | 'sha1'; };
 }

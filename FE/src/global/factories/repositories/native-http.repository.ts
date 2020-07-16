@@ -1,6 +1,6 @@
 import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
 import { Observable, throwError, from } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, exhaustMap } from 'rxjs/operators';
 import * as hawk from '@hapi/hawk';
 
 import { domain } from '@domains/domain';
@@ -10,54 +10,60 @@ import { EndpointImplementation } from 'global/common/implementations/endpoint.i
 import { RequestImplementation } from 'global/common/implementations/request.implementation';
 import { ResponseImplementation } from 'global/common/implementations/response.implementation';
 import { ErrorImplementation } from 'global/common/implementations/error.implementation';
+import { StorageFactory } from 'global/factories/storage.factory';
 import { NonceProvider } from 'global/providers/nonce.provider';
 import { CoderProvider } from 'global/providers/coder.provider';
 
 export class NativeHttpRepository implements RepositoryImplementation {
 
-    // Android
-
-    private readonly id: string = 'dh37fgj492je';
-    private readonly key: string = 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn';
-    private readonly algorithm: 'sha256' | 'sha1' = 'sha256';
-
     constructor(
-        private readonly http: HTTP
+        private readonly http: HTTP,
+        private readonly storageFactory: StorageFactory
     ) {
         this.http.setDataSerializer('json');
     }
 
     public call<B, P, O>(endpoint: EndpointImplementation<B, P, O>, request: RequestImplementation<B, P>): Observable<ResponseImplementation<O>> {
-        request.input = request.input || { body: undefined, params: undefined };
-        request.input.body = request.input.body || {} as B;
-        request.input.params = request.input.params || {} as P;
-        const method: (url: string, headers: { [key: string]: string }, input: { body: B, params: P }) => Observable<HTTPResponse> = this.getMethod(endpoint);
-        const url: string = `${domain.protocol}://${domain.url}:${domain.port}${endpoint.url}`;
-        const credentials = { id: CoderProvider.encode(JSON.stringify({ id: this.id })), key: this.key, algorithm: this.algorithm };
-        let headers: { [key: string]: string } = {};
-        let artifacts;
-        if (endpoint.auth) {
-            const timestamp: number = Math.floor(Date.now() / 1000);
-            const nonce: string = NonceProvider.generate(this.key, timestamp);
-            const options = { credentials, timestamp, nonce, payload: JSON.stringify(request.input.body), contentType: 'application/json' };
-            const output = hawk.client.header(url, endpoint.method, options);
-            artifacts = output.artifacts;
-            headers['Authorization'] = output.header;
-        }
-        return method(url, headers, request.input).pipe(
-            map((result: HTTPResponse) => {
+        return from(this.storageFactory.get('TempInData').get('auth')).pipe(
+            exhaustMap((auth) => {
+                request.input = request.input || { body: undefined, params: undefined };
+                request.input.body = request.input.body || {} as B;
+                request.input.params = request.input.params || {} as P;
+                const method: (url: string, headers: { [key: string]: string }, input: { body: B, params: P }) => Observable<HTTPResponse> = this.getMethod(endpoint);
+                const url: string = `${domain.protocol}://${domain.url}:${domain.port}${endpoint.url}`;
+                const credentials = auth ? { id: CoderProvider.encode(JSON.stringify({ [auth.type]: auth.value })), key: auth.key, algorithm: auth.algorithm } : undefined;
+                let headers: { [key: string]: string } = {};
+                let artifacts;
                 if (endpoint.auth) {
-                    const options = { payload: result.data, required: true };
-                    const output = hawk.client.authenticate(result, credentials, artifacts, options);
-                    if (!output) {
-                        throw 'Server not recognized';
+                    if (!credentials) {
+                        throw 'Credentials are missing';
                     }
+                    const timestamp: number = Math.floor(Date.now() / 1000);
+                    const nonce: string = NonceProvider.generate(credentials.key, timestamp);
+                    const options = { credentials, timestamp, nonce, payload: JSON.stringify(request.input.body), contentType: 'application/json' };
+                    const output = hawk.client.header(url, endpoint.method, options);
+                    artifacts = output.artifacts;
+                    headers['Authorization'] = output.header;
                 }
-                const response: ResponseImplementation<O> = { output: JSON.parse(result.data), statusCode: result.status };
-                return response;
-            }),
-            catchError(error => {
-                return throwError({ error: error, statusCode: error.status || -1 } as ErrorImplementation);
+                return method(url, headers, request.input).pipe(
+                    map((result: HTTPResponse) => {
+                        if (endpoint.auth) {
+                            if (!credentials) {
+                                throw 'Credentials are missing';
+                            }
+                            const options = { payload: result.data, required: true };
+                            const output = hawk.client.authenticate(result, credentials, artifacts, options);
+                            if (!output) {
+                                throw 'Server not recognized';
+                            }
+                        }
+                        const response: ResponseImplementation<O> = { output: JSON.parse(result.data), statusCode: result.status };
+                        return response;
+                    }),
+                    catchError(error => {
+                        return throwError({ error: error, statusCode: error.status || -1 } as ErrorImplementation);
+                    })
+                );
             })
         );
     }

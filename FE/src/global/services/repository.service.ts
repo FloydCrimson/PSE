@@ -23,6 +23,16 @@ export class RepositoryService {
         this.cache = new Map<string, Map<string, [BehaviorSubject<{ response?: ResponseImplementation<any>; error?: ErrorImplementation; success: boolean; }>, number]>>();
     }
 
+    public getRequest<K extends keyof RepositoryFactoryTypes, B, P, O>(type: K, endpoint: EndpointImplementation<B, P, O>): RequestImplementation<B, P> {
+        const request: RequestImplementation<B, P> = { input: { body: undefined, params: undefined }, options: { cached: false, wait: true } };
+        return request;
+    }
+
+    public getResponse<K extends keyof RepositoryFactoryTypes, B, P, O>(type: K, endpoint: EndpointImplementation<B, P, O>): ResponseImplementation<O> {
+        const response: ResponseImplementation<O> = { output: undefined, statusCode: -1 };
+        return response;
+    }
+
     public call<K extends keyof RepositoryFactoryTypes, B, P, O>(type: K, endpoint: EndpointImplementation<B, P, O>, request: RequestImplementation<B, P>): Observable<{ response?: ResponseImplementation<O>; error?: ErrorImplementation; success: boolean; }> {
         const hashEndpoint: string = this.generateHashEndpoint(type, endpoint);
         const hashRequest: string = this.generateHashRequest(request);
