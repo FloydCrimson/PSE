@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { ControllerServiceImplementation } from '../services/controller.service';
 import { DispatcherService } from '../../../global/services/dispatcher.service';
 import { MethodType } from '../types/method.type';
+import { ControllerServiceImplementation } from '../services/controller.service';
 
 export interface RouteImplementation<B, P, O> {
     endpoint: { method: MethodType; route: string; };

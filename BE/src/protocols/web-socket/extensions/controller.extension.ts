@@ -1,11 +1,11 @@
-import { Request } from 'express';
-
 import { RouteImplementation } from '../implementations/route.implementation';
+import { RequestImplementation } from '../implementations/request.implementation';
+import { ResponseImplementation } from '../implementations/response.implementation';
 
 export class ControllerExtension {
 
-    protected getArguments<B, P, O>(route: RouteImplementation<B, P, O>, request: Request): { body: B; params: P; output: O; } {
-        return { body: request.body as any, params: request.query.params as any, output: undefined };
+    protected getArguments<I, O>(route: RouteImplementation<I, O>, request: RequestImplementation, response: ResponseImplementation): { input: I; output: O; } {
+        return { input: request.input, output: response.output };
     }
 
     protected checkArgumentValidity(obj: any, mask: MaskType | MaskObject | MaskArray): CheckArgumentValidityResponse {

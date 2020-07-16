@@ -31,7 +31,7 @@ export class InitializeService implements InitializeImplementation {
                     const route: RouteImplementation<any, any, any> = RI[group][item];
                     app[route.endpoint.method](route.endpoint.route, (route.middlewares || []).map((middleware) => middleware(this.dispatcherService)), (request: Request, response: Response, next: NextFunction) => {
                         if (route.handler) {
-                            const result = this.dispatcherService.get('ControllerService').get(route.handler.controller)[route.handler.action](request, response, next);
+                            const result: Promise<any> = this.dispatcherService.get('ControllerRestService').get(route.handler.controller)[route.handler.action](request, response, next);
                             result.then(
                                 (resolved) => SendProvider.sendResponse(request, response, 200, resolved),
                                 (rejected) => SendProvider.sendError(request, response, 500, rejected)
@@ -49,7 +49,7 @@ export class InitializeService implements InitializeImplementation {
         }).then((result) => {
             // DISPATCHER
             if (result) {
-                this.dispatcherService.set('ControllerService', new ControllerService(this.dispatcherService));
+                this.dispatcherService.set('ControllerRestService', new ControllerService(this.dispatcherService));
             }
             return result;
         });
