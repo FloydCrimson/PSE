@@ -10,14 +10,14 @@ import { PlatformEnum } from 'global/common/enum/platform.enum';
 import { PlatformService } from 'global/services/platform.service';
 
 import { StorageFactory } from 'global/factories/storage.factory';
-import { StorageImplementation } from 'global/common/implementations/factories/storage.implementation';
+import { StorageFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
 import * as SFT from 'global/factories/storage.factory.type';
 import { IonicStorage } from 'global/factories/storages/ionic.storage';
 import { BuiltInStorage } from 'global/factories/storages/built-in.storage';
 import { JSStorage } from 'global/factories/storages/js.storage';
 
 import { RepositoryFactory } from 'global/factories/repository.factory';
-import { RepositoryImplementation } from 'global/common/implementations/factories/repository.implementation';
+import { RepositoryFactoryImplementation } from 'global/common/implementations/factories/repository.factory.implementation';
 import * as RFT from 'global/factories/repository.factory.type';
 import { AngularHttpRepository } from 'global/factories/repositories/angular-http.repository';
 import { NativeHttpRepository } from 'global/factories/repositories/native-http.repository';
@@ -54,7 +54,7 @@ export class InitializeService implements InitializeImplementation {
 
     private initializeStorages(): Promise<boolean>[] {
         this.storageFactory.clear();
-        const storages: [keyof SFT.StorageFactoryTypes, StorageImplementation<SFT.StorageFactoryTypes[keyof SFT.StorageFactoryTypes]>][] = [];
+        const storages: [keyof SFT.StorageFactoryTypes, StorageFactoryImplementation<SFT.StorageFactoryTypes[keyof SFT.StorageFactoryTypes]>][] = [];
         storages.push(['PersOutData', this.platformService.isPlatform(PlatformEnum.Browser) ? new IonicStorage<SFT.StorageFactoryTypePersOutData>(this.storage) : new BuiltInStorage<SFT.StorageFactoryTypePersOutData>(this.nativeStorage)]);
         storages.push(['TempOutData', new JSStorage<SFT.StorageFactoryTypesTempOutData>()]);
         storages.push(['TempInData', new JSStorage<SFT.StorageFactoryTypesTempInData>()]);
@@ -68,7 +68,7 @@ export class InitializeService implements InitializeImplementation {
 
     private initializeRepositories(): Promise<boolean>[] {
         this.repositoryFactory.clear();
-        const repositories: [keyof RFT.RepositoryFactoryTypes, RepositoryImplementation][] = [];
+        const repositories: [keyof RFT.RepositoryFactoryTypes, RepositoryFactoryImplementation][] = [];
         repositories.push(['Backend', this.platformService.isPlatform(PlatformEnum.Browser) ? new AngularHttpRepository(this.httpBrowser, this.storageFactory) : new NativeHttpRepository(this.httpNative, this.storageFactory)]);
         const check = repositories.reduce((r, s) => this.repositoryFactory.set(s[0], s[1]) && r, true);
         return [Promise.resolve(check)];

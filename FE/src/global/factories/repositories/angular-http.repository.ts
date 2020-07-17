@@ -5,7 +5,7 @@ import * as hawk from '@hapi/hawk';
 
 import { domain } from '@domains/domain';
 
-import { RepositoryImplementation } from 'global/common/implementations/factories/repository.implementation';
+import { RepositoryFactoryImplementation } from 'global/common/implementations/factories/repository.factory.implementation';
 import { EndpointImplementation } from 'global/common/implementations/endpoint.implementation';
 import { RequestImplementation } from 'global/common/implementations/request.implementation';
 import { ResponseImplementation } from 'global/common/implementations/response.implementation';
@@ -14,7 +14,7 @@ import { StorageFactory } from 'global/factories/storage.factory';
 import { NonceProvider } from 'global/providers/nonce.provider';
 import { CoderProvider } from 'global/providers/coder.provider';
 
-export class AngularHttpRepository implements RepositoryImplementation {
+export class AngularHttpRepository implements RepositoryFactoryImplementation {
 
     constructor(
         private readonly http: HttpClient,

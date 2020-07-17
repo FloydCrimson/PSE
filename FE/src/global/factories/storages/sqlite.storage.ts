@@ -1,8 +1,8 @@
-import { StorageImplementation } from 'global/common/implementations/factories/storage.implementation';
+import { StorageFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
 import { SQLitePluginImplementation, IDatabase, IResponse } from 'global/common/implementations/plugins/sqlite.plugin.implementation';
 import { LoggingService } from 'global/services/logging.service';
 
-export class SQLiteStorage<T> implements StorageImplementation<T> {
+export class SQLiteStorage<T> implements StorageFactoryImplementation<T> {
 
     private storage: IDatabase;
 

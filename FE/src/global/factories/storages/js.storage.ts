@@ -1,6 +1,6 @@
-import { StorageImplementation } from 'global/common/implementations/factories/storage.implementation';
+import { StorageFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
 
-export class JSStorage<T> implements StorageImplementation<T> {
+export class JSStorage<T> implements StorageFactoryImplementation<T> {
 
     private storage: Map<keyof T, T[keyof T]> = new Map<keyof T, T[keyof T]>();
 

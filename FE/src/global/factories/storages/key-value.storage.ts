@@ -1,8 +1,8 @@
 import { NativeStoragePluginImplementation } from 'global/common/implementations/plugins/native-storage.plugin.implementation';
 
-import { StorageImplementation } from 'global/common/implementations/factories/storage.implementation';
+import { StorageFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
 
-export class KeyValueStorage<T> implements StorageImplementation<T> {
+export class KeyValueStorage<T> implements StorageFactoryImplementation<T> {
 
     constructor(
         private readonly nativeStoragePlugin: NativeStoragePluginImplementation

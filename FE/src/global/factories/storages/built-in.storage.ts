@@ -1,8 +1,8 @@
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
-import { StorageImplementation } from 'global/common/implementations/factories/storage.implementation';
+import { StorageFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
 
-export class BuiltInStorage<T> implements StorageImplementation<T> {
+export class BuiltInStorage<T> implements StorageFactoryImplementation<T> {
 
     constructor(
         private readonly nativeStorage: NativeStorage

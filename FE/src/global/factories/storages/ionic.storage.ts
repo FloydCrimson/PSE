@@ -1,8 +1,8 @@
 import { Storage } from '@ionic/storage';
 
-import { StorageImplementation } from 'global/common/implementations/factories/storage.implementation';
+import { StorageFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
 
-export class IonicStorage<T> implements StorageImplementation<T> {
+export class IonicStorage<T> implements StorageFactoryImplementation<T> {
 
     constructor(
         private readonly storage: Storage

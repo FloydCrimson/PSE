@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 
 import { FactoryExtension } from 'global/common/extensions/factory.extension';
-import { RepositoryImplementation } from 'global/common/implementations/factories/repository.implementation';
+import { RepositoryFactoryImplementation } from 'global/common/implementations/factories/repository.factory.implementation';
 import { RepositoryFactoryTypes } from './repository.factory.type';
 
 @Injectable({
     providedIn: 'root'
 })
-export class RepositoryFactory extends FactoryExtension<RepositoryImplementation, RepositoryFactoryTypes>  {
+export class RepositoryFactory extends FactoryExtension<RepositoryFactoryImplementation, RepositoryFactoryTypes>  {
 
-    public set<K extends keyof RepositoryFactoryTypes>(type: K, factory: RepositoryImplementation) {
+    public set<K extends keyof RepositoryFactoryTypes>(type: K, factory: RepositoryFactoryImplementation) {
         return super.set(type, factory);
     }
 
-    public get<K extends keyof RepositoryFactoryTypes>(type: K): RepositoryImplementation {
+    public get<K extends keyof RepositoryFactoryTypes>(type: K): RepositoryFactoryImplementation {
         return super.get(type);
     }
 
