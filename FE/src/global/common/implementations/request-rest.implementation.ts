@@ -1,4 +1,4 @@
-export interface RequestImplementation<B, P> {
+export interface RequestRestImplementation<B, P> {
     input: {
         body: B;
         params: P;

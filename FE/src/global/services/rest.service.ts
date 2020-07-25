@@ -2,48 +2,48 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { exhaustMap, take, timeout, tap, catchError, finalize, skip } from 'rxjs/operators';
 
-import { RepositoryFactory } from 'global/factories/repository.factory';
-import { RepositoryFactoryTypes } from 'global/factories/repository.factory.type';
-import { EndpointImplementation } from 'global/common/implementations/endpoint.implementation';
-import { RequestImplementation } from 'global/common/implementations/request.implementation';
-import { ResponseImplementation } from 'global/common/implementations/response.implementation';
-import { ErrorImplementation } from 'global/common/implementations/error.implementation';
+import { RestFactory } from 'global/factories/rest.factory';
+import { RestFactoryTypes } from 'global/factories/rest.factory.type';
+import { EndpointRestImplementation } from 'global/common/implementations/endpoint-rest.implementation';
+import { RequestRestImplementation } from 'global/common/implementations/request-rest.implementation';
+import { ResponseRestImplementation } from 'global/common/implementations/response-rest.implementation';
+import { ErrorRestImplementation } from 'global/common/implementations/error-rest.implementation';
 import { CoderProvider } from 'global/providers/coder.provider';
 
 @Injectable({
     providedIn: 'root'
 })
-export class RepositoryService {
+export class RestService {
 
-    private cache: Map<string, Map<string, [BehaviorSubject<{ response?: ResponseImplementation<any>; error?: ErrorImplementation; success: boolean; }>, number]>>;
+    private cache: Map<string, Map<string, [BehaviorSubject<{ response?: ResponseRestImplementation<any>; error?: ErrorRestImplementation; success: boolean; }>, number]>>;
 
     constructor(
-        private readonly repositoryFactory: RepositoryFactory
+        private readonly restFactory: RestFactory
     ) {
-        this.cache = new Map<string, Map<string, [BehaviorSubject<{ response?: ResponseImplementation<any>; error?: ErrorImplementation; success: boolean; }>, number]>>();
+        this.cache = new Map<string, Map<string, [BehaviorSubject<{ response?: ResponseRestImplementation<any>; error?: ErrorRestImplementation; success: boolean; }>, number]>>();
     }
 
-    public getRequest<K extends keyof RepositoryFactoryTypes, B, P, O>(type: K, endpoint: EndpointImplementation<B, P, O>): RequestImplementation<B, P> {
-        const request: RequestImplementation<B, P> = { input: { body: undefined, params: undefined }, options: { cached: false, wait: true } };
+    public getRequest<K extends keyof RestFactoryTypes, B, P, O>(type: K, endpoint: EndpointRestImplementation<B, P, O>): RequestRestImplementation<B, P> {
+        const request: RequestRestImplementation<B, P> = { input: { body: undefined, params: undefined }, options: { cached: false, wait: true } };
         return request;
     }
 
-    public getResponse<K extends keyof RepositoryFactoryTypes, B, P, O>(type: K, endpoint: EndpointImplementation<B, P, O>): ResponseImplementation<O> {
-        const response: ResponseImplementation<O> = { output: undefined, statusCode: -1 };
+    public getResponse<K extends keyof RestFactoryTypes, B, P, O>(type: K, endpoint: EndpointRestImplementation<B, P, O>): ResponseRestImplementation<O> {
+        const response: ResponseRestImplementation<O> = { output: undefined, statusCode: -1 };
         return response;
     }
 
-    public call<K extends keyof RepositoryFactoryTypes, B, P, O>(type: K, endpoint: EndpointImplementation<B, P, O>, request: RequestImplementation<B, P>): Observable<{ response?: ResponseImplementation<O>; error?: ErrorImplementation; success: boolean; }> {
+    public call<K extends keyof RestFactoryTypes, B, P, O>(type: K, endpoint: EndpointRestImplementation<B, P, O>, request: RequestRestImplementation<B, P>): Observable<{ response?: ResponseRestImplementation<O>; error?: ErrorRestImplementation; success: boolean; }> {
         const hashEndpoint: string = this.generateHashEndpoint(type, endpoint);
         const hashRequest: string = this.generateHashRequest(request);
         let map = this.cache.get(hashEndpoint);
         if (!map) {
-            map = new Map<string, [BehaviorSubject<{ response?: ResponseImplementation<O>; error?: ErrorImplementation; success: boolean; }>, number]>();
+            map = new Map<string, [BehaviorSubject<{ response?: ResponseRestImplementation<O>; error?: ErrorRestImplementation; success: boolean; }>, number]>();
             this.cache.set(hashEndpoint, map);
         }
         let array = map.get(hashRequest);
         if (!array) {
-            array = [new BehaviorSubject<{ response?: ResponseImplementation<O>; error?: ErrorImplementation; success: boolean; }>({ success: true }), 0];
+            array = [new BehaviorSubject<{ response?: ResponseRestImplementation<O>; error?: ErrorRestImplementation; success: boolean; }>({ success: true }), 0];
             map.set(hashRequest, array);
         }
         if (request.options.cached && array[0].getValue().response) {
@@ -58,7 +58,7 @@ export class RepositoryService {
         }
         if (!request.options.wait || array[1] === 0) {
             array[1]++;
-            this.repositoryFactory.get(type).call(endpoint, request).pipe(
+            this.restFactory.get(type).call(endpoint, request).pipe(
                 timeout(endpoint.timeout || 60000),
                 tap(response => {
                     const map = this.cache.get(hashEndpoint);
@@ -67,7 +67,7 @@ export class RepositoryService {
                 }),
                 catchError(error => {
                     if (!('error' in error) || !('statusCode' in error)) {
-                        error = { error: error, statusCode: -1 } as ErrorImplementation;
+                        error = { error: error, statusCode: -1 } as ErrorRestImplementation;
                     }
                     array[0].next({ response: array[0].getValue().response, error, success: false });
                     return throwError(error);
@@ -81,7 +81,7 @@ export class RepositoryService {
         );
     }
 
-    public isCallCached<K extends keyof RepositoryFactoryTypes, B, P, O>(type: K, endpoint: EndpointImplementation<B, P, O>, request: RequestImplementation<B, P>): boolean {
+    public isCallCached<K extends keyof RestFactoryTypes, B, P, O>(type: K, endpoint: EndpointRestImplementation<B, P, O>, request: RequestRestImplementation<B, P>): boolean {
         const hashEndpoint: string = this.generateHashEndpoint(type, endpoint);
         const hashRequest: string = this.generateHashRequest(request);
         let map = this.cache.get(hashEndpoint);
@@ -108,11 +108,11 @@ export class RepositoryService {
 
     //
 
-    private generateHashEndpoint<K extends keyof RepositoryFactoryTypes, B, P, O>(type: K, endpoint: EndpointImplementation<B, P, O>): string {
+    private generateHashEndpoint<K extends keyof RestFactoryTypes, B, P, O>(type: K, endpoint: EndpointRestImplementation<B, P, O>): string {
         return `${type}:${endpoint.method}/${endpoint.url}`;
     }
 
-    private generateHashRequest<B, P>(request: RequestImplementation<B, P>): string {
+    private generateHashRequest<B, P>(request: RequestRestImplementation<B, P>): string {
         return CoderProvider.encode(JSON.stringify(request.input));
     }
 

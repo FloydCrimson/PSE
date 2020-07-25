@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { StorageFactory } from 'global/factories/storage.factory';
-import { RepositoryFactory } from 'global/factories/repository.factory';
+import { RestFactory } from 'global/factories/rest.factory';
 import { RoutingService } from 'global/services/routing.service';
 
 @Component({
@@ -13,7 +13,7 @@ export class AuthPage {
 
   constructor(
     private readonly storageFactory: StorageFactory,
-    private readonly repositoryFactory: RepositoryFactory,
+    private readonly restFactory: RestFactory,
     private readonly routingService: RoutingService
   ) { }
 

@@ -4,13 +4,13 @@ import { FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angu
 import { Observable, of, timer } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 
-import { RequestImplementation } from 'global/common/implementations/request.implementation';
+import { RequestRestImplementation } from 'global/common/implementations/request-rest.implementation';
 import { StorageFactory } from 'global/factories/storage.factory';
-import { RepositoryService } from 'global/services/repository.service';
+import { RestService } from 'global/services/rest.service';
 import { RoutingService } from 'global/services/routing.service';
 
-import { BackendAuthRepository } from 'countries/common/repositories/backend.auth.repository';
-import { RepositoryFactoryEndpoint } from '@countries/endpoints/repository-factory.endpoint';
+import { BackendAuthRest } from 'countries/common/rests/backend.auth.rest';
+import { RestFactoryEndpoint } from '@countries/endpoints/rest-factory.endpoint';
 import * as RoutesIndex from '@countries/routes.index';
 
 @Component({
@@ -39,7 +39,7 @@ export class UnauthPage implements OnInit, AfterViewInit {
   constructor(
     private readonly routingService: RoutingService,
     private readonly storageFactory: StorageFactory,
-    private readonly backendAuthRepository: BackendAuthRepository
+    private readonly backendAuthRest: BackendAuthRest
   ) { }
 
   public async ngOnInit(): Promise<void> {
@@ -72,7 +72,7 @@ export class UnauthPage implements OnInit, AfterViewInit {
       return of({ message: 'Email too short.', show: email.length > 0 });
     }
     return check ? timer(1000).pipe(
-      switchMap(_ => this.backendAuthRepository.EmailAvailable({ email })),
+      switchMap(_ => this.backendAuthRest.EmailAvailable({ email })),
       map(result => {
         console.log(result);
         if (result.success) {
@@ -94,7 +94,7 @@ export class UnauthPage implements OnInit, AfterViewInit {
       return of({ message: 'Nickname too short.', show: nickname.length > 0 });
     }
     return check ? timer(1000).pipe(
-      switchMap(_ => this.backendAuthRepository.NicknameAvailable({ nickname })),
+      switchMap(_ => this.backendAuthRest.NicknameAvailable({ nickname })),
       map(result => {
         console.log(result);
         if (result.success) {
@@ -123,7 +123,7 @@ export class UnauthPage implements OnInit, AfterViewInit {
     const email = this.signInForm.get('email').value;
     const nickname = this.signInForm.get('nickname').value;
     const password = this.signInForm.get('password').value;
-    this.backendAuthRepository.SignIn({ email, nickname, password }).subscribe(result => {
+    this.backendAuthRest.SignIn({ email, nickname, password }).subscribe(result => {
       console.log(result);
     });
   }
@@ -131,7 +131,7 @@ export class UnauthPage implements OnInit, AfterViewInit {
   public onLoginClicked(): void {
     const nickname = this.loginForm.get('nickname').value;
     const password = this.loginForm.get('password').value;
-    this.backendAuthRepository.LogIn({ type: 'nickname', value: nickname, key: password, algorithm: 'sha256' }).subscribe(result => {
+    this.backendAuthRest.LogIn({ type: 'nickname', value: nickname, key: password, algorithm: 'sha256' }).subscribe(result => {
       console.log(result);
     });
   }

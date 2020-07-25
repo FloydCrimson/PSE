@@ -16,11 +16,11 @@ import { IonicStorage } from 'global/factories/storages/ionic.storage';
 import { BuiltInStorage } from 'global/factories/storages/built-in.storage';
 import { JSStorage } from 'global/factories/storages/js.storage';
 
-import { RepositoryFactory } from 'global/factories/repository.factory';
-import { RepositoryFactoryImplementation } from 'global/common/implementations/factories/repository.factory.implementation';
-import * as RFT from 'global/factories/repository.factory.type';
-import { AngularHttpRepository } from 'global/factories/repositories/angular-http.repository';
-import { NativeHttpRepository } from 'global/factories/repositories/native-http.repository';
+import { RestFactory } from 'global/factories/rest.factory';
+import { RestFactoryImplementation } from 'global/common/implementations/factories/rest.factory.implementation';
+import * as RFT from 'global/factories/rest.factory.type';
+import { AngularRest } from 'global/factories/rests/angular.rest';
+import { NativeRest } from 'global/factories/rests/native.rest';
 
 @Injectable({
     providedIn: 'root'
@@ -30,7 +30,7 @@ export class InitializeService implements InitializeImplementation {
     constructor(
         private readonly platformService: PlatformService,
         private readonly storageFactory: StorageFactory,
-        private readonly repositoryFactory: RepositoryFactory,
+        private readonly restFactory: RestFactory,
         private readonly storage: Storage,
         private readonly nativeStorage: NativeStorage,
         private readonly httpBrowser: HttpClient,
@@ -41,7 +41,7 @@ export class InitializeService implements InitializeImplementation {
         return new Promise<boolean>((resolve, reject) => {
             const promises: Promise<boolean>[] = [];
             promises.push(...this.initializeStorages());
-            promises.push(...this.initializeRepositories());
+            promises.push(...this.initializeRests());
             Promise.all(promises).then((resolved) => {
                 resolve(resolved.reduce((r, e) => r && e, true));
             }, (rejected) => {
@@ -66,11 +66,11 @@ export class InitializeService implements InitializeImplementation {
         }
     }
 
-    private initializeRepositories(): Promise<boolean>[] {
-        this.repositoryFactory.clear();
-        const repositories: [keyof RFT.RepositoryFactoryTypes, RepositoryFactoryImplementation][] = [];
-        repositories.push(['Backend', this.platformService.isPlatform(PlatformEnum.Browser) ? new AngularHttpRepository(this.httpBrowser, this.storageFactory) : new NativeHttpRepository(this.httpNative, this.storageFactory)]);
-        const check = repositories.reduce((r, s) => this.repositoryFactory.set(s[0], s[1]) && r, true);
+    private initializeRests(): Promise<boolean>[] {
+        this.restFactory.clear();
+        const rests: [keyof RFT.RestFactoryTypes, RestFactoryImplementation][] = [];
+        rests.push(['Backend', this.platformService.isPlatform(PlatformEnum.Browser) ? new AngularRest(this.httpBrowser, this.storageFactory) : new NativeRest(this.httpNative, this.storageFactory)]);
+        const check = rests.reduce((r, s) => this.restFactory.set(s[0], s[1]) && r, true);
         return [Promise.resolve(check)];
     }
 

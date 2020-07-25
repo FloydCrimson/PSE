@@ -5,16 +5,16 @@ import * as hawk from '@hapi/hawk';
 
 import { domain } from '@domains/domain';
 
-import { RepositoryFactoryImplementation } from 'global/common/implementations/factories/repository.factory.implementation';
-import { EndpointImplementation } from 'global/common/implementations/endpoint.implementation';
-import { RequestImplementation } from 'global/common/implementations/request.implementation';
-import { ResponseImplementation } from 'global/common/implementations/response.implementation';
-import { ErrorImplementation } from 'global/common/implementations/error.implementation';
+import { RestFactoryImplementation } from 'global/common/implementations/factories/rest.factory.implementation';
+import { EndpointRestImplementation } from 'global/common/implementations/endpoint-rest.implementation';
+import { RequestRestImplementation } from 'global/common/implementations/request-rest.implementation';
+import { ResponseRestImplementation } from 'global/common/implementations/response-rest.implementation';
+import { ErrorRestImplementation } from 'global/common/implementations/error-rest.implementation';
 import { StorageFactory } from 'global/factories/storage.factory';
 import { NonceProvider } from 'global/providers/nonce.provider';
 import { CoderProvider } from 'global/providers/coder.provider';
 
-export class NativeHttpRepository implements RepositoryFactoryImplementation {
+export class NativeRest implements RestFactoryImplementation {
 
     constructor(
         private readonly http: HTTP,
@@ -23,7 +23,7 @@ export class NativeHttpRepository implements RepositoryFactoryImplementation {
         this.http.setDataSerializer('json');
     }
 
-    public call<B, P, O>(endpoint: EndpointImplementation<B, P, O>, request: RequestImplementation<B, P>): Observable<ResponseImplementation<O>> {
+    public call<B, P, O>(endpoint: EndpointRestImplementation<B, P, O>, request: RequestRestImplementation<B, P>): Observable<ResponseRestImplementation<O>> {
         return from(this.storageFactory.get('TempInData').get('auth')).pipe(
             exhaustMap((auth) => {
                 request.input = request.input || { body: undefined, params: undefined };
@@ -57,11 +57,11 @@ export class NativeHttpRepository implements RepositoryFactoryImplementation {
                                 throw 'Server not recognized';
                             }
                         }
-                        const response: ResponseImplementation<O> = { output: JSON.parse(result.data), statusCode: result.status };
+                        const response: ResponseRestImplementation<O> = { output: JSON.parse(result.data), statusCode: result.status };
                         return response;
                     }),
                     catchError(error => {
-                        return throwError({ error: error, statusCode: error.status || -1 } as ErrorImplementation);
+                        return throwError({ error: error, statusCode: error.status || -1 } as ErrorRestImplementation);
                     })
                 );
             })
@@ -70,7 +70,7 @@ export class NativeHttpRepository implements RepositoryFactoryImplementation {
 
     //
 
-    private getMethod<B, P, O>(endpoint: EndpointImplementation<B, P, O>): (url: string, headers: { [key: string]: string }, input: { body: B, params: P }) => Observable<HTTPResponse> {
+    private getMethod<B, P, O>(endpoint: EndpointRestImplementation<B, P, O>): (url: string, headers: { [key: string]: string }, input: { body: B, params: P }) => Observable<HTTPResponse> {
         if (endpoint.method === 'GET') {
             return this.get.bind(this);
         } else if (endpoint.method === 'POST') {
