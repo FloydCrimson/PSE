@@ -35,5 +35,3 @@ npm-debug.log*
 config/parameters.json
 src/domains/domain-extra.json
 src/environments/environment-extra.json
-ssl/*.crt
-ssl/*.key

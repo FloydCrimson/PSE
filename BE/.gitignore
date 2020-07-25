@@ -10,5 +10,4 @@ temp/
 database.*
 mailerconfig.json
 protocolsconfig.json
-ssl/*.crt
-ssl/*.key
+src/ssl/*.key
