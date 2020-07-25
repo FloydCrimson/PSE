@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import { getConnectionOptions, createConnection } from 'typeorm';
 
 import { InitializeImplementation } from '../../../global/common/implementations/initialize.implementation';
+import { ProtocolConfigurationsType } from '../../../global/common/types/protocol-options.type';
 import { DispatcherService } from '../../../global/services/dispatcher.service';
 import { RepositoryService } from './repository.service';
 // import { RoleType } from '../types/role.type';
@@ -14,7 +15,7 @@ export class InitializeService implements InitializeImplementation {
         private readonly dispatcherService: DispatcherService
     ) { }
 
-    public initialize(): Promise<boolean> {
+    public initialize(configurations: ProtocolConfigurationsType[]): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
             // SERVER
             getConnectionOptions().then((connectionOptions) => createConnection(connectionOptions)).then((connection) => {

@@ -4,6 +4,8 @@ import * as express from 'express';
 import { Request, Response, NextFunction } from 'express';
 
 import { InitializeImplementation } from '../../../global/common/implementations/initialize.implementation';
+import { ProtocolConfigurationsType } from '../../../global/common/types/protocol-options.type';
+import { ServerProvider } from '../../../global/providers/server.provider';
 import { RouteImplementation } from '../implementations/route.implementation';
 import { DispatcherService } from '../../../global/services/dispatcher.service';
 import { ControllerService } from './controller.service';
@@ -17,7 +19,7 @@ export class InitializeService implements InitializeImplementation {
         private readonly dispatcherService: DispatcherService
     ) { }
 
-    public initialize(port: number): Promise<boolean> {
+    public initialize(configurations: ProtocolConfigurationsType[]): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
             // SERVER
             const app = express();
@@ -42,9 +44,16 @@ export class InitializeService implements InitializeImplementation {
                     });
                 }
             }
-            const server = app.listen(port, (...args: any[]) => {
-                console.log(`Express Rest server has started on port ${server.address().port}. Open http://localhost:${server.address().port}/echo to see results.`);
-                resolve(true);
+            const servers = ServerProvider.getServers(app, configurations);
+            Promise.all(servers.map((server) => {
+                return new Promise<boolean>((resolve, reject) => {
+                    server.instance.listen(server.port, (...args: any[]) => {
+                        console.log(`Express Rest server has started on port ${server.instance.address().port}. Open localhost:${server.instance.address().port}/echo to see results.`);
+                        resolve(true);
+                    });
+                });
+            })).then(result => {
+                resolve(!result.some(c => !c));
             });
         }).then((result) => {
             // DISPATCHER

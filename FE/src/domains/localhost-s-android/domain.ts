@@ -6,9 +6,9 @@ const domainExtra: DomainImplementation = {
     ...(<any>extra as { default: any }).default
 };
 const domainOriginal: DomainImplementation = {
-    protocol: 'http',
+    protocol: 'https',
     url: '10.0.2.2',
-    port: 7080
+    port: 7443
 };
 
 export const domain: DomainImplementation = MergerProvider.merger(domainOriginal, domainExtra);

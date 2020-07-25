@@ -5,7 +5,7 @@ https://stackoverflow.com/questions/10175812/how-to-create-a-self-signed-certifi
 Steps to generate SSL certifiacte (OpenSSL is required):
 
 1. Run `cd global` command.
-2. Run `node ssl-generator.js` command.
+2. Run `node scripts\ssl-generator.js` command.
 
 # Extra
 

@@ -1,3 +1,5 @@
+import { ProtocolConfigurationsType } from "../types/protocol-options.type";
+
 export interface InitializeImplementation {
-    initialize: (port?: number) => Promise<boolean>;
+    initialize: (configurations: ProtocolConfigurationsType[]) => Promise<boolean>;
 }

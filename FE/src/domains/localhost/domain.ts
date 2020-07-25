@@ -8,7 +8,7 @@ const domainExtra: DomainImplementation = {
 const domainOriginal: DomainImplementation = {
     protocol: 'http',
     url: 'localhost',
-    port: 3000
+    port: 7080
 };
 
 export const domain: DomainImplementation = MergerProvider.merger(domainOriginal, domainExtra);
