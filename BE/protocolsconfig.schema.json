@@ -1,0 +1,65 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Protocols Config Schema",
+    "description": "A schema helper that defines protocolsconfig.json files.",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "description": "The reference to the schema.",
+            "type": "string"
+        },
+        "protocols": {
+            "description": "The list of protocols.",
+            "type": "object",
+            "propertyNames": {
+                "pattern": "^[a-z0-9-]+$"
+            },
+            "patternProperties": {
+                "^[a-z0-9-]+$": {
+                    "$ref": "#/definitions/protocol"
+                }
+            }
+        }
+    },
+    "required": [
+        "$schema",
+        "protocols"
+    ],
+    "additionalProperties": false,
+    "definitions": {
+        "protocol": {
+            "description": "The name of the protocol.",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "protocol": {
+                        "description": "The protocol of the connection (http or https).",
+                        "type": "string"
+                    },
+                    "port": {
+                        "description": "The port of the connection.",
+                        "type": "number"
+                    },
+                    "key": {
+                        "description": "The path of the .key for SSL.",
+                        "type": "string"
+                    },
+                    "cert": {
+                        "description": "The path of the .crt for SSL.",
+                        "type": "string"
+                    },
+                    "passphrase": {
+                        "description": "The passphrase for SSL.",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "protocol",
+                    "port"
+                ],
+                "additionalProperties": false
+            }
+        }
+    }
+}

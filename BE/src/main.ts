@@ -26,7 +26,7 @@ const initialize: (promises: Promise<boolean>[]) => Promise<boolean> = (promises
     });
 }
 
-initialize(initializeServices.map(initializeService => initializeService.service.initialize(protocolsconfig[initializeService.configurations]))).then((resolved) => {
+initialize(initializeServices.map(initializeService => initializeService.service.initialize(protocolsconfig.protocols[initializeService.configurations]))).then((resolved) => {
     if (resolved) {
         console.log('All servers have started.');
     } else {
