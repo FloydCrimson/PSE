@@ -11,3 +11,4 @@ database.*
 mailerconfig.json
 protocolsconfig.json
 ssl/*.key
+ssl/*.crt

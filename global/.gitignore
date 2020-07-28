@@ -1,4 +1,4 @@
 # Customs
 
-ssl/*.crt
 ssl/*.key
+ssl/*.crt
