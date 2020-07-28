@@ -10,7 +10,6 @@ import { MessageSocketImplementation } from 'global/common/implementations/messa
 import { ErrorSocketImplementation } from 'global/common/implementations/error-socket.implementation';
 // import { StorageFactory } from 'global/factories/storage.factory';
 // import { NonceProvider } from 'global/providers/nonce.provider';
-import { CoderProvider } from 'global/providers/coder.provider';
 
 export class AngularSocket implements SocketFactoryImplementation {
 
@@ -37,10 +36,10 @@ export class AngularSocket implements SocketFactoryImplementation {
         return false;
     }
 
-    public send<D>(endpoint: EndpointSocketImplementation<D>, data: D): boolean {
+    public send<P>(endpoint: EndpointSocketImplementation<P>, params: P): boolean {
         if (this.socket && this.socket.readyState === this.socket.OPEN) {
-            const message: MessageSocketImplementation<D> = { operation: endpoint.operation, data };
-            this.socket.send(CoderProvider.encode(JSON.stringify(message)));
+            const message: MessageSocketImplementation<P> = { operation: endpoint.operation, params };
+            this.socket.send(JSON.stringify(message));
             return true;
         }
         return false;
@@ -58,10 +57,10 @@ export class AngularSocket implements SocketFactoryImplementation {
         );
     }
 
-    public onMessage<D>(): Observable<MessageSocketImplementation<D>> {
+    public onMessage<P>(): Observable<MessageSocketImplementation<P>> {
         return this.subjectMessage.asObservable().pipe(
             map((message) => {
-                return JSON.parse(CoderProvider.decode(message.data as any)) as MessageSocketImplementation<D>;
+                return JSON.parse(message.data as any) as MessageSocketImplementation<P>;
             })
         );
     }

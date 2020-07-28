@@ -1,4 +1,4 @@
-export interface MessageSocketImplementation<D> {
+export interface MessageSocketImplementation<P> {
     operation: string;
-    data: D;
+    params: P;
 }

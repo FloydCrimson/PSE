@@ -7,7 +7,6 @@ export interface RestFactoryTypes {
 export interface RestFactoryTypeBackend {
     Auth: RestFactoryTypeBackendAuth;
     Echo: RestFactoryTypeBackendEcho;
-    Test: RestFactoryTypeBackendTest;
 }
 
 export interface RestFactoryTypeBackendAuth {
@@ -20,9 +19,5 @@ export interface RestFactoryTypeBackendAuth {
 }
 
 export interface RestFactoryTypeBackendEcho {
-    Echo: EndpointRestImplementation<undefined, { [key: string]: string }, { [key: string]: string }>;
-}
-
-export interface RestFactoryTypeBackendTest {
-    Test: EndpointRestImplementation<undefined, undefined, undefined>;
+    Echo: EndpointRestImplementation<undefined, any, any>;
 }
