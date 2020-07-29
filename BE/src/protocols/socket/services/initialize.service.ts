@@ -55,7 +55,7 @@ export class InitializeService implements InitializeImplementation {
                                 if (i < middlewares.length) {
                                     middlewares[i++](request, response, next);
                                 } else if (value.route.handler) {
-                                    this.dispatcherService.get('ControllerWebSocketService').get(value.route.handler.controller)[value.route.handler.action](request, response, next);
+                                    this.dispatcherService.get('ControllerSocketService').get(value.route.handler.controller)[value.route.handler.action](request, response, next);
                                 }
                             };
                             next();
@@ -66,7 +66,7 @@ export class InitializeService implements InitializeImplementation {
             Promise.all(servers.map((server) => {
                 return new Promise<boolean>((resolve, reject) => {
                     server.instance.listen(server.port, (...args: any[]) => {
-                        console.log(`Express WebSocket server has started on port ${server.instance.address().port}.`);
+                        console.log(`Express Socket server has started on port ${server.instance.address().port}.`);
                         resolve(true);
                     });
                 });
@@ -76,7 +76,7 @@ export class InitializeService implements InitializeImplementation {
         }).then((result) => {
             // DISPATCHER
             if (result) {
-                this.dispatcherService.set('ControllerWebSocketService', new ControllerService(this.dispatcherService));
+                this.dispatcherService.set('ControllerSocketService', new ControllerService(this.dispatcherService));
             }
             return result;
         });

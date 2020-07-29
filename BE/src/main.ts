@@ -4,14 +4,14 @@ import { InitializeImplementation } from './global/common/implementations/initia
 import { DispatcherService } from './global/services/dispatcher.service';
 import { InitializeService as InitializeDatabaseService } from './protocols/database/services/initialize.service';
 import { InitializeService as InitializeRestService } from './protocols/rest/services/initialize.service';
-import { InitializeService as InitializeWebSocketService } from './protocols/web-socket/services/initialize.service';
+import { InitializeService as InitializeSocketService } from './protocols/socket/services/initialize.service';
 
 const dispatcherService: DispatcherService = new DispatcherService();
 
 const initializeServices: { service: InitializeImplementation, configurations: string }[] = [
     { service: new InitializeDatabaseService(dispatcherService), configurations: 'database' },
     { service: new InitializeRestService(dispatcherService), configurations: 'rest' },
-    { service: new InitializeWebSocketService(dispatcherService), configurations: 'web-socket' }
+    { service: new InitializeSocketService(dispatcherService), configurations: 'socket' }
 ];
 
 const initialize: (promises: Promise<boolean>[]) => Promise<boolean> = (promises: Promise<boolean>[]) => {

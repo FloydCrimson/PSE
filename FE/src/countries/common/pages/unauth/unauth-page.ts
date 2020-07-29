@@ -1,16 +1,13 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { IonSlides } from '@ionic/angular';
+import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
+import { IonSlides } from '@ionic/angular';
 import { Observable, of, timer } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 
-import { RequestRestImplementation } from 'global/common/implementations/request-rest.implementation';
-import { StorageFactory } from 'global/factories/storage.factory';
-import { RestService } from 'global/services/rest.service';
 import { RoutingService } from 'global/services/routing.service';
 
 import { BackendAuthRest } from 'countries/common/rests/backend.auth.rest';
-import { RestFactoryEndpoint } from '@countries/endpoints/rest-factory.endpoint';
+
 import * as RoutesIndex from '@countries/routes.index';
 
 @Component({
@@ -18,7 +15,7 @@ import * as RoutesIndex from '@countries/routes.index';
   templateUrl: 'unauth-page.html',
   styleUrls: ['unauth-page.scss'],
 })
-export class UnauthPage implements OnInit, AfterViewInit {
+export class UnauthPage {
 
   @ViewChild(IonSlides, { static: true }) slides: IonSlides;
 
@@ -38,17 +35,8 @@ export class UnauthPage implements OnInit, AfterViewInit {
 
   constructor(
     private readonly routingService: RoutingService,
-    private readonly storageFactory: StorageFactory,
     private readonly backendAuthRest: BackendAuthRest
   ) { }
-
-  public async ngOnInit(): Promise<void> {
-    console.log(this.slides);
-  }
-
-  public async ngAfterViewInit(): Promise<void> {
-    console.log(this.slides);
-  }
 
   public getErrorFromFormGroup(formGroup: FormGroup): { message: string; } {
     for (const control in formGroup.controls) {
