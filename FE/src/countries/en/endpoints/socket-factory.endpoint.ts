@@ -5,8 +5,8 @@ class BackendEndpoint implements SocketFT.SocketFactoryTypeBackend {
 }
 
 class BackendEchoEndpoint implements SocketFT.SocketFactoryTypeBackendEcho {
-    EchoSend = { auth: false, operation: 'echo' } as SocketFT.SocketFactoryTypeBackendEcho['EchoSend'];
-    EchoReceive = { auth: false, operation: 'echo' } as SocketFT.SocketFactoryTypeBackendEcho['EchoReceive'];
+    EchoSEND = { auth: false, operation: '/echo/echo' } as SocketFT.SocketFactoryTypeBackendEcho['EchoSEND'];
+    EchoRECEIVE = { auth: false, operation: '/echo/echo' } as SocketFT.SocketFactoryTypeBackendEcho['EchoRECEIVE'];
 }
 
 export const SocketFactoryEndpoint: SocketFT.SocketFactoryTypes = {

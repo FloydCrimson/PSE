@@ -4,8 +4,8 @@ import { RouteImplementation } from '../implementations/route.implementation';
 
 export class ControllerExtension {
 
-    protected getArguments<B, P, O>(route: RouteImplementation<B, P, O>, request: Request): { body: B; params: P; output: O; } {
-        return { body: request.body as any, params: request.query.params as any, output: undefined };
+    protected getArguments<B, P, O>(route: RouteImplementation<B, P, O>, request?: Request): { body: B; params: P; output: O; } {
+        return { body: request ? (request.body as any) : undefined, params: request ? (request.query.params as any) : undefined, output: undefined };
     }
 
     protected checkArgumentValidity(obj: any, mask: MaskType | MaskObject | MaskArray): CheckArgumentValidityResponse {

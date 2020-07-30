@@ -1,16 +1,14 @@
 import { RequestImplementation } from '../implementations/request.implementation';
-import { ResponseImplementation } from '../implementations/response.implementation';
+import { MessageImplementation } from '../implementations/message.implementation';
 
 export class SendProvider {
 
-    public static sendResponse(request: RequestImplementation, response: ResponseImplementation): void {
-        console.log(`Response:   ${request.route}`);
-        response.socket.send(JSON.stringify(response.output));
-    }
-
-    public static sendError(request: RequestImplementation, response: ResponseImplementation): void {
-        console.error(`Error:   ${request.route}`);
-        response.socket.send(JSON.stringify(response.output));
+    public static sendMessage(request: RequestImplementation, message: MessageImplementation): void {
+        console.log(`Message:   ${request.request.method} ${message.operation}`);
+        if (request.locals.hawk) {
+            // TODO: hawk
+        }
+        request.socket.send(JSON.stringify(message));
     }
 
 }

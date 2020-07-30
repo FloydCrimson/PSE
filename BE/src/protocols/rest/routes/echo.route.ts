@@ -7,9 +7,9 @@ export interface EchoRouteImplementation {
 }
 
 export const EchoRoute: EchoRouteImplementation = {
-    // /echo
+    // /echo/echo
     EchoGET: {
-        endpoint: { method: MethodType.GET, route: '/echo' },
+        endpoint: { method: MethodType.GET, route: '/echo/echo' },
         middlewares: [MI.CORSMiddleware()],
         handler: { controller: 'EchoController', action: 'echo' }
     }

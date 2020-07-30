@@ -21,7 +21,15 @@ export class SocketService {
         return message;
     }
 
-    public send<K extends keyof SocketFactoryTypes, P>(type: K, endpoint: EndpointSocketImplementation<P>, params: P): boolean {
+    public open<K extends keyof SocketFactoryTypes>(type: K): Observable<boolean> {
+        return this.socketFactory.get(type).open();
+    }
+
+    public close<K extends keyof SocketFactoryTypes>(type: K): Observable<boolean> {
+        return this.socketFactory.get(type).close();
+    }
+
+    public send<K extends keyof SocketFactoryTypes, P>(type: K, endpoint: EndpointSocketImplementation<P>, params: P): Observable<boolean> {
         return this.socketFactory.get(type).send(endpoint, params);
     }
 

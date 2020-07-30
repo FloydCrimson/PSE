@@ -13,15 +13,15 @@ export class BackendEchoSocket {
         private readonly socketService: SocketService,
     ) { }
 
-    public EchoSend(params: any) {
-        const endpoint = SocketFactoryEndpoint.Backend.Echo.EchoSend;
+    public EchoSEND(params: any) {
+        const endpoint = SocketFactoryEndpoint.Backend.Echo.EchoSEND;
         const request = this.socketService.getMessage('Backend', endpoint);
         request.params = params;
         return this.socketService.send('Backend', endpoint, request);
     }
 
-    public EchoReceive() {
-        const endpoint = SocketFactoryEndpoint.Backend.Echo.EchoReceive;
+    public EchoRECEIVE() {
+        const endpoint = SocketFactoryEndpoint.Backend.Echo.EchoRECEIVE;
         return this.socketService.receive('Backend', endpoint);
     }
 

@@ -5,8 +5,9 @@ import { MessageSocketImplementation } from '../message-socket.implementation';
 import { ErrorSocketImplementation } from '../error-socket.implementation';
 
 export interface SocketFactoryImplementation {
-    open(): boolean;
-    send<D>(endpoint: EndpointSocketImplementation<D>, data: D): boolean;
+    open(): Observable<boolean>;
+    close(): Observable<boolean>;
+    send<D>(endpoint: EndpointSocketImplementation<D>, data: D): Observable<boolean>;
     onClose(): Observable<any>;
     onError(): Observable<ErrorSocketImplementation>;
     onMessage<D>(): Observable<MessageSocketImplementation<D>>;

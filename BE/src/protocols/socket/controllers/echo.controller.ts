@@ -2,7 +2,7 @@ import { ControllerExtension } from '../extensions/controller.extension';
 import { EchoRoute } from '../routes/echo.route';
 import { DispatcherService } from '../../../global/services/dispatcher.service';
 import { RequestImplementation } from '../implementations/request.implementation';
-import { ResponseImplementation } from '../implementations/response.implementation';
+import { MessageImplementation } from '../implementations/message.implementation';
 import { SendProvider } from '../providers/send.provider';
 
 export class EchoController extends ControllerExtension {
@@ -13,11 +13,11 @@ export class EchoController extends ControllerExtension {
         super();
     }
 
-    async echo(request: RequestImplementation, response: ResponseImplementation): Promise<void> {
-        let { input, output } = super.getArguments(EchoRoute.Echo, request, response);
+    async echo(request: RequestImplementation): Promise<void> {
+        let input = super.getArguments(EchoRoute.EchoRECEIVE, request).params;
+        let output = super.getArguments(EchoRoute.EchoSEND).params;
         output = Object.keys(input).length > 0 ? input : { echo: 'Hello World!' };
-        response.output = output;
-        SendProvider.sendResponse(request, response);
+        SendProvider.sendMessage(request, { operation: EchoRoute.EchoSEND.operation, params: output } as MessageImplementation);
     }
 
 }

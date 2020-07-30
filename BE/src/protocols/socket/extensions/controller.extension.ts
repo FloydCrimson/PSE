@@ -1,11 +1,10 @@
 import { RouteImplementation } from '../implementations/route.implementation';
 import { RequestImplementation } from '../implementations/request.implementation';
-import { ResponseImplementation } from '../implementations/response.implementation';
 
 export class ControllerExtension {
 
-    protected getArguments<I, O>(route: RouteImplementation<I, O>, request: RequestImplementation, response: ResponseImplementation): { input: I; output: O; } {
-        return { input: request.input, output: response.output };
+    protected getArguments<P>(route: RouteImplementation<P>, request?: RequestImplementation): { params: P; } {
+        return { params: request ? request.message.params : undefined };
     }
 
     protected checkArgumentValidity(obj: any, mask: MaskType | MaskObject | MaskArray): CheckArgumentValidityResponse {

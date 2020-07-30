@@ -2,6 +2,7 @@ import 'reflect-metadata';
 
 import * as express from 'express';
 import * as WebSocket from 'ws';
+import * as http from 'http';
 
 import { InitializeImplementation } from '../../../global/common/implementations/initialize.implementation';
 import { ProtocolConfigurationsType } from '../../../global/common/types/protocol-options.type';
@@ -9,15 +10,15 @@ import { ServerProvider } from '../../../global/providers/server.provider';
 import { RouteImplementation } from '../implementations/route.implementation';
 import { DispatcherService } from '../../../global/services/dispatcher.service';
 import { RequestImplementation } from '../implementations/request.implementation';
-import { ResponseImplementation } from '../implementations/response.implementation';
+import { MessageImplementation } from '../implementations/message.implementation';
 import { ControllerService } from './controller.service';
 import * as MI from '../middlewares.index';
 import * as RI from '../routes.index';
 
 export class InitializeService implements InitializeImplementation {
 
-    private middlewares: ((request: RequestImplementation, response: ResponseImplementation, next: express.NextFunction) => Promise<any>)[];
-    private map: Map<string, { route: RouteImplementation<any, any>; middlewares: ((request: RequestImplementation, response: ResponseImplementation, next: express.NextFunction) => Promise<any>)[]; }>;
+    private middlewares: ((request: RequestImplementation, next: express.NextFunction) => Promise<any>)[];
+    private map: Map<string, { route: RouteImplementation<any>; middlewares: ((request: RequestImplementation, next: express.NextFunction) => Promise<any>)[]; }>;
 
     constructor(
         private readonly dispatcherService: DispatcherService
@@ -29,36 +30,44 @@ export class InitializeService implements InitializeImplementation {
             const app = express();
             this.middlewares = [];
             this.middlewares.push(MI.ParamsMiddleware()(this.dispatcherService));
-            this.map = new Map<string, { route: RouteImplementation<any, any>; middlewares: ((request: RequestImplementation, response: ResponseImplementation, next: express.NextFunction) => Promise<any>)[]; }>();
+            this.map = new Map<string, { route: RouteImplementation<any>; middlewares: ((request: RequestImplementation, next: express.NextFunction) => Promise<any>)[]; }>();
             for (const group in RI) {
                 for (const item in RI[group]) {
-                    const route: RouteImplementation<any, any> = RI[group][item];
-                    if (!this.map.has(route.endpoint.route)) {
-                        this.map.set(route.endpoint.route, { route, middlewares: (route.middlewares || []).map((middleware) => middleware(this.dispatcherService)) });
-                    } else {
-                        throw 'Duplicated route found.';
+                    if (/RECEIVE$/.test(item)) {
+                        const route: RouteImplementation<any> = RI[group][item];
+                        if (!this.map.has(route.operation)) {
+                            this.map.set(route.operation, { route, middlewares: (route.middlewares || []).map((middleware) => middleware(this.dispatcherService)) });
+                        } else {
+                            throw 'Duplicated operation found.';
+                        }
                     }
                 }
             }
             const servers = ServerProvider.getServers(app, configurations);
             servers.forEach((server) => {
                 const socketServer = new WebSocket.Server({ server: server.instance });
-                socketServer.on('connection', (socket: WebSocket) => {
+                socketServer.on('connection', (socket: WebSocket, message: http.IncomingMessage) => {
                     socket.on('message', (data: WebSocket.Data) => {
-                        let request: RequestImplementation = { socket, ...this.getParsedData(data) };
-                        let response: ResponseImplementation = { socket, output: undefined };
-                        if (this.map.has(request.route)) {
-                            const value = this.map.get(request.route);
+                        let request: RequestImplementation = {
+                            socket: socket,
+                            request: message,
+                            message: this.getMessage(data),
+                            locals: {}
+                        };
+                        if (this.map.has(request.message.operation)) {
+                            const value = this.map.get(request.message.operation);
                             const middlewares = [...this.middlewares, ...value.middlewares];
                             let i = 0;
                             const next = () => {
                                 if (i < middlewares.length) {
-                                    middlewares[i++](request, response, next);
+                                    middlewares[i++](request, next);
                                 } else if (value.route.handler) {
-                                    this.dispatcherService.get('ControllerSocketService').get(value.route.handler.controller)[value.route.handler.action](request, response, next);
+                                    this.dispatcherService.get('ControllerSocketService').get(value.route.handler.controller)[value.route.handler.action](request, next);
                                 }
                             };
                             next();
+                        } else {
+                            console.warn('Unmanageable request received:   ', request);
                         }
                     });
                 });
@@ -84,9 +93,9 @@ export class InitializeService implements InitializeImplementation {
 
     //
 
-    private getParsedData(data: WebSocket.Data): { route: string; auth?: string; input: any; } {
+    private getMessage(data: WebSocket.Data): MessageImplementation {
         if (typeof data === 'string') { // string
-            return JSON.parse(data);
+            return JSON.parse(data) as MessageImplementation;
         } else if (data.constructor === Buffer.constructor) { // Buffer
             throw '[InitializeService.getResponseFromData] conversion from "Buffer" not implemented.';
         } else if (data.constructor === ArrayBuffer.constructor) { // ArrayBuffer

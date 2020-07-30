@@ -1,8 +1,11 @@
 import * as WebSocket from 'ws';
+import { IncomingMessage } from 'http';
+
+import { MessageImplementation } from './message.implementation';
 
 export interface RequestImplementation {
     socket: WebSocket;
-    route: string;
-    auth?: string;
-    input: any;
+    request: IncomingMessage;
+    message: MessageImplementation;
+    locals: any;
 }

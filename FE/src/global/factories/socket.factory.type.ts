@@ -9,6 +9,6 @@ export interface SocketFactoryTypeBackend {
 }
 
 export interface SocketFactoryTypeBackendEcho {
-    EchoSend: EndpointSocketImplementation<any>;
-    EchoReceive: EndpointSocketImplementation<any>;
+    EchoSEND: EndpointSocketImplementation<any>;
+    EchoRECEIVE: EndpointSocketImplementation<any>;
 }
