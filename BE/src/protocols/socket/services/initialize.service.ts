@@ -45,8 +45,11 @@ export class InitializeService implements InitializeImplementation {
             }
             const servers = ServerProvider.getServers(app, configurations);
             servers.forEach((server) => {
-                const socketServer = new WebSocket.Server({ server: server.instance });
-                socketServer.on('connection', (socket: WebSocket, message: http.IncomingMessage) => {
+                const sockets = new WebSocket.Server({ server: server.instance });
+                sockets.on('close', (socket: WebSocket, message: http.IncomingMessage) => { console.error('socket server close', socket, message); });
+                sockets.on('connection', (socket: WebSocket, message: http.IncomingMessage) => {
+                    socket.on('close', (code: number, reason: string) => { console.log('socket connection close', code, reason); });
+                    socket.on('error', (error: Error) => { console.log('socket connection error', error); });
                     socket.on('message', (data: WebSocket.Data) => {
                         let request: RequestImplementation = {
                             socket: socket,
@@ -70,7 +73,15 @@ export class InitializeService implements InitializeImplementation {
                             console.warn('Unmanageable request received:   ', request);
                         }
                     });
+                    socket.on('open', (code: number, reason: string) => { console.log('socket connection open', code, reason); });
+                    socket.on('ping', (code: number, reason: string) => { console.log('socket connection ping', code, reason); });
+                    socket.on('pong', (code: number, reason: string) => { console.log('socket connection pong', code, reason); });
+                    socket.on('unexpected-response', (code: number, reason: string) => { console.log('socket connection unexpected-response', code, reason); });
+                    socket.on('upgrade', (code: number, reason: string) => { console.log('socket connection upgrade', code, reason); });
                 });
+                sockets.on('error', (error: Error) => { console.error('socket server error', error); });
+                sockets.on('headers', (headers: string[], message: http.IncomingMessage) => { console.error('socket server headers', headers, message); });
+                sockets.on('listening', (socket: WebSocket, message: http.IncomingMessage) => { console.error('socket server listening', socket, message); });
             });
             Promise.all(servers.map((server) => {
                 return new Promise<boolean>((resolve, reject) => {

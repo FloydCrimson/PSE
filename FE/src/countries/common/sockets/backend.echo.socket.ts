@@ -11,7 +11,15 @@ export class BackendEchoSocket {
 
     constructor(
         private readonly socketService: SocketService,
-    ) { }
+    ) {
+        this.initialize();
+    }
+
+    private initialize(): void {
+        this.EchoRECEIVESubscription();
+    }
+
+    // SEND
 
     public EchoSEND(params: any) {
         const endpoint = SocketFactoryEndpoint.Backend.Echo.EchoSEND;
@@ -20,9 +28,19 @@ export class BackendEchoSocket {
         return this.socketService.send('Backend', endpoint, request);
     }
 
+    // RECEIVE
+
     public EchoRECEIVE() {
         const endpoint = SocketFactoryEndpoint.Backend.Echo.EchoRECEIVE;
         return this.socketService.receive('Backend', endpoint);
+    }
+
+    // SUBSCRIPTION
+
+    private EchoRECEIVESubscription() {
+        return this.EchoRECEIVE().subscribe((response) => {
+            console.log('BackendEchoSocketSubscription.EchoRECEIVESubscription', response);
+        });
     }
 
 }
