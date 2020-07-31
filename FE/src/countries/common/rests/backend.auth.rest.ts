@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { from, of } from 'rxjs';
+import { from, forkJoin } from 'rxjs';
 import { exhaustMap, map } from 'rxjs/operators';
 
 import { RestService } from 'global/services/rest.service';
+import { SocketService } from 'global/services/socket.service';
 import { StorageFactory } from 'global/factories/storage.factory';
 
 import { RestFactoryEndpoint } from '@countries/endpoints/rest-factory.endpoint';
@@ -14,6 +15,7 @@ export class BackendAuthRest {
 
     constructor(
         private readonly restService: RestService,
+        private readonly socketService: SocketService,
         private readonly storageFactory: StorageFactory
     ) { }
 
@@ -44,12 +46,34 @@ export class BackendAuthRest {
         return from(this.storageFactory.get('TempInData').set('auth', params)).pipe(
             exhaustMap(_ => this.restService.call('Backend', endpoint, request)),
             exhaustMap((result) => {
-                if (result.success === false) {
-                    return from(this.storageFactory.get('TempInData').remove('auth')).pipe(
+                if (result.success) {
+                    return forkJoin(
+                        from(this.storageFactory.get('TempOutData').set('logged', true)),
+                        this.socketService.open('Backend')
+                    ).pipe(
+                        map(_ => result)
+                    );
+                } else {
+                    return from(this.storageFactory.get('TempInData').clear()).pipe(
                         map(_ => result)
                     );
                 }
-                return of(result);
+            })
+        );
+    }
+
+    public LogOut() {
+        const endpoint = RestFactoryEndpoint.Backend.Auth.LogOut;
+        const request = this.restService.getRequest('Backend', endpoint);
+        return this.restService.call('Backend', endpoint, request).pipe(
+            exhaustMap((result) => {
+                return forkJoin(
+                    from(this.storageFactory.get('TempInData').clear()),
+                    from(this.storageFactory.get('TempOutData').set('logged', false)),
+                    this.socketService.close('Backend')
+                ).pipe(
+                    map(_ => result)
+                );
             })
         );
     }

@@ -1,5 +1,9 @@
 export interface DomainImplementation {
-    protocol: 'http' | 'https';
-    url: string;
-    port: number;
+    protocols: {
+        [name: string]: {
+            protocol: 'http' | 'https';
+            url: string;
+            port: number;
+        };
+    };
 }

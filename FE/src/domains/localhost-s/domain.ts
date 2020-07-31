@@ -4,9 +4,18 @@ import * as extra from '../domain-extra.json';
 
 const domainExtra: DomainImplementation = (<any>extra as { default: any }).default;
 const domainOriginal: DomainImplementation = {
-    protocol: 'https',
-    url: 'localhost',
-    port: 7443
+    protocols: {
+        rest: {
+            protocol: 'https',
+            url: 'localhost',
+            port: 7443
+        },
+        socket: {
+            protocol: 'https',
+            url: 'localhost',
+            port: 6443
+        }
+    }
 };
 
 export const domain: DomainImplementation = MergerProvider.merger(domainOriginal, domainExtra);

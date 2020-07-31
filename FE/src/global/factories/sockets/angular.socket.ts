@@ -1,6 +1,6 @@
-import { Observable, Subject, of, throwError, merge } from 'rxjs';
+import { Observable, Subject, of, throwError, merge, from } from 'rxjs';
 import { map, take, exhaustMap, catchError } from 'rxjs/operators';
-// import * as hawk from '@hapi/hawk';
+import * as hawk from '@hapi/hawk';
 
 import { domain } from '@domains/domain';
 
@@ -8,8 +8,9 @@ import { SocketFactoryImplementation } from 'global/common/implementations/facto
 import { EndpointSocketImplementation } from 'global/common/implementations/endpoint-socket.implementation';
 import { MessageSocketImplementation } from 'global/common/implementations/message-socket.implementation';
 import { ErrorSocketImplementation } from 'global/common/implementations/error-socket.implementation';
-// import { StorageFactory } from 'global/factories/storage.factory';
-// import { NonceProvider } from 'global/providers/nonce.provider';
+import { StorageFactory } from 'global/factories/storage.factory';
+import { NonceProvider } from 'global/providers/nonce.provider';
+import { CoderProvider } from 'global/providers/coder.provider';
 
 export class AngularSocket implements SocketFactoryImplementation {
 
@@ -20,7 +21,7 @@ export class AngularSocket implements SocketFactoryImplementation {
     private subjectOpen: Subject<Event> = new Subject<Event>();
 
     constructor(
-        // private readonly storageFactory: StorageFactory
+        private readonly storageFactory: StorageFactory
     ) { }
 
     public open(): Observable<boolean> {
@@ -29,12 +30,13 @@ export class AngularSocket implements SocketFactoryImplementation {
         } else {
             const error$ = this.subjectError.asObservable().pipe(take(1), exhaustMap((error) => throwError(error)));
             const closing$ = (this.socket && this.socket.readyState === this.socket.CLOSING) ?
-                merge(this.subjectClose.asObservable().pipe(take(1), map(_ => true)), error$) :
+                merge(this.subjectClose.asObservable(), error$).pipe(take(1), map(_ => true)) :
                 of(true);
             return closing$.pipe(
                 exhaustMap(_ => {
                     if (!this.socket || this.socket.readyState === this.socket.CLOSED) {
-                        const url: string = `ws://${domain.url}:${domain.port}`;
+                        const protocol = domain.protocols['socket'];
+                        const url: string = `ws://${protocol.url}:${protocol.port}`;
                         this.socket = new WebSocket(url);
                         this.socket.addEventListener('close', (event) => this.subjectClose.next(event));
                         this.socket.addEventListener('error', (event) => this.subjectError.next(event));
@@ -42,7 +44,7 @@ export class AngularSocket implements SocketFactoryImplementation {
                         this.socket.addEventListener('open', (event) => this.subjectOpen.next(event));
                     }
                     const opening$ = (this.socket.readyState !== this.socket.OPEN) ?
-                        merge(this.subjectOpen.asObservable().pipe(take(1), map(_ => true)), error$) :
+                        merge(this.subjectOpen.asObservable(), error$).pipe(take(1), map(_ => true)) :
                         of(true);
                     return opening$;
                 }),
@@ -58,7 +60,7 @@ export class AngularSocket implements SocketFactoryImplementation {
             } else {
                 const error$ = this.subjectError.asObservable().pipe(take(1), exhaustMap((error) => throwError(error)));
                 const opening$ = this.socket.readyState === this.socket.CONNECTING ?
-                    merge(this.subjectOpen.asObservable().pipe(take(1), map(_ => true)), error$) :
+                    merge(this.subjectOpen.asObservable(), error$).pipe(take(1), map(_ => true)) :
                     of(true);
                 return opening$.pipe(
                     exhaustMap(_ => {
@@ -66,7 +68,7 @@ export class AngularSocket implements SocketFactoryImplementation {
                             this.socket.close();
                         }
                         const closing$ = (this.socket.readyState !== this.socket.CLOSED) ?
-                            merge(this.subjectClose.asObservable().pipe(take(1), map(_ => true)), error$) :
+                            merge(this.subjectClose.asObservable(), error$).pipe(take(1), map(_ => true)) :
                             of(true);
                         return closing$;
                     }),
@@ -85,13 +87,27 @@ export class AngularSocket implements SocketFactoryImplementation {
             } else {
                 const error$ = this.subjectError.asObservable().pipe(take(1), exhaustMap((error) => throwError(error)));
                 const opening$ = this.socket.readyState === this.socket.CONNECTING ?
-                    merge(this.subjectOpen.asObservable().pipe(take(1), map(_ => true)), error$) :
+                    merge(this.subjectOpen.asObservable(), error$).pipe(take(1), map(_ => true)) :
                     of(true);
                 return opening$.pipe(
                     exhaustMap(_ => {
-                        const message: MessageSocketImplementation<P> = { operation: endpoint.operation, params };
-                        this.socket.send(JSON.stringify(message));
-                        return of(true);
+                        return from(endpoint.auth ? this.storageFactory.get('TempInData').get('auth') : of(undefined)).pipe(
+                            map((auth) => {
+                                const message: MessageSocketImplementation<P> = { operation: endpoint.operation, params };
+                                const protocol = domain.protocols['socket'];
+                                const url: string = `${protocol.protocol}://${protocol.url}:${protocol.port}${endpoint.operation}`;
+                                const credentials = auth ? { id: CoderProvider.encode(JSON.stringify({ [auth.type]: auth.value })), key: auth.key, algorithm: auth.algorithm } : undefined;
+                                if (endpoint.auth && credentials) {
+                                    const timestamp: number = Math.floor(Date.now() / 1000);
+                                    const nonce: string = NonceProvider.generate(credentials.key, timestamp);
+                                    const options = { credentials, timestamp, nonce, payload: JSON.stringify(params), contentType: 'application/json' };
+                                    const output = hawk.client.header(url, endpoint.operation, options);
+                                    message.auth = output.header;
+                                }
+                                this.socket.send(JSON.stringify(message));
+                                return true;
+                            })
+                        );
                     }),
                     catchError(_ => of(false))
                 );

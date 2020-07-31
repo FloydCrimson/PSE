@@ -83,7 +83,7 @@ export class InitializeService implements InitializeImplementation {
     private initializeSockets(): Promise<boolean>[] {
         this.socketFactory.clear();
         const sockets: [keyof SocketFT.SocketFactoryTypes, SocketFactoryImplementation][] = [];
-        sockets.push(['Backend', new AngularSocket()]);
+        sockets.push(['Backend', new AngularSocket(this.storageFactory)]);
         const check = sockets.reduce((r, s) => this.socketFactory.set(s[0], s[1]) && r, true);
         return [Promise.resolve(check)];
     }

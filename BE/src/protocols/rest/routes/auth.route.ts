@@ -9,9 +9,11 @@ export interface AuthRouteImplementation {
     NicknameAvailablePOST: RouteImplementation<{ nickname: string; }, undefined, { nickname: boolean; }>;
     SignInOPTIONS: RouteImplementation<undefined, undefined, undefined>;
     SignInPOST: RouteImplementation<{ email: string; nickname: string; password: string; }, undefined, { email: boolean; nickname: boolean; success: boolean; }>;
+    SignOutOPTIONS: RouteImplementation<undefined, undefined, undefined>;
     SignOutPOST: RouteImplementation<undefined, undefined, undefined>;
     LogInOPTIONS: RouteImplementation<undefined, undefined, undefined>;
     LogInPOST: RouteImplementation<undefined, undefined, undefined>;
+    LogOutOPTIONS: RouteImplementation<undefined, undefined, undefined>;
     LogOutPOST: RouteImplementation<undefined, undefined, undefined>;
 }
 
@@ -47,6 +49,10 @@ export const AuthRoute: AuthRouteImplementation = {
         handler: { controller: 'AuthController', action: 'signin' }
     },
     // /auth/signout
+    SignOutOPTIONS: {
+        endpoint: { method: MethodType.OPTIONS, route: '/auth/signout' },
+        middlewares: [MI.CORSMiddleware({ allowedOrigin: '*', allowedMethods: [MethodType.OPTIONS, MethodType.POST], allowedHeaders: ['Authorization', 'Content-Type'] })]
+    },
     SignOutPOST: {
         endpoint: { method: MethodType.POST, route: '/auth/signout' },
         middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],
@@ -63,6 +69,10 @@ export const AuthRoute: AuthRouteImplementation = {
         handler: { controller: 'AuthController', action: 'login' }
     },
     // /auth/logout
+    LogOutOPTIONS: {
+        endpoint: { method: MethodType.OPTIONS, route: '/auth/logout' },
+        middlewares: [MI.CORSMiddleware({ allowedOrigin: '*', allowedMethods: [MethodType.OPTIONS, MethodType.POST], allowedHeaders: ['Authorization', 'Content-Type'] })]
+    },
     LogOutPOST: {
         endpoint: { method: MethodType.POST, route: '/auth/logout' },
         middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],

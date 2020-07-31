@@ -111,7 +111,7 @@ export class UnauthPage {
     const email = this.signInForm.get('email').value;
     const nickname = this.signInForm.get('nickname').value;
     const password = this.signInForm.get('password').value;
-    this.backendAuthRest.SignIn({ email, nickname, password }).subscribe(result => {
+    this.backendAuthRest.SignIn({ email, nickname, password }).subscribe((result) => {
       console.log(result);
     });
   }
@@ -119,8 +119,10 @@ export class UnauthPage {
   public onLoginClicked(): void {
     const nickname = this.loginForm.get('nickname').value;
     const password = this.loginForm.get('password').value;
-    this.backendAuthRest.LogIn({ type: 'nickname', value: nickname, key: password, algorithm: 'sha256' }).subscribe(result => {
-      console.log(result);
+    this.backendAuthRest.LogIn({ type: 'nickname', value: nickname, key: password, algorithm: 'sha256' }).subscribe((result) => {
+      if (result.success) {
+        this.routingService.navigateForward(RoutesIndex.HomePageRoute);
+      }
     });
   }
 
