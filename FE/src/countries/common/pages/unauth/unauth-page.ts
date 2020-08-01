@@ -5,6 +5,7 @@ import { Observable, of, timer } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 
 import { RoutingService } from 'global/services/routing.service';
+import { SessionService } from 'global/services/session.service';
 
 import { BackendAuthRest } from 'countries/common/rests/backend.auth.rest';
 
@@ -35,7 +36,8 @@ export class UnauthPage {
 
   constructor(
     private readonly routingService: RoutingService,
-    private readonly backendAuthRest: BackendAuthRest
+    private readonly backendAuthRest: BackendAuthRest,
+    private readonly sessionService: SessionService
   ) { }
 
   public getErrorFromFormGroup(formGroup: FormGroup): { message: string; } {
@@ -60,9 +62,8 @@ export class UnauthPage {
       return of({ message: 'Email too short.', show: email.length > 0 });
     }
     return check ? timer(1000).pipe(
-      switchMap(_ => this.backendAuthRest.EmailAvailable({ email })),
+      switchMap(_ => this.backendAuthRest.EmailAvailablePOST({ email })),
       map(result => {
-        console.log(result);
         if (result.success) {
           return result.response.output.email ? null : { message: 'Email not available.', show: true };
         } else {
@@ -82,9 +83,8 @@ export class UnauthPage {
       return of({ message: 'Nickname too short.', show: nickname.length > 0 });
     }
     return check ? timer(1000).pipe(
-      switchMap(_ => this.backendAuthRest.NicknameAvailable({ nickname })),
+      switchMap(_ => this.backendAuthRest.NicknameAvailablePOST({ nickname })),
       map(result => {
-        console.log(result);
         if (result.success) {
           return result.response.output.nickname ? null : { message: 'Nickname not available.', show: true };
         } else {
@@ -111,7 +111,7 @@ export class UnauthPage {
     const email = this.signInForm.get('email').value;
     const nickname = this.signInForm.get('nickname').value;
     const password = this.signInForm.get('password').value;
-    this.backendAuthRest.SignIn({ email, nickname, password }).subscribe((result) => {
+    this.backendAuthRest.SignInPOST({ email, nickname, password }).subscribe((result) => {
       console.log(result);
     });
   }
@@ -119,8 +119,8 @@ export class UnauthPage {
   public onLoginClicked(): void {
     const nickname = this.loginForm.get('nickname').value;
     const password = this.loginForm.get('password').value;
-    this.backendAuthRest.LogIn({ type: 'nickname', value: nickname, key: password, algorithm: 'sha256' }).subscribe((result) => {
-      if (result.success) {
+    this.sessionService.login(nickname, password).subscribe((result) => {
+      if (result) {
         this.routingService.navigateForward(RoutesIndex.HomePageRoute);
       }
     });

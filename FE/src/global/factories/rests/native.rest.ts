@@ -38,10 +38,11 @@ export class NativeRest implements RestFactoryImplementation {
                 if (endpoint.auth && credentials) {
                     const timestamp: number = Math.floor(Date.now() / 1000);
                     const nonce: string = NonceProvider.generate(credentials.key, timestamp);
-                    const options = { credentials, timestamp, nonce, payload: JSON.stringify(request.input.body), contentType: 'application/json' };
+                    const options = { credentials, timestamp, nonce, payload: JSON.stringify(request.input), contentType: 'application/json' };
                     const output = hawk.client.header(url, endpoint.method, options);
                     artifacts = output.artifacts;
                     headers['Authorization'] = output.header;
+                    headers['Content-Type'] = 'application/json; charset=utf-8';
                 }
                 return method(url, headers, request.input).pipe(
                     map((result: HTTPResponse) => {

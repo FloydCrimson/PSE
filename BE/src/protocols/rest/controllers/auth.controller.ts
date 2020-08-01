@@ -13,7 +13,7 @@ export class AuthController extends ControllerExtension {
         super();
     }
 
-    async emailAvailable(request: Request, response: Response): Promise<{ email: boolean; }> {
+    async EmailAvailablePOST(request: Request, response: Response): Promise<{ email: boolean; }> {
         let { body, params, output } = super.getArguments(AuthRoute.EmailAvailablePOST, request);
         if (super.checkArgumentValidity(body, { email: 'string' })) throw 'Bad arguments.';
         try {
@@ -26,7 +26,7 @@ export class AuthController extends ControllerExtension {
         return output;
     }
 
-    async nicknameAvailable(request: Request, response: Response): Promise<{ nickname: boolean; }> {
+    async NicknameAvailablePOST(request: Request, response: Response): Promise<{ nickname: boolean; }> {
         let { body, params, output } = super.getArguments(AuthRoute.NicknameAvailablePOST, request);
         if (super.checkArgumentValidity(body, { nickname: 'string' })) throw 'Bad arguments.';
         try {
@@ -39,7 +39,7 @@ export class AuthController extends ControllerExtension {
         return output;
     }
 
-    async signin(request: Request, response: Response): Promise<{ email: boolean; nickname: boolean; success: boolean; }> {
+    async SignInPOST(request: Request, response: Response): Promise<{ email: boolean; nickname: boolean; success: boolean; }> {
         let { body, params, output } = super.getArguments(AuthRoute.SignInPOST, request);
         if (super.checkArgumentValidity(body, { email: 'string', nickname: 'string', password: 'string' })) throw 'Bad arguments.';
         try {
@@ -60,17 +60,17 @@ export class AuthController extends ControllerExtension {
         return output;
     }
 
-    async signout(request: Request, response: Response): Promise<any> {
+    async SignOutPOST(request: Request, response: Response): Promise<any> {
         let { body, params, output } = super.getArguments(AuthRoute.SignOutPOST, request);
         return output;
     }
 
-    async login(request: Request, response: Response): Promise<any> {
+    async LogInPOST(request: Request, response: Response): Promise<any> {
         let { body, params, output } = super.getArguments(AuthRoute.LogInPOST, request);
         return output;
     }
 
-    async logout(request: Request, response: Response): Promise<any> {
+    async LogOutPOST(request: Request, response: Response): Promise<any> {
         let { body, params, output } = super.getArguments(AuthRoute.LogOutPOST, request);
         return output;
     }

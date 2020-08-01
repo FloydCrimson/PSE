@@ -18,64 +18,64 @@ export interface AuthRouteImplementation {
 }
 
 export const AuthRoute: AuthRouteImplementation = {
-    // /auth/emailAvailable
+    // /auth/email-available
     EmailAvailableOPTIONS: {
-        endpoint: { method: MethodType.OPTIONS, route: '/auth/emailAvailable' },
+        endpoint: { method: MethodType.OPTIONS, route: '/auth/email-available' },
         middlewares: [MI.CORSMiddleware({ allowedOrigin: '*', allowedMethods: [MethodType.OPTIONS, MethodType.POST], allowedHeaders: ['Content-Type'] })]
     },
     EmailAvailablePOST: {
-        endpoint: { method: MethodType.POST, route: '/auth/emailAvailable' },
+        endpoint: { method: MethodType.POST, route: '/auth/email-available' },
         middlewares: [MI.CORSMiddleware()],
-        handler: { controller: 'AuthController', action: 'emailAvailable' }
+        handler: { controller: 'AuthController', action: 'EmailAvailablePOST' }
     },
-    // /auth/nicknameAvailable
+    // /auth/nickname-available
     NicknameAvailableOPTIONS: {
-        endpoint: { method: MethodType.OPTIONS, route: '/auth/nicknameAvailable' },
+        endpoint: { method: MethodType.OPTIONS, route: '/auth/nickname-available' },
         middlewares: [MI.CORSMiddleware({ allowedOrigin: '*', allowedMethods: [MethodType.OPTIONS, MethodType.POST], allowedHeaders: ['Content-Type'] })]
     },
     NicknameAvailablePOST: {
-        endpoint: { method: MethodType.POST, route: '/auth/nicknameAvailable' },
+        endpoint: { method: MethodType.POST, route: '/auth/nickname-available' },
         middlewares: [MI.CORSMiddleware()],
-        handler: { controller: 'AuthController', action: 'nicknameAvailable' }
+        handler: { controller: 'AuthController', action: 'NicknameAvailablePOST' }
     },
-    // /auth/signin
+    // /auth/sign-in
     SignInOPTIONS: {
-        endpoint: { method: MethodType.OPTIONS, route: '/auth/signin' },
+        endpoint: { method: MethodType.OPTIONS, route: '/auth/sign-in' },
         middlewares: [MI.CORSMiddleware({ allowedOrigin: '*', allowedMethods: [MethodType.OPTIONS, MethodType.POST], allowedHeaders: ['Content-Type'] })]
     },
     SignInPOST: {
-        endpoint: { method: MethodType.POST, route: '/auth/signin' },
+        endpoint: { method: MethodType.POST, route: '/auth/sign-in' },
         middlewares: [MI.CORSMiddleware()],
-        handler: { controller: 'AuthController', action: 'signin' }
+        handler: { controller: 'AuthController', action: 'SignInPOST' }
     },
-    // /auth/signout
+    // /auth/sign-out
     SignOutOPTIONS: {
-        endpoint: { method: MethodType.OPTIONS, route: '/auth/signout' },
+        endpoint: { method: MethodType.OPTIONS, route: '/auth/sign-out' },
         middlewares: [MI.CORSMiddleware({ allowedOrigin: '*', allowedMethods: [MethodType.OPTIONS, MethodType.POST], allowedHeaders: ['Authorization', 'Content-Type'] })]
     },
     SignOutPOST: {
-        endpoint: { method: MethodType.POST, route: '/auth/signout' },
+        endpoint: { method: MethodType.POST, route: '/auth/sign-out' },
         middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],
-        handler: { controller: 'AuthController', action: 'signout' }
+        handler: { controller: 'AuthController', action: 'SignOutPOST' }
     },
-    // /auth/login
+    // /auth/log-in
     LogInOPTIONS: {
-        endpoint: { method: MethodType.OPTIONS, route: '/auth/login' },
+        endpoint: { method: MethodType.OPTIONS, route: '/auth/log-in' },
         middlewares: [MI.CORSMiddleware({ allowedOrigin: '*', allowedMethods: [MethodType.OPTIONS, MethodType.POST], allowedHeaders: ['Authorization', 'Content-Type'] })]
     },
     LogInPOST: {
-        endpoint: { method: MethodType.POST, route: '/auth/login' },
+        endpoint: { method: MethodType.POST, route: '/auth/log-in' },
         middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],
-        handler: { controller: 'AuthController', action: 'login' }
+        handler: { controller: 'AuthController', action: 'LogInPOST' }
     },
-    // /auth/logout
+    // /auth/log-out
     LogOutOPTIONS: {
-        endpoint: { method: MethodType.OPTIONS, route: '/auth/logout' },
+        endpoint: { method: MethodType.OPTIONS, route: '/auth/log-out' },
         middlewares: [MI.CORSMiddleware({ allowedOrigin: '*', allowedMethods: [MethodType.OPTIONS, MethodType.POST], allowedHeaders: ['Authorization', 'Content-Type'] })]
     },
     LogOutPOST: {
-        endpoint: { method: MethodType.POST, route: '/auth/logout' },
+        endpoint: { method: MethodType.POST, route: '/auth/log-out' },
         middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],
-        handler: { controller: 'AuthController', action: 'logout' }
+        handler: { controller: 'AuthController', action: 'LogOutPOST' }
     }
 };

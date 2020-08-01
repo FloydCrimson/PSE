@@ -14,7 +14,6 @@ export class ControllerService extends FactoryExtension<ControllerServiceImpleme
     private initialize(): void {
         super.set('AuthController', new CI.AuthController(this.dispatcherService));
         super.set('EchoController', new CI.EchoController(this.dispatcherService));
-        super.set('TestController', new CI.TestController(this.dispatcherService));
     }
 
 }
@@ -22,5 +21,4 @@ export class ControllerService extends FactoryExtension<ControllerServiceImpleme
 export interface ControllerServiceImplementation {
     AuthController: CI.AuthController;
     EchoController: CI.EchoController;
-    TestController: CI.TestController;
 }

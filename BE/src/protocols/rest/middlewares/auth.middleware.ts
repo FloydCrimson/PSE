@@ -18,7 +18,7 @@ export const AuthMiddleware: MiddlewareImplementation<undefined> = () => {
                     }
                     return undefined;
                 };
-                const options = { payload: JSON.stringify(request.body), nonceFunc: NonceProvider.check };
+                const options = { payload: JSON.stringify({ body: request.body, params: request.query.params }), nonceFunc: NonceProvider.check };
                 const output = await hawk.server.authenticate(request, credentialsFunc, options);
                 response.locals.hawk = output;
                 next();

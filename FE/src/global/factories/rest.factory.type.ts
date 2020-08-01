@@ -10,14 +10,17 @@ export interface RestFactoryTypeBackend {
 }
 
 export interface RestFactoryTypeBackendAuth {
-    EmailAvailable: EndpointRestImplementation<{ email: string; }, undefined, { email: boolean; }>;
-    NicknameAvailable: EndpointRestImplementation<{ nickname: string; }, undefined, { nickname: boolean; }>;
-    SignIn: EndpointRestImplementation<{ email: string; nickname: string; password: string; }, undefined, { email: boolean; nickname: boolean; success: boolean; }>;
-    SignOut: EndpointRestImplementation<undefined, undefined, undefined>;
-    LogIn: EndpointRestImplementation<undefined, undefined, undefined>;
-    LogOut: EndpointRestImplementation<undefined, undefined, undefined>;
+    EmailAvailablePOST: EndpointRestImplementation<{ email: string; }, undefined, { email: boolean; }>;
+    NicknameAvailablePOST: EndpointRestImplementation<{ nickname: string; }, undefined, { nickname: boolean; }>;
+    SignInPOST: EndpointRestImplementation<{ email: string; nickname: string; password: string; }, undefined, { email: boolean; nickname: boolean; success: boolean; }>;
+    SignOutPOST: EndpointRestImplementation<undefined, undefined, undefined>;
+    LogInPOST: EndpointRestImplementation<undefined, undefined, undefined>;
+    LogOutPOST: EndpointRestImplementation<undefined, undefined, undefined>;
 }
 
 export interface RestFactoryTypeBackendEcho {
-    Echo: EndpointRestImplementation<undefined, any, any>;
+    EchoGET: EndpointRestImplementation<undefined, any, any>;
+    EchoPOST: EndpointRestImplementation<any, undefined, any>;
+    EchoAuthGET: EndpointRestImplementation<undefined, any, any>;
+    EchoAuthPOST: EndpointRestImplementation<any, undefined, any>;
 }

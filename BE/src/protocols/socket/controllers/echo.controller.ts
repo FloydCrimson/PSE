@@ -13,14 +13,14 @@ export class EchoController extends ControllerExtension {
         super();
     }
 
-    async echo(request: RequestImplementation): Promise<void> {
+    async EchoRECEIVE(request: RequestImplementation): Promise<void> {
         let input = super.getArguments(EchoRoute.EchoRECEIVE, request).params;
         let output = super.getArguments(EchoRoute.EchoSEND).params;
         output = Object.keys(input).length > 0 ? input : { echo: 'Hello World!' };
         SendProvider.sendMessage(request, { operation: EchoRoute.EchoSEND.operation, params: output } as MessageImplementation);
     }
 
-    async echoAuth(request: RequestImplementation): Promise<void> {
+    async EchoAuthRECEIVE(request: RequestImplementation): Promise<void> {
         let input = super.getArguments(EchoRoute.EchoAuthRECEIVE, request).params;
         let output = super.getArguments(EchoRoute.EchoAuthSEND).params;
         output = Object.keys(input).length > 0 ? input : { echo: 'Hello A-World!' };

@@ -15,7 +15,7 @@ export const EchoRoute: EchoRouteImplementation = {
     },
     EchoRECEIVE: {
         operation: '/echo/echo',
-        handler: { controller: 'EchoController', action: 'echo' }
+        handler: { controller: 'EchoController', action: 'EchoRECEIVE' }
     },
     // /echo/echo-auth
     EchoAuthSEND: {
@@ -24,6 +24,6 @@ export const EchoRoute: EchoRouteImplementation = {
     EchoAuthRECEIVE: {
         operation: '/echo/echo-auth',
         middlewares: [MI.AuthMiddleware()],
-        handler: { controller: 'EchoController', action: 'echoAuth' }
+        handler: { controller: 'EchoController', action: 'EchoAuthRECEIVE' }
     }
 };
