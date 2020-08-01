@@ -1,7 +1,7 @@
 export interface DomainImplementation {
     protocols: {
         [name: string]: {
-            protocol: 'http' | 'https';
+            secure: boolean;
             url: string;
             port: number;
         };

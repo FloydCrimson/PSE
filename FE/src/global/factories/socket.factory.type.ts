@@ -11,4 +11,6 @@ export interface SocketFactoryTypeBackend {
 export interface SocketFactoryTypeBackendEcho {
     EchoSEND: EndpointSocketImplementation<any>;
     EchoRECEIVE: EndpointSocketImplementation<any>;
+    EchoAuthSEND: EndpointSocketImplementation<any>;
+    EchoAuthRECEIVE: EndpointSocketImplementation<any>;
 }

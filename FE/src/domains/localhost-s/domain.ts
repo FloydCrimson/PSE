@@ -6,12 +6,12 @@ const domainExtra: DomainImplementation = (<any>extra as { default: any }).defau
 const domainOriginal: DomainImplementation = {
     protocols: {
         rest: {
-            protocol: 'https',
+            secure: true,
             url: 'localhost',
             port: 7443
         },
         socket: {
-            protocol: 'https',
+            secure: true,
             url: 'localhost',
             port: 6443
         }

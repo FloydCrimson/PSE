@@ -4,6 +4,8 @@ import * as MI from '../middlewares.index';
 export interface EchoRouteImplementation {
     EchoSEND: RouteImplementation<any>;
     EchoRECEIVE: RouteImplementation<any>;
+    EchoAuthSEND: RouteImplementation<any>;
+    EchoAuthRECEIVE: RouteImplementation<any>;
 }
 
 export const EchoRoute: EchoRouteImplementation = {
@@ -14,5 +16,14 @@ export const EchoRoute: EchoRouteImplementation = {
     EchoRECEIVE: {
         operation: '/echo/echo',
         handler: { controller: 'EchoController', action: 'echo' }
+    },
+    // /echo/echo-auth
+    EchoAuthSEND: {
+        operation: '/echo/echo-auth'
+    },
+    EchoAuthRECEIVE: {
+        operation: '/echo/echo-auth',
+        middlewares: [MI.AuthMiddleware()],
+        handler: { controller: 'EchoController', action: 'echoAuth' }
     }
 };

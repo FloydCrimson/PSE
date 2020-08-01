@@ -21,6 +21,7 @@ export const AuthMiddleware: MiddlewareImplementation<undefined> = () => {
                 const options = { payload: JSON.stringify(request.body), nonceFunc: NonceProvider.check };
                 const output = await hawk.server.authenticate(request, credentialsFunc, options);
                 response.locals.hawk = output;
+                next();
             } catch (error) {
                 for (const header in error.output.headers) {
                     response.setHeader(header, error.output.headers[header]);
@@ -32,7 +33,6 @@ export const AuthMiddleware: MiddlewareImplementation<undefined> = () => {
                 }
                 return SendProvider.sendError(request, response, error.output.statusCode, error.output.payload);
             }
-            next();
         };
     };
 }

@@ -18,10 +18,10 @@ export const ParamsMiddleware: MiddlewareImplementation<undefined> = () => {
                 } else {
                     request.query = { params: {} };
                 }
+                next();
             } catch (error) {
                 return SendProvider.sendError(request, response, 500, error);
             }
-            next();
         };
     };
 }

@@ -20,4 +20,11 @@ export class EchoController extends ControllerExtension {
         SendProvider.sendMessage(request, { operation: EchoRoute.EchoSEND.operation, params: output } as MessageImplementation);
     }
 
+    async echoAuth(request: RequestImplementation): Promise<void> {
+        let input = super.getArguments(EchoRoute.EchoAuthRECEIVE, request).params;
+        let output = super.getArguments(EchoRoute.EchoAuthSEND).params;
+        output = Object.keys(input).length > 0 ? input : { echo: 'Hello A-World!' };
+        SendProvider.sendMessage(request, { operation: EchoRoute.EchoAuthSEND.operation, params: output } as MessageImplementation);
+    }
+
 }

@@ -36,7 +36,7 @@ export class AngularSocket implements SocketFactoryImplementation {
                 exhaustMap(_ => {
                     if (!this.socket || this.socket.readyState === this.socket.CLOSED) {
                         const protocol = domain.protocols['socket'];
-                        const url: string = `ws://${protocol.url}:${protocol.port}`;
+                        const url: string = `${protocol.secure ? 'wss' : 'ws'}://${protocol.url}:${protocol.port}`;
                         this.socket = new WebSocket(url);
                         this.socket.addEventListener('close', (event) => this.subjectClose.next(event));
                         this.socket.addEventListener('error', (event) => this.subjectError.next(event));
@@ -95,13 +95,13 @@ export class AngularSocket implements SocketFactoryImplementation {
                             map((auth) => {
                                 const message: MessageSocketImplementation<P> = { operation: endpoint.operation, params };
                                 const protocol = domain.protocols['socket'];
-                                const url: string = `${protocol.protocol}://${protocol.url}:${protocol.port}${endpoint.operation}`;
+                                const url: string = `${protocol.secure ? 'https' : 'http'}://${protocol.url}:${protocol.port}${endpoint.operation}`;
                                 const credentials = auth ? { id: CoderProvider.encode(JSON.stringify({ [auth.type]: auth.value })), key: auth.key, algorithm: auth.algorithm } : undefined;
                                 if (endpoint.auth && credentials) {
                                     const timestamp: number = Math.floor(Date.now() / 1000);
                                     const nonce: string = NonceProvider.generate(credentials.key, timestamp);
                                     const options = { credentials, timestamp, nonce, payload: JSON.stringify(params), contentType: 'application/json' };
-                                    const output = hawk.client.header(url, endpoint.operation, options);
+                                    const output = hawk.client.header(url, 'GET', options);
                                     message.auth = output.header;
                                 }
                                 this.socket.send(JSON.stringify(message));

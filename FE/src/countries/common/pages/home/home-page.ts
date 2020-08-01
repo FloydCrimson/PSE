@@ -26,6 +26,12 @@ export class HomePage {
     });
   }
 
+  public onEchoAuthSENDClick() {
+    this.backendEchoSocket.EchoAuthSEND({ text: 'HomePage' }).subscribe((result) => {
+      console.log('HomePage.EchoAuthSEND', result);
+    });
+  }
+
   public onLogOutClick() {
     this.backendAuthRest.LogOut().subscribe((result) => {
       if (result.success) {

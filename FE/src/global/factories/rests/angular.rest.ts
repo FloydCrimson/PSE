@@ -29,7 +29,7 @@ export class AngularRest implements RestFactoryImplementation {
                 request.input.params = request.input.params || {} as P;
                 const protocol = domain.protocols['rest'];
                 const method: (url: string, headers: HttpHeaders, input: { body: B, params: P }) => Observable<HttpResponse<O>> = this.getMethod(endpoint);
-                const url: string = `${protocol.protocol}://${protocol.url}:${protocol.port}${endpoint.url}`;
+                const url: string = `${protocol.secure ? 'https' : 'http'}://${protocol.url}:${protocol.port}${endpoint.url}`;
                 const credentials = auth ? { id: CoderProvider.encode(JSON.stringify({ [auth.type]: auth.value })), key: auth.key, algorithm: auth.algorithm } : undefined;
                 let headers: HttpHeaders = new HttpHeaders();
                 let artifacts;
@@ -47,7 +47,7 @@ export class AngularRest implements RestFactoryImplementation {
                             const options = { payload: JSON.stringify(result.body), required: true };
                             const output = hawk.client.authenticate(result, credentials, artifacts, options);
                             if (!output) {
-                                throw 'Server not recognized';
+                                throw 'Server not recognized.';
                             }
                         }
                         const response: ResponseRestImplementation<O> = { output: result.body, statusCode: result.status };

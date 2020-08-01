@@ -9,7 +9,7 @@ export class NonceProvider {
 
     public static check(key: string, nonce: string, timestamp: number | string): Promise<boolean> {
         if (NonceProvider.generate(key, timestamp) !== nonce) {
-            throw 'Invalid nonce';
+            throw 'Invalid nonce.';
         }
         return Promise.resolve(true);
     }
