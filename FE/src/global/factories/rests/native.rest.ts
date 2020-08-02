@@ -42,7 +42,6 @@ export class NativeRest implements RestFactoryImplementation {
                     const output = hawk.client.header(url, endpoint.method, options);
                     artifacts = output.artifacts;
                     headers['Authorization'] = output.header;
-                    headers['Content-Type'] = 'application/json; charset=utf-8';
                 }
                 return method(url, headers, request.input).pipe(
                     map((result: HTTPResponse) => {

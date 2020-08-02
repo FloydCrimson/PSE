@@ -34,12 +34,6 @@ export class HomePage {
     });
   }
 
-  public onEchoAuthGETClick() {
-    this.backendEchoRest.EchoAuthGET({ text: 'EchoAuthGET' }).subscribe((result) => {
-      console.log('HomePage.EchoAuthGET', result);
-    });
-  }
-
   public onEchoAuthPOSTClick() {
     this.backendEchoRest.EchoAuthPOST({ text: 'EchoAuthPOST' }).subscribe((result) => {
       console.log('HomePage.EchoAuthPOST', result);
@@ -60,7 +54,7 @@ export class HomePage {
 
   public onLogOutClick() {
     this.sessionService.logout().subscribe((result) => {
-      if (result) {
+      if (!result) {
         console.warn('logout failed.');
       }
       this.routingService.navigateBack(RoutesIndex.UnauthPageRoute);

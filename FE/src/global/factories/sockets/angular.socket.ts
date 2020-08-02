@@ -1,4 +1,4 @@
-import { Observable, Subject, of, throwError, merge, from } from 'rxjs';
+import { Observable, Subject, of, throwError, merge, from, timer } from 'rxjs';
 import { map, take, exhaustMap, catchError } from 'rxjs/operators';
 import * as hawk from '@hapi/hawk';
 
@@ -14,6 +14,8 @@ import { CoderProvider } from 'global/providers/coder.provider';
 
 export class AngularSocket implements SocketFactoryImplementation {
 
+    private readonly TIMEOUT = 30000;
+
     private socket: WebSocket;
     private subjectClose: Subject<CloseEvent> = new Subject<CloseEvent>();
     private subjectError: Subject<Event> = new Subject<Event>();
@@ -28,9 +30,10 @@ export class AngularSocket implements SocketFactoryImplementation {
         if (this.socket && this.socket.readyState === this.socket.OPEN) {
             return of(true);
         } else {
-            const error$ = this.subjectError.asObservable().pipe(take(1), exhaustMap((error) => throwError(error)));
+            const timeout$ = timer(this.TIMEOUT).pipe(exhaustMap(_ => throwError({ type: 'timeout' })));
+            const error$ = this.subjectError.asObservable().pipe(exhaustMap((error) => throwError({ type: 'error', value: error })));
             const closing$ = (this.socket && this.socket.readyState === this.socket.CLOSING) ?
-                merge(this.subjectClose.asObservable(), error$).pipe(take(1), map(_ => true)) :
+                merge(this.subjectClose.asObservable(), timeout$, error$).pipe(take(1), map(_ => true)) :
                 of(true);
             return closing$.pipe(
                 exhaustMap(_ => {
@@ -44,11 +47,19 @@ export class AngularSocket implements SocketFactoryImplementation {
                         this.socket.addEventListener('open', (event) => this.subjectOpen.next(event));
                     }
                     const opening$ = (this.socket.readyState !== this.socket.OPEN) ?
-                        merge(this.subjectOpen.asObservable(), error$).pipe(take(1), map(_ => true)) :
+                        merge(this.subjectOpen.asObservable(), timeout$, error$).pipe(take(1), map(_ => true)) :
                         of(true);
                     return opening$;
                 }),
-                catchError(_ => of(false))
+                catchError((error: { type: 'timeout' | 'error', value?: any }) => {
+                    if (error.type === 'timeout') {
+                        console.warn('AngularSocket timeout. readyState:', this.socket.readyState);
+                        if (this.socket.readyState === this.socket.CONNECTING) {
+                            this.socket.close();
+                        }
+                    }
+                    return of(false);
+                })
             );
         }
     }
@@ -58,9 +69,10 @@ export class AngularSocket implements SocketFactoryImplementation {
             if (this.socket.readyState === this.socket.CLOSED) {
                 return of(true);
             } else {
-                const error$ = this.subjectError.asObservable().pipe(take(1), exhaustMap((error) => throwError(error)));
+                const timeout$ = timer(this.TIMEOUT).pipe(exhaustMap(_ => throwError({ type: 'timeout' })));
+                const error$ = this.subjectError.asObservable().pipe(exhaustMap((error) => throwError({ type: 'error', value: error })));
                 const opening$ = this.socket.readyState === this.socket.CONNECTING ?
-                    merge(this.subjectOpen.asObservable(), error$).pipe(take(1), map(_ => true)) :
+                    merge(this.subjectOpen.asObservable(), timeout$, error$).pipe(take(1), map(_ => true)) :
                     of(true);
                 return opening$.pipe(
                     exhaustMap(_ => {
@@ -68,11 +80,19 @@ export class AngularSocket implements SocketFactoryImplementation {
                             this.socket.close();
                         }
                         const closing$ = (this.socket.readyState !== this.socket.CLOSED) ?
-                            merge(this.subjectClose.asObservable(), error$).pipe(take(1), map(_ => true)) :
+                            merge(this.subjectClose.asObservable(), timeout$, error$).pipe(take(1), map(_ => true)) :
                             of(true);
                         return closing$;
                     }),
-                    catchError(_ => of(false))
+                    catchError((error: { type: 'timeout' | 'error', value?: any }) => {
+                        if (error.type === 'timeout') {
+                            console.warn('AngularSocket timeout. readyState:', this.socket.readyState);
+                            if (this.socket.readyState === this.socket.CONNECTING) {
+                                this.socket.close();
+                            }
+                        }
+                        return of(false);
+                    })
                 );
             }
         } else {
@@ -85,9 +105,10 @@ export class AngularSocket implements SocketFactoryImplementation {
             if (this.socket.readyState === this.socket.CLOSING || this.socket.readyState === this.socket.CLOSED) {
                 return of(false);
             } else {
-                const error$ = this.subjectError.asObservable().pipe(take(1), exhaustMap((error) => throwError(error)));
+                const timeout$ = timer(this.TIMEOUT).pipe(exhaustMap(_ => throwError({ type: 'timeout' })));
+                const error$ = this.subjectError.asObservable().pipe(exhaustMap((error) => throwError({ type: 'error', value: error })));
                 const opening$ = this.socket.readyState === this.socket.CONNECTING ?
-                    merge(this.subjectOpen.asObservable(), error$).pipe(take(1), map(_ => true)) :
+                    merge(this.subjectOpen.asObservable(), timeout$, error$).pipe(take(1), map(_ => true)) :
                     of(true);
                 return opening$.pipe(
                     exhaustMap(_ => {
@@ -109,7 +130,15 @@ export class AngularSocket implements SocketFactoryImplementation {
                             })
                         );
                     }),
-                    catchError(_ => of(false))
+                    catchError((error: { type: 'timeout' | 'error', value?: any }) => {
+                        if (error.type === 'timeout') {
+                            console.warn('AngularSocket timeout. readyState:', this.socket.readyState);
+                            if (this.socket.readyState === this.socket.CONNECTING) {
+                                this.socket.close();
+                            }
+                        }
+                        return of(false);
+                    })
                 );
             }
         } else {

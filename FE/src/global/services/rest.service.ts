@@ -49,7 +49,7 @@ export class RestService {
         if (request.options.cached && array[0].getValue().response) {
             return array[0].asObservable().pipe(
                 take(1),
-                exhaustMap(response => {
+                exhaustMap((response) => {
                     delete response.error;
                     response.success = true;
                     return of(response);
@@ -60,12 +60,12 @@ export class RestService {
             array[1]++;
             this.restFactory.get(type).call(endpoint, request).pipe(
                 timeout(endpoint.timeout || 60000),
-                tap(response => {
+                tap((response) => {
                     const map = this.cache.get(hashEndpoint);
                     const array = map.get(hashRequest);
                     array[0].next({ response, success: true });
                 }),
-                catchError(error => {
+                catchError((error) => {
                     if (!('error' in error) || !('statusCode' in error)) {
                         error = { error: error, statusCode: -1 } as ErrorRestImplementation;
                     }

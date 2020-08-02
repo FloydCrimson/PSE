@@ -48,7 +48,7 @@ export class InitializeService implements InitializeImplementation {
             Promise.all(servers.map((server) => {
                 return new Promise<boolean>((resolve, reject) => {
                     server.instance.listen(server.port, (...args: any[]) => {
-                        console.log(`Express Rest server has started on port ${server.instance.address().port}. Open localhost:${server.instance.address().port}/echo to see results.`);
+                        console.log(`Express Rest server has started on port ${server.instance.address().port}. Open localhost:${server.instance.address().port}/echo/echo to see results.`);
                         resolve(true);
                     });
                 });

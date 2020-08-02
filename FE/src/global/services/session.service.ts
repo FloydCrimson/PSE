@@ -44,7 +44,7 @@ export class SessionService {
                 return forkJoin(
                     from(this.storageFactory.get('TempInData').clear()),
                     from(this.storageFactory.get('TempOutData').set('logged', false)),
-                    this.socketService.close('Backend')
+                    // this.socketService.close('Backend') // TODO: to check why on socket close the servers freeze, both rest and socket
                 ).pipe(
                     map(_ => result.success)
                 );

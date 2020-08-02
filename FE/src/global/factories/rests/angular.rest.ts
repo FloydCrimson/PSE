@@ -40,7 +40,6 @@ export class AngularRest implements RestFactoryImplementation {
                     const output = hawk.client.header(url, endpoint.method, options);
                     artifacts = output.artifacts;
                     headers = headers.set('Authorization', output.header);
-                    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
                 }
                 return method(url, headers, request.input).pipe(
                     map((result: HttpResponse<O>) => {
