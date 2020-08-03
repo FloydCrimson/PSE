@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { MiddlewareImplementation } from '../implementations/middleware.implementation';
-import { DispatcherService } from '../../../global/services/dispatcher.service';
+import { DispatcherService } from '../services/dispatcher.service';
 
 export const LogMiddleware: MiddlewareImplementation<{ verbose: boolean }> = (params = { verbose: false }) => {
     return (dispatcherService: DispatcherService) => {

@@ -6,18 +6,20 @@ import { Request, Response, NextFunction } from 'express';
 import { InitializeImplementation } from '../../../global/common/implementations/initialize.implementation';
 import { ProtocolConfigurationsType } from '../../../global/common/types/protocol-options.type';
 import { ServerProvider } from '../../../global/providers/server.provider';
+import { CommunicationClientService } from '../../../global/services/communication.service';
 import { RouteImplementation } from '../implementations/route.implementation';
-import { DispatcherService } from '../../../global/services/dispatcher.service';
+import { DispatcherService } from './dispatcher.service';
 import { ControllerService } from './controller.service';
+import { CommunicationService } from './communication.service';
 import { SendProvider } from '../providers/send.provider';
 import * as MI from '../middlewares.index';
 import * as RI from '../routes.index';
 
 export class InitializeService implements InitializeImplementation {
 
-    constructor(
-        private readonly dispatcherService: DispatcherService
-    ) { }
+    private readonly dispatcherService: DispatcherService = new DispatcherService();
+
+    constructor() { }
 
     public initialize(configurations: ProtocolConfigurationsType[]): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
@@ -33,7 +35,7 @@ export class InitializeService implements InitializeImplementation {
                     const route: RouteImplementation<any, any, any> = RI[group][item];
                     app[route.endpoint.method](route.endpoint.route, (route.middlewares || []).map((middleware) => middleware(this.dispatcherService)), (request: Request, response: Response, next: NextFunction) => {
                         if (route.handler) {
-                            const result: Promise<any> = this.dispatcherService.get('ControllerRestService').get(route.handler.controller)[route.handler.action](request, response, next);
+                            const result: Promise<any> = this.dispatcherService.get('ControllerService').get(route.handler.controller)[route.handler.action](request, response, next);
                             result.then(
                                 (resolved) => SendProvider.sendResponse(request, response, 200, resolved),
                                 (rejected) => SendProvider.sendError(request, response, 500, rejected)
@@ -58,7 +60,11 @@ export class InitializeService implements InitializeImplementation {
         }).then((result) => {
             // DISPATCHER
             if (result) {
-                this.dispatcherService.set('ControllerRestService', new ControllerService(this.dispatcherService));
+                const controllerService = new ControllerService(this.dispatcherService);
+                const communicationClientService = new CommunicationClientService(new CommunicationService(), 'rest');
+                this.dispatcherService.set('ControllerService', controllerService);
+                this.dispatcherService.set('CommunicationClientService', communicationClientService);
+                communicationClientService.receive();
             }
             return result;
         });

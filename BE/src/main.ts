@@ -1,7 +1,7 @@
 import { fork, ChildProcess } from 'child_process';
 import * as path from 'path';
 
-import { DispatcherServerService } from './global/services/dispatcher.service';
+import { CommunicationServerService } from './global/services/communication.service';
 
 const map: Map<string, ChildProcess> = new Map<string, ChildProcess>();
 ['database', 'rest', 'socket'].forEach((configuration) => {
@@ -9,5 +9,5 @@ const map: Map<string, ChildProcess> = new Map<string, ChildProcess>();
     map.set(configuration, child);
 });
 
-const dispatcherServerService = new DispatcherServerService(map);
-dispatcherServerService.dispatch();
+const communicationServerService = new CommunicationServerService(map);
+communicationServerService.dispatch();

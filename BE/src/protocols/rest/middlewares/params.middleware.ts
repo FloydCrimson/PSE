@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { MiddlewareImplementation } from '../implementations/middleware.implementation';
-import { DispatcherService } from '../../../global/services/dispatcher.service';
+import { DispatcherService } from '../services/dispatcher.service';
 import { CoderProvider } from '../../../global/providers/coder.provider';
 import { SendProvider } from '../providers/send.provider';
 

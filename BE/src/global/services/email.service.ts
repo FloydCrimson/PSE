@@ -1,13 +1,9 @@
 import * as nodemailer from 'nodemailer';
 import * as mailerconfig from '../../../mailerconfig.json';
 
-import { DispatcherService } from './dispatcher.service';
-
 export class EmailService {
 
-    constructor(
-        private readonly dispatcherService: DispatcherService
-    ) { }
+    constructor() { }
 
     public send(options: { from: string, to: string, subject: string, text: string, html: string }): Promise<{ data: any; success: boolean; }> {
         return new Promise<{ data: any; success: boolean; }>(async (resolve, reject) => {

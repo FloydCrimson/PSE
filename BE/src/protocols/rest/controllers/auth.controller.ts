@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 import { ControllerExtension } from '../extensions/controller.extension';
 import { AuthRoute } from '../routes/auth.route';
-import { DispatcherService } from '../../../global/services/dispatcher.service';
+import { DispatcherService } from '../services/dispatcher.service';
 import { RandomProvider } from '../../../global/providers/random.provider';
 
 export class AuthController extends ControllerExtension {
@@ -17,7 +17,7 @@ export class AuthController extends ControllerExtension {
         let { body, params, output } = super.getArguments(AuthRoute.EmailAvailablePOST, request);
         if (super.checkArgumentValidity(body, { email: 'string' })) throw 'Bad arguments.';
         try {
-            const email = await this.dispatcherService.get('RepositoryService').get('AuthEntity').findOne({ email: body.email });
+            const email = await this.dispatcherService.get('CommunicationClientService').send({ receiver: 'database', name: 'AuthEntityFindOne', value: { type: 'email', value: body.email } });
             output = { email: email === undefined };
         } catch (error) {
             throw { message: 'An unmanaged error occurred.' };
@@ -30,7 +30,7 @@ export class AuthController extends ControllerExtension {
         let { body, params, output } = super.getArguments(AuthRoute.NicknameAvailablePOST, request);
         if (super.checkArgumentValidity(body, { nickname: 'string' })) throw 'Bad arguments.';
         try {
-            const nickname = await this.dispatcherService.get('RepositoryService').get('AuthEntity').findOne({ nickname: body.nickname });
+            const nickname = await this.dispatcherService.get('CommunicationClientService').send({ receiver: 'database', name: 'AuthEntityFindOne', value: { type: 'nickname', value: body.nickname } });
             output = { nickname: nickname === undefined };
         } catch (error) {
             throw { message: 'An unmanaged error occurred.' };
@@ -43,16 +43,9 @@ export class AuthController extends ControllerExtension {
         let { body, params, output } = super.getArguments(AuthRoute.SignInPOST, request);
         if (super.checkArgumentValidity(body, { email: 'string', nickname: 'string', password: 'string' })) throw 'Bad arguments.';
         try {
-            const email = await this.dispatcherService.get('RepositoryService').get('AuthEntity').findOne({ email: body.email });
-            const nickname = await this.dispatcherService.get('RepositoryService').get('AuthEntity').findOne({ nickname: body.nickname });
+            const email = await this.dispatcherService.get('CommunicationClientService').send({ receiver: 'database', name: 'AuthEntityFindOne', value: { type: 'email', value: body.email } });
+            const nickname = await this.dispatcherService.get('CommunicationClientService').send({ receiver: 'database', name: 'AuthEntityFindOne', value: { type: 'nickname', value: body.nickname } });
             output = { email: email === undefined, nickname: nickname === undefined, success: false };
-            if (output.email && output.nickname) {
-                let id;
-                do {
-                    id = RandomProvider.base64(7);
-                } while (await this.dispatcherService.get('RepositoryService').get('AuthEntity').findOne({ id }));
-                const key = RandomProvider.base64(15);
-            }
         } catch (error) {
             throw { message: 'An unmanaged error occurred.' };
         }

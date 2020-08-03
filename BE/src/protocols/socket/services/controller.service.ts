@@ -1,5 +1,5 @@
 import { FactoryExtension } from '../../../global/common/extensions/factory.extension';
-import { DispatcherService } from '../../../global/services/dispatcher.service';
+import { DispatcherService } from './dispatcher.service';
 import * as CI from '../controllers.index';
 
 export class ControllerService extends FactoryExtension<ControllerServiceImplementation> {

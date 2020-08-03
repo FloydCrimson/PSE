@@ -1,6 +1,6 @@
 import { ControllerExtension } from '../extensions/controller.extension';
 import { EchoRoute } from '../routes/echo.route';
-import { DispatcherService } from '../../../global/services/dispatcher.service';
+import { DispatcherService } from '../services/dispatcher.service';
 import { RequestImplementation } from '../implementations/request.implementation';
 import { MessageImplementation } from '../implementations/message.implementation';
 import { SendProvider } from '../providers/send.provider';

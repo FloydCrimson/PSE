@@ -3,7 +3,7 @@ import * as hawk from '@hapi/hawk';
 
 import { MiddlewareImplementation } from '../implementations/middleware.implementation';
 import { RequestImplementation } from '../implementations/request.implementation';
-import { DispatcherService } from '../../../global/services/dispatcher.service';
+import { DispatcherService } from '../services/dispatcher.service';
 import { CoderProvider } from '../../../global/providers/coder.provider';
 import { NonceProvider } from '../../../global/providers/nonce.provider';
 
@@ -14,7 +14,9 @@ export const AuthMiddleware: MiddlewareImplementation<undefined> = () => {
                 const credentialsFunc = (encoded) => {
                     const decoded = JSON.parse(CoderProvider.decode(encoded));
                     if ('id' in decoded || 'email' in decoded || 'nickname' in decoded) {
-                        return dispatcherService.get('RepositoryService').get('AuthEntity').findOne(decoded, { relations: ['user'] });
+                        const key = Object.keys(decoded)[0];
+                        const value = decoded[key];
+                        return dispatcherService.get('CommunicationClientService').send({ receiver: 'database', name: 'AuthEntityFindOne', value: { type: key, value: value } });
                     }
                     return undefined;
                 };

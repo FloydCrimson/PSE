@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { MiddlewareImplementation } from '../implementations/middleware.implementation';
-import { DispatcherService } from '../../../global/services/dispatcher.service';
+import { DispatcherService } from '../services/dispatcher.service';
 import { MethodType } from '../types/method.type';
 
 export const CORSMiddleware: MiddlewareImplementation<{ allowedOrigin: '*' | string[]; allowedMethods: '*' | MethodType[]; allowedHeaders: '*' | string[]; }> = (params = { allowedOrigin: '*', allowedMethods: '*', allowedHeaders: '*' }) => {

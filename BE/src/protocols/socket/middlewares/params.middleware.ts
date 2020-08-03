@@ -3,7 +3,7 @@ import { NextFunction } from 'express';
 import { MiddlewareImplementation } from '../implementations/middleware.implementation';
 import { RequestImplementation } from '../implementations/request.implementation';
 import { MessageImplementation } from '../implementations/message.implementation';
-import { DispatcherService } from '../../../global/services/dispatcher.service';
+import { DispatcherService } from '../services/dispatcher.service';
 
 export const ParamsMiddleware: MiddlewareImplementation<undefined> = () => {
     return (dispatcherService: DispatcherService) => {

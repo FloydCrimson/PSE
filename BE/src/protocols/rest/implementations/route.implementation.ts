@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { DispatcherService } from '../../../global/services/dispatcher.service';
+import { DispatcherService } from '../services/dispatcher.service';
 import { MethodType } from '../types/method.type';
 import { ControllerServiceImplementation } from '../services/controller.service';
 

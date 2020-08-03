@@ -7,22 +7,23 @@ import * as http from 'http';
 import { InitializeImplementation } from '../../../global/common/implementations/initialize.implementation';
 import { ProtocolConfigurationsType } from '../../../global/common/types/protocol-options.type';
 import { ServerProvider } from '../../../global/providers/server.provider';
-import { DispatcherService } from '../../../global/services/dispatcher.service';
+import { CommunicationClientService } from '../../../global/services/communication.service';
 import { RouteImplementation } from '../implementations/route.implementation';
 import { RequestImplementation } from '../implementations/request.implementation';
+import { DispatcherService } from './dispatcher.service';
 import { ControllerService } from './controller.service';
-
+import { CommunicationService } from './communication.service';
 import * as MI from '../middlewares.index';
 import * as RI from '../routes.index';
 
 export class InitializeService implements InitializeImplementation {
 
+    private readonly dispatcherService: DispatcherService = new DispatcherService();
+
     private middlewares: ((request: RequestImplementation, next: express.NextFunction) => Promise<any>)[];
     private map: Map<string, { route: RouteImplementation<any>; middlewares: ((request: RequestImplementation, next: express.NextFunction) => Promise<any>)[]; }>;
 
-    constructor(
-        private readonly dispatcherService: DispatcherService
-    ) { }
+    constructor() { }
 
     public initialize(configurations: ProtocolConfigurationsType[]): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
@@ -73,7 +74,7 @@ export class InitializeService implements InitializeImplementation {
                             } else if (i2 < value.middlewares.length) {
                                 value.middlewares[i2++](request, next);
                             } else if (value.route.handler) {
-                                this.dispatcherService.get('ControllerSocketService').get(value.route.handler.controller)[value.route.handler.action](request, next);
+                                this.dispatcherService.get('ControllerService').get(value.route.handler.controller)[value.route.handler.action](request, next);
                             }
                         };
                         next();
@@ -101,7 +102,11 @@ export class InitializeService implements InitializeImplementation {
         }).then((result) => {
             // DISPATCHER
             if (result) {
-                this.dispatcherService.set('ControllerSocketService', new ControllerService(this.dispatcherService));
+                const controllerService = new ControllerService(this.dispatcherService);
+                const communicationClientService = new CommunicationClientService(new CommunicationService(), 'socket');
+                this.dispatcherService.set('ControllerService', controllerService);
+                this.dispatcherService.set('CommunicationClientService', communicationClientService);
+                communicationClientService.receive();
             }
             return result;
         });
