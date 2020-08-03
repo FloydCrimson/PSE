@@ -55,7 +55,11 @@ export class CommunicationClientService {
                 if (message.answered) {
                     if (this.map.has(message.id)) {
                         const [resolve, reject] = this.map.get(message.id);
-                        resolve(message.value);
+                        if (message.error) {
+                            reject(message.value);
+                        } else {
+                            resolve(message.value);
+                        }
                         this.map.delete(message.id);
                     } else {
                         console.warn('id not found', message);
@@ -65,27 +69,23 @@ export class CommunicationClientService {
                 }
             } else if (message.receiver === this.sender) {
                 if (message.name in this.communicationService) {
-                    this.communicationService[message.name](message.value).then((value) => {
+                    this.communicationService[message.name](message.value).then((result) => {
                         if (process.send) {
-                            process.send({ ...message, value, answered: true });
+                            process.send({ ...message, value: result, answered: true, error: false });
                         } else {
                             console.warn('process.send is undefined', message);
                         }
                     }, (error) => {
-                        if (this.map.has(message.id)) {
-                            const [resolve, reject] = this.map.get(message.id);
-                            reject(error);
-                            this.map.delete(message.id);
+                        if (process.send) {
+                            process.send({ ...message, value: error, answered: true, error: true });
                         } else {
-                            console.warn('id not found', message);
+                            console.warn('process.send is undefined', message);
                         }
                     }).catch((error) => {
-                        if (this.map.has(message.id)) {
-                            const [resolve, reject] = this.map.get(message.id);
-                            reject(error);
-                            this.map.delete(message.id);
+                        if (process.send) {
+                            process.send({ ...message, value: error, answered: true, error: true });
                         } else {
-                            console.warn('id not found', message);
+                            console.warn('process.send is undefined', message);
                         }
                     });
                 } else {
@@ -97,12 +97,12 @@ export class CommunicationClientService {
         });
     }
 
-    public send(message: { receiver: string; name: string; value: any; } | CommunicationMessageImplementation): Promise<any> {
+    public send(message: { receiver: string; name: string; value: any; }): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             const id = Date.now().toString();
             this.map.set(id, [resolve, reject]);
             if (process.send) {
-                process.send({ ...message, sender: this.sender, id, answered: false });
+                process.send({ ...message, sender: this.sender, id, answered: false, error: false });
             } else {
                 console.warn('process.send is undefined', message);
             }
