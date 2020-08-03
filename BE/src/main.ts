@@ -1,37 +1,13 @@
-import * as protocolsconfig from '../protocolsconfig.json';
+import { fork, ChildProcess } from 'child_process';
+import * as path from 'path';
 
-import { InitializeImplementation } from './global/common/implementations/initialize.implementation';
-import { DispatcherService } from './global/services/dispatcher.service';
-import { InitializeService as InitializeDatabaseService } from './protocols/database/services/initialize.service';
-import { InitializeService as InitializeRestService } from './protocols/rest/services/initialize.service';
-import { InitializeService as InitializeSocketService } from './protocols/socket/services/initialize.service';
+import { DispatcherServerService } from './global/services/dispatcher.service';
 
-const dispatcherService: DispatcherService = new DispatcherService();
-
-const initializeServices: { service: InitializeImplementation, configurations: string }[] = [
-    { service: new InitializeDatabaseService(dispatcherService), configurations: 'database' },
-    { service: new InitializeRestService(dispatcherService), configurations: 'rest' },
-    { service: new InitializeSocketService(dispatcherService), configurations: 'socket' }
-];
-
-const initialize: (promises: Promise<boolean>[]) => Promise<boolean> = (promises: Promise<boolean>[]) => {
-    return new Promise<boolean>((resolve, reject) => {
-        Promise.all(promises).then((resolved) => {
-            resolve(!resolved.some(c => !c));
-        }, (rejected) => {
-            reject(rejected);
-        }).catch((caught) => {
-            reject(caught);
-        });
-    });
-}
-
-initialize(initializeServices.map(initializeService => initializeService.service.initialize(protocolsconfig.protocols[initializeService.configurations]))).then((resolved) => {
-    if (resolved) {
-        console.log('All servers have started.');
-    } else {
-        console.error('One or more servers have not started.');
-    }
-}, (rejected) => {
-    console.error('One or more servers have not started.', rejected);
+const map: Map<string, ChildProcess> = new Map<string, ChildProcess>();
+['database', 'rest', 'socket'].forEach((configuration) => {
+    const child = fork(path.resolve(__dirname, 'main.' + configuration + '.js'), [], { stdio: ['pipe', 'pipe', 'pipe', 'ipc'] });
+    map.set(configuration, child);
 });
+
+const dispatcherServerService = new DispatcherServerService(map);
+dispatcherServerService.dispatch();
