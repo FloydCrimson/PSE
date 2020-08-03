@@ -17,7 +17,7 @@ export class AuthController extends ControllerExtension {
         let { body, params, output } = super.getArguments(AuthRoute.EmailAvailablePOST, request);
         if (super.checkArgumentValidity(body, { email: 'string' })) throw 'Bad arguments.';
         try {
-            const email = await this.dispatcherService.get('CommunicationClientService').send({ receiver: 'database', name: 'AuthEntityFindOne', value: { type: 'email', value: body.email } });
+            const email = await this.dispatcherService.get('CommunicationClientService').send({ receiver: 'database', name: 'AuthEntityFindOne', value: { conditions: { email: body.email } } });
             output = { email: email === undefined };
         } catch (error) {
             throw { message: 'An unmanaged error occurred.' };
@@ -30,7 +30,7 @@ export class AuthController extends ControllerExtension {
         let { body, params, output } = super.getArguments(AuthRoute.NicknameAvailablePOST, request);
         if (super.checkArgumentValidity(body, { nickname: 'string' })) throw 'Bad arguments.';
         try {
-            const nickname = await this.dispatcherService.get('CommunicationClientService').send({ receiver: 'database', name: 'AuthEntityFindOne', value: { type: 'nickname', value: body.nickname } });
+            const nickname = await this.dispatcherService.get('CommunicationClientService').send({ receiver: 'database', name: 'AuthEntityFindOne', value: { conditions: { nickname: body.nickname } } });
             output = { nickname: nickname === undefined };
         } catch (error) {
             throw { message: 'An unmanaged error occurred.' };
@@ -43,8 +43,8 @@ export class AuthController extends ControllerExtension {
         let { body, params, output } = super.getArguments(AuthRoute.SignInPOST, request);
         if (super.checkArgumentValidity(body, { email: 'string', nickname: 'string', password: 'string' })) throw 'Bad arguments.';
         try {
-            const email = await this.dispatcherService.get('CommunicationClientService').send({ receiver: 'database', name: 'AuthEntityFindOne', value: { type: 'email', value: body.email } });
-            const nickname = await this.dispatcherService.get('CommunicationClientService').send({ receiver: 'database', name: 'AuthEntityFindOne', value: { type: 'nickname', value: body.nickname } });
+            const email = await this.dispatcherService.get('CommunicationClientService').send({ receiver: 'database', name: 'AuthEntityFindOne', value: { conditions: { email: body.email } } });
+            const nickname = await this.dispatcherService.get('CommunicationClientService').send({ receiver: 'database', name: 'AuthEntityFindOne', value: { conditions: { nickname: body.nickname } } });
             output = { email: email === undefined, nickname: nickname === undefined, success: false };
         } catch (error) {
             throw { message: 'An unmanaged error occurred.' };
