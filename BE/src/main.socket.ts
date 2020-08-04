@@ -4,4 +4,4 @@ import { InitializeImplementation } from './global/common/implementations/initia
 import { InitializeService } from './protocols/socket/services/initialize.service';
 
 const service: InitializeImplementation = new InitializeService();
-service.initialize(protocolsconfig.protocols['socket'] as any);
+service.initialize(protocolsconfig.protocols['socket']);

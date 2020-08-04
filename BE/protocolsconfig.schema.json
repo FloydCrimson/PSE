@@ -33,9 +33,9 @@
             "items": {
                 "type": "object",
                 "properties": {
-                    "protocol": {
-                        "description": "The protocol of the connection (http or https).",
-                        "type": "string"
+                    "secure": {
+                        "description": "A boolean indicating whether the connection is secure (https or wss).",
+                        "type": "boolean"
                     },
                     "port": {
                         "description": "The port of the connection.",
@@ -55,7 +55,7 @@
                     }
                 },
                 "required": [
-                    "protocol",
+                    "secure",
                     "port"
                 ],
                 "additionalProperties": false

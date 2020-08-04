@@ -9,9 +9,7 @@ export class ServerProvider {
 
     public static getServers(app: express.Express, configurations: ProtocolConfigurationsType[]): { instance: http.Server | https.Server, port: number }[] {
         return configurations.map((configuration) => {
-            if (configuration.protocol === 'http') {
-                return { instance: http.createServer(app), port: configuration.port };
-            } else if (configuration.protocol === 'https') {
+            if (configuration.secure) {
                 const options = {
                     key: configuration.key && fs.readFileSync(configuration.key),
                     cert: configuration.cert && fs.readFileSync(configuration.cert),
@@ -19,7 +17,7 @@ export class ServerProvider {
                 };
                 return { instance: https.createServer(options, app), port: configuration.port };
             } else {
-                throw `Unrecognized protocol "${configuration.protocol}" found.`;
+                return { instance: http.createServer(app), port: configuration.port };
             }
         });
     }
