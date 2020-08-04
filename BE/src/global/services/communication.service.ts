@@ -1,6 +1,6 @@
 import { ChildProcess } from 'child_process';
 
-import { CommunicationServiceImplementation, CommunicationMessageImplementation } from '../common/implementations/communication.implementation';
+import { CommunicationMessageImplementation, CommunicationMethodImplementation } from '../common/implementations/communication.implementation';
 
 export class CommunicationServerService {
 
@@ -43,7 +43,7 @@ export class CommunicationClientService {
     private map: Map<string, [Function, Function]>;
 
     constructor(
-        private readonly communicationService: any, // CommunicationServiceImplementation,
+        private readonly communicationService: any,
         private readonly sender: string
     ) {
         this.map = new Map<string, [Function, Function]>();
@@ -69,7 +69,7 @@ export class CommunicationClientService {
                 }
             } else if (message.receiver === this.sender) {
                 if (message.name in this.communicationService) {
-                    this.communicationService[message.name](message.value).then((result) => {
+                    (this.communicationService[message.name] as CommunicationMethodImplementation<any, any>)(message.value).then((result) => {
                         if (process.send) {
                             process.send({ ...message, value: result, answered: true, error: false });
                         } else {
