@@ -1,0 +1,7 @@
+{
+  "name": "FEC",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

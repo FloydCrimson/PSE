@@ -1,0 +1,13 @@
+{
+  "appId": "com.floydcrimson.pse",
+  "appName": "pse",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}
