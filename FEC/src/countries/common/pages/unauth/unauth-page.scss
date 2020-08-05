@@ -1,0 +1,40 @@
+ion-content {
+    ion-slides {
+        height: 100%;
+
+        ion-slide {
+            flex-direction: column;
+            justify-content: start;
+
+            form {
+                display: flex;
+                flex-direction: column;
+
+                ion-item {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                }
+
+                label {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    margin-top: 10px;
+
+                    input {
+                        width: 60%;
+                    }
+                }
+            }
+
+            ion-button {
+                --border-radius: 0px;
+                position: absolute;
+                bottom: 40px;
+                width: 100%;
+                margin: 0px;
+            }
+        }
+    }
+}

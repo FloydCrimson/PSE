@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      UnauthPage
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen="true">
+  <ion-slides pager="true" [options]="slidesOptions">
+    <ion-slide>
+      <h1>Sign In</h1>
+      <form [formGroup]="signInForm">
+        <ion-item>
+          <ion-label>Email</ion-label>
+          <ion-input type="text" formControlName="email"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Nickname</ion-label>
+          <ion-input type="text" formControlName="nickname"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Password</ion-label>
+          <ion-input type="password" formControlName="password"></ion-input>
+        </ion-item>
+      </form>
+      <p>{{ getErrorFromFormGroup(signInForm) }}</p>
+      <ion-button (click)="onSignInClicked()" [disabled]="signInForm?.status !== 'VALID'">Continue</ion-button>
+    </ion-slide>
+    <ion-slide>
+      <h1>Login</h1>
+      <form [formGroup]="loginForm">
+        <ion-item>
+          <ion-label>Nickname</ion-label>
+          <ion-input type="text" formControlName="nickname"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Password</ion-label>
+          <ion-input type="password" formControlName="password"></ion-input>
+        </ion-item>
+      </form>
+      <p>{{ getErrorFromFormGroup(loginForm) }}</p>
+      <ion-button (click)="onLoginClicked()" [disabled]="loginForm?.status !== 'VALID'">Continue</ion-button>
+    </ion-slide>
+  </ion-slides>
+</ion-content>
