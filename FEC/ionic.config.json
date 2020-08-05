@@ -1,5 +1,9 @@
 {
-  "name": "FEC",
+  "name": "pse-fe",
+  "hooks": {
+    "build:before": "./scripts/ionic-before.js",
+    "serve:before": "./scripts/ionic-before.js"
+  },
   "integrations": {
     "capacitor": {}
   },
