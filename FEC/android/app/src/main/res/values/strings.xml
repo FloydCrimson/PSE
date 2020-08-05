@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">pse</string>
+    <string name="title_activity_main">pse</string>
+    <string name="package_name">com.floydcrimson.pse</string>
+    <string name="custom_url_scheme">com.floydcrimson.pse</string>
+</resources>
