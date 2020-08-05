@@ -8,6 +8,7 @@ import { InitializeImplementation } from 'global/common/implementations/initiali
 import { PlatformEnum } from 'global/common/enum/platform.enum';
 
 import { PlatformService } from 'global/services/platform.service';
+import { LoggingService } from 'global/services/logging.service';
 
 import { StorageFactory } from 'global/factories/storage.factory';
 import { StorageFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
@@ -36,6 +37,7 @@ export class InitializeService implements InitializeImplementation {
         private readonly storageFactory: StorageFactory,
         private readonly restFactory: RestFactory,
         private readonly socketFactory: SocketFactory,
+        private readonly loggingService: LoggingService,
         private readonly storage: Storage,
         private readonly nativeStorage: NativeStorage,
         private readonly httpBrowser: HttpClient,
@@ -83,7 +85,7 @@ export class InitializeService implements InitializeImplementation {
     private initializeSockets(): Promise<boolean>[] {
         this.socketFactory.clear();
         const sockets: [keyof SocketFT.SocketFactoryTypes, SocketFactoryImplementation][] = [];
-        sockets.push(['Backend', new AngularSocket(this.storageFactory)]);
+        sockets.push(['Backend', new AngularSocket(this.storageFactory, this.loggingService)]);
         const check = sockets.reduce((r, s) => this.socketFactory.set(s[0], s[1]) && r, true);
         return [Promise.resolve(check)];
     }

@@ -11,6 +11,7 @@ import { ErrorSocketImplementation } from 'global/common/implementations/error-s
 import { StorageFactory } from 'global/factories/storage.factory';
 import { NonceProvider } from 'global/providers/nonce.provider';
 import { CoderProvider } from 'global/providers/coder.provider';
+import { LoggingService } from 'global/services/logging.service';
 
 export class AngularSocket implements SocketFactoryImplementation {
 
@@ -23,7 +24,8 @@ export class AngularSocket implements SocketFactoryImplementation {
     private subjectOpen: Subject<Event> = new Subject<Event>();
 
     constructor(
-        private readonly storageFactory: StorageFactory
+        private readonly storageFactory: StorageFactory,
+        private readonly loggingService: LoggingService
     ) { }
 
     public open(): Observable<boolean> {
@@ -53,7 +55,7 @@ export class AngularSocket implements SocketFactoryImplementation {
                 }),
                 catchError((error: { type: 'timeout' | 'error', value?: any }) => {
                     if (error.type === 'timeout') {
-                        console.warn('AngularSocket timeout. readyState:', this.socket.readyState);
+                        this.loggingService.LOG('WARN', { class: AngularSocket.name, function: this.open.name, text: 'Socket timeout.' }, this.socket);
                         if (this.socket.readyState === this.socket.CONNECTING) {
                             this.socket.close();
                         }
@@ -86,7 +88,7 @@ export class AngularSocket implements SocketFactoryImplementation {
                     }),
                     catchError((error: { type: 'timeout' | 'error', value?: any }) => {
                         if (error.type === 'timeout') {
-                            console.warn('AngularSocket timeout. readyState:', this.socket.readyState);
+                            this.loggingService.LOG('WARN', { class: AngularSocket.name, function: this.open.name, text: 'Socket timeout.' }, this.socket);
                             if (this.socket.readyState === this.socket.CONNECTING) {
                                 this.socket.close();
                             }
@@ -132,7 +134,7 @@ export class AngularSocket implements SocketFactoryImplementation {
                     }),
                     catchError((error: { type: 'timeout' | 'error', value?: any }) => {
                         if (error.type === 'timeout') {
-                            console.warn('AngularSocket timeout. readyState:', this.socket.readyState);
+                            this.loggingService.LOG('WARN', { class: AngularSocket.name, function: this.open.name, text: 'Socket timeout.' }, this.socket);
                             if (this.socket.readyState === this.socket.CONNECTING) {
                                 this.socket.close();
                             }

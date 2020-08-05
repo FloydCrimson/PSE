@@ -3,7 +3,7 @@ import * as moment from 'moment';
 
 import { LoggingServiceImplementation } from 'global/common/implementations/logging.implementation';
 import { EnvironmentService } from 'global/services/environment.service';
-import { LoggingTypeEnum } from 'global/common/enum/logging-type.enum';
+import { LoggingTypeEnum, LoggingTypeMap } from 'global/common/enum/logging-type.enum';
 import { LoggingLevelMap } from 'global/common/enum/logging-level.enum';
 
 @Injectable({
@@ -15,30 +15,30 @@ export class LoggingService implements LoggingServiceImplementation {
         private readonly environmentService: EnvironmentService
     ) { }
 
-    public LOG(log: 'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'FATAL', message: { class: string; function: string; text?: string; }, ...data: any[]): void {
-        const type = LoggingTypeEnum[log];
+    public LOG(log: keyof LoggingTypeEnum, message: { class: string; function: string; text?: string; }, ...data: any[]): void {
+        const type = LoggingTypeMap[log];
         if ((LoggingLevelMap[this.environmentService.getEnvironment().loggingLevel] & type) === type) {
             const date = moment().format();
             const prefix = log;
-            this.getConsoleFromLoggingTypeEnum(type)(`[PSE] [${prefix}] [${date}]`, message, ...data);
+            this.getConsoleLogger(log)(`[PSE] [${prefix}] [${date}] [${message.class}.${message.function}]`, message.text, ...data);
         }
     }
 
     //
 
-    private getConsoleFromLoggingTypeEnum(type: LoggingTypeEnum): (...data: any[]) => void {
+    private getConsoleLogger(type: keyof LoggingTypeEnum): (...data: any[]) => void {
         switch (type) {
-            case LoggingTypeEnum.TRACE:
+            case 'TRACE':
                 return console.trace;
-            case LoggingTypeEnum.DEBUG:
+            case 'DEBUG':
                 return console.debug;
-            case LoggingTypeEnum.INFO:
+            case 'INFO':
                 return console.info;
-            case LoggingTypeEnum.WARN:
+            case 'WARN':
                 return console.warn;
-            case LoggingTypeEnum.ERROR:
+            case 'ERROR':
                 return console.error;
-            case LoggingTypeEnum.FATAL:
+            case 'FATAL':
                 return console.error;
         }
     }

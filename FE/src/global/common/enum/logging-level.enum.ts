@@ -1,19 +1,19 @@
-import { LoggingTypeEnum } from './logging-type.enum';
+import { LoggingTypeMap } from './logging-type.enum';
 
-export enum LoggingLevelEnum {
+export interface LoggingLevelEnum {
     /** Log disabled. */
-    OFF = 'OFF',
+    OFF: number;
     /** Log TRACE, DEBUG, INFO, WARN, ERROR, FATAL. */
-    ALL = 'ALL',
+    ALL: number;
     /** Log DEBUG, INFO, WARN, ERROR, FATAL. */
-    DEV = 'DEV',
+    DEV: number;
     /** Log WARN, ERROR, FATAL. */
-    MAIN = 'MAIN'
+    MAIN: number;
 }
 
-export const LoggingLevelMap = {
-    [LoggingLevelEnum.OFF]: 0,
-    [LoggingLevelEnum.ALL]: LoggingTypeEnum.TRACE | LoggingTypeEnum.DEBUG | LoggingTypeEnum.INFO | LoggingTypeEnum.WARN | LoggingTypeEnum.ERROR | LoggingTypeEnum.FATAL,
-    [LoggingLevelEnum.DEV]: LoggingTypeEnum.DEBUG | LoggingTypeEnum.INFO | LoggingTypeEnum.WARN | LoggingTypeEnum.ERROR | LoggingTypeEnum.FATAL,
-    [LoggingLevelEnum.MAIN]: LoggingTypeEnum.WARN | LoggingTypeEnum.ERROR | LoggingTypeEnum.FATAL
+export const LoggingLevelMap: LoggingLevelEnum = {
+    OFF: 0,
+    ALL: LoggingTypeMap.TRACE | LoggingTypeMap.DEBUG | LoggingTypeMap.INFO | LoggingTypeMap.WARN | LoggingTypeMap.ERROR | LoggingTypeMap.FATAL,
+    DEV: LoggingTypeMap.DEBUG | LoggingTypeMap.INFO | LoggingTypeMap.WARN | LoggingTypeMap.ERROR | LoggingTypeMap.FATAL,
+    MAIN: LoggingTypeMap.WARN | LoggingTypeMap.ERROR | LoggingTypeMap.FATAL
 };
