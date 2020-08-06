@@ -26,13 +26,13 @@ export class SQLiteStorage<T> implements StorageFactoryImplementation<T> {
         });
     }
 
-    public set<K extends keyof T>(key: K, data: T[K]): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+    public set<K extends keyof T>(key: K, data: T[K]): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             const queries: { query: string, values?: any[] }[] = [];
             queries.push(...this.removeQueries(key.toString(), ''));
             queries.push(...this.setQueries(key.toString(), data, ''));
             this.executeQueries(queries).then((resolved) => {
-                resolve(true);
+                resolve();
             }, (rejected) => {
                 reject(rejected);
             }).catch((caught) => {
@@ -92,12 +92,12 @@ export class SQLiteStorage<T> implements StorageFactoryImplementation<T> {
         });
     }
 
-    public remove<K extends keyof T>(key: K): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+    public remove<K extends keyof T>(key: K): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             const queries: { query: string, values?: any[] }[] = [];
             queries.push(...this.removeQueries(key.toString(), ''));
             this.executeQueries(queries).then((resolved) => {
-                resolve(true);
+                resolve();
             }, (rejected) => {
                 reject(rejected);
             }).catch((caught) => {
@@ -106,12 +106,12 @@ export class SQLiteStorage<T> implements StorageFactoryImplementation<T> {
         });
     }
 
-    public clear(): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+    public clear(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             const queries: { query: string, values?: any[] }[] = [];
             queries.push(...this.clearQueries());
             this.executeQueries(queries).then((resolved) => {
-                resolve(true);
+                resolve();
             }, (rejected) => {
                 reject(rejected);
             }).catch((caught) => {

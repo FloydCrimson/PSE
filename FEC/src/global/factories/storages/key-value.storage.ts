@@ -12,10 +12,10 @@ export class KeyValueStorage<T> implements StorageFactoryImplementation<T> {
         return Promise.resolve(true);
     }
 
-    public set<K extends keyof T>(key: K, data: T[K]): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+    public set<K extends keyof T>(key: K, data: T[K]): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.nativeStoragePlugin.setItem(key as string, data, (success) => {
-                resolve(true);
+                resolve();
             }, (error) => {
                 reject(error);
             });
@@ -32,20 +32,20 @@ export class KeyValueStorage<T> implements StorageFactoryImplementation<T> {
         });
     }
 
-    public remove<K extends keyof T>(key: K): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+    public remove<K extends keyof T>(key: K): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.nativeStoragePlugin.remove(key as string, (success) => {
-                resolve(true);
+                resolve();
             }, (error) => {
                 reject(error);
             });
         });
     }
 
-    public clear(): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+    public clear(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.nativeStoragePlugin.clear((success) => {
-                resolve(true);
+                resolve();
             }, (error) => {
                 reject(error);
             });

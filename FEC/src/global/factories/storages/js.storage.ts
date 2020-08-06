@@ -10,10 +10,10 @@ export class JSStorage<T> implements StorageFactoryImplementation<T> {
         return Promise.resolve(true);
     }
 
-    public set<K extends keyof T>(key: K, data: T[K]): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+    public set<K extends keyof T>(key: K, data: T[K]): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.storage.set(key, data);
-            resolve(true);
+            resolve();
         });
     }
 
@@ -24,17 +24,17 @@ export class JSStorage<T> implements StorageFactoryImplementation<T> {
         });
     }
 
-    public remove<K extends keyof T>(key: K): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+    public remove<K extends keyof T>(key: K): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.storage.delete(key);
-            resolve(true);
+            resolve();
         });
     }
 
-    public clear(): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+    public clear(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.storage.clear();
-            resolve(true);
+            resolve();
         });
     }
 

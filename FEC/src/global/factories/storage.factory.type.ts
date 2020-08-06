@@ -5,7 +5,8 @@ export interface StorageFactoryTypes {
 }
 
 export interface StorageFactoryTypePersOutData {
-    activated: boolean;
+    authenticated: boolean;
+    auth: { type: 'id' | 'email' | 'nickname'; value: string; };
 }
 
 export interface StorageFactoryTypesTempOutData {

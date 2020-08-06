@@ -12,11 +12,11 @@ export class CapacitorStorage<T> implements StorageFactoryImplementation<T> {
         return Promise.resolve(true);
     }
 
-    public set<K extends keyof T>(key: K, data: T[K]): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+    public set<K extends keyof T>(key: K, data: T[K]): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             try {
                 this.storagePlugin.set({ key: key as string, value: JSON.stringify(data) }).then((resolved) => {
-                    resolve(true);
+                    resolve();
                 }, (rejected) => {
                     reject(rejected);
                 }).catch((caught) => {
@@ -44,10 +44,10 @@ export class CapacitorStorage<T> implements StorageFactoryImplementation<T> {
         });
     }
 
-    public remove<K extends keyof T>(key: K): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+    public remove<K extends keyof T>(key: K): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.storagePlugin.remove({ key: key as string }).then((resolved) => {
-                resolve(true);
+                resolve();
             }, (rejected) => {
                 reject(rejected);
             }).catch((caught) => {
@@ -56,10 +56,10 @@ export class CapacitorStorage<T> implements StorageFactoryImplementation<T> {
         });
     }
 
-    public clear(): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+    public clear(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.storagePlugin.clear().then((resolved) => {
-                resolve(true);
+                resolve();
             }, (rejected) => {
                 reject(rejected);
             }).catch((caught) => {

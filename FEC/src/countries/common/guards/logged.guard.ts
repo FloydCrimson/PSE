@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 
 import { StorageFactory } from 'global/factories/storage.factory';
+
 import * as RoutesIndex from '@countries/routes.index';
 
 @Injectable({
     providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class LoggedGuard implements CanActivate {
 
     constructor(
         private readonly router: Router,

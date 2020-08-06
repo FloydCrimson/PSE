@@ -1,8 +1,7 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
-import { IonSlides } from '@ionic/angular';
-import { Observable, of, timer } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { Observable, of, timer, forkJoin } from 'rxjs';
+import { switchMap, map, exhaustMap } from 'rxjs/operators';
 
 import { RoutingService } from 'global/services/routing.service';
 import { SessionService } from 'global/services/session.service';
@@ -17,11 +16,6 @@ import * as RoutesIndex from '@countries/routes.index';
   styleUrls: ['unauth-page.scss'],
 })
 export class UnauthPage {
-
-  @ViewChild(IonSlides, { static: true }) slides: IonSlides;
-
-  slidesOptions: {} = {};
-  credentials: { crypted: string; auth: boolean; };
 
   signInForm = new FormGroup({
     email: new FormControl('', [], [this.getEmailValidator.bind(this)]),
@@ -117,9 +111,12 @@ export class UnauthPage {
   }
 
   public onLoginClicked(): void {
-    const nickname = this.loginForm.get('nickname').value;
-    const password = this.loginForm.get('password').value;
-    this.sessionService.login(nickname, password).subscribe((result) => {
+    forkJoin(
+      of(this.loginForm.get('nickname').value),
+      of(this.loginForm.get('password').value)
+    ).pipe(
+      exhaustMap(([value, key]) => this.sessionService.login({ type: 'nickname', value, key, algorithm: 'sha256' }))
+    ).subscribe((result) => {
       if (result) {
         this.routingService.navigateForward(RoutesIndex.HomePageRoute);
       }
