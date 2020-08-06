@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { HttpClient } from '@angular/common/http';
 import { HTTP } from '@ionic-native/http/ngx';
 
@@ -14,7 +13,7 @@ import { StorageFactory } from 'global/factories/storage.factory';
 import { StorageFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
 import * as StorageFT from 'global/factories/storage.factory.type';
 import { IonicStorage } from 'global/factories/storages/ionic.storage';
-import { BuiltInStorage } from 'global/factories/storages/built-in.storage';
+import { CapacitorStorage } from 'global/factories/storages/capacitor.storage';
 import { JSStorage } from 'global/factories/storages/js.storage';
 
 import { RestFactory } from 'global/factories/rest.factory';
@@ -26,6 +25,7 @@ import { SocketFactory } from 'global/factories/socket.factory';
 import { SocketFactoryImplementation } from 'global/common/implementations/factories/socket.factory.implementation';
 import * as SocketFT from 'global/factories/socket.factory.type';
 import { AngularSocket } from 'global/factories/sockets/angular.socket';
+import { PluginService } from 'global/services/plugin.service';
 
 @Injectable({
     providedIn: 'root'
@@ -33,13 +33,13 @@ import { AngularSocket } from 'global/factories/sockets/angular.socket';
 export class InitializeService implements InitializeImplementation {
 
     constructor(
+        private readonly pluginService: PluginService,
         private readonly platformService: PlatformService,
         private readonly storageFactory: StorageFactory,
         private readonly restFactory: RestFactory,
         private readonly socketFactory: SocketFactory,
         private readonly loggingService: LoggingService,
         private readonly storage: Storage,
-        private readonly nativeStorage: NativeStorage,
         private readonly httpBrowser: HttpClient,
         private readonly httpNative: HTTP
     ) { }
@@ -63,7 +63,7 @@ export class InitializeService implements InitializeImplementation {
     private initializeStorages(): Promise<boolean>[] {
         this.storageFactory.clear();
         const storages: [keyof StorageFT.StorageFactoryTypes, StorageFactoryImplementation<StorageFT.StorageFactoryTypes[keyof StorageFT.StorageFactoryTypes]>][] = [];
-        storages.push(['PersOutData', this.platformService.isPlatform(PlatformEnum.Browser) ? new IonicStorage<StorageFT.StorageFactoryTypePersOutData>(this.storage) : new BuiltInStorage<StorageFT.StorageFactoryTypePersOutData>(this.nativeStorage)]);
+        storages.push(['PersOutData', this.platformService.isPlatform(PlatformEnum.Browser) ? new IonicStorage<StorageFT.StorageFactoryTypePersOutData>(this.storage) : new CapacitorStorage<StorageFT.StorageFactoryTypePersOutData>(this.pluginService.get('Storage'))]);
         storages.push(['TempOutData', new JSStorage<StorageFT.StorageFactoryTypesTempOutData>()]);
         storages.push(['TempInData', new JSStorage<StorageFT.StorageFactoryTypesTempInData>()]);
         const check = storages.reduce((r, s) => this.storageFactory.set(s[0], s[1]) && r, true);

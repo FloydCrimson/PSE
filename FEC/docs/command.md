@@ -17,6 +17,12 @@ Extra
 | `--domain-extra`, `--dom-ex`      | [DomainImplementation](../src/domains/common/implementations/domains.implementation.ts)               |
 
 
+# Build
+
+node scripts\command-wrapper.js ionic build -- --country=en --environment=dev --environment-extra="{ \\"enableRouterTracing\\": false }" --domain=localhost
+
+npx cap copy
+
 # Browser
 
 node scripts\command-wrapper.js ionic serve -b -- --country=en --environment=dev --environment-extra="{ \\"enableRouterTracing\\": false }" --domain=localhost
@@ -31,13 +37,13 @@ node scripts\command-wrapper.js ionic serve -b -- --co=en --env=dev --env-ex="{ 
 
 # Android
 
-node scripts\command-wrapper.js ionic cordova build android -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android
+node scripts\command-wrapper.js ionic capacitor run android -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android
 
-node scripts\command-wrapper.js ionic cordova build android -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android --dom-ex="{ \\"url\\": \\"10.0.0.7\\" }"
+node scripts\command-wrapper.js ionic capacitor run android -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android --dom-ex="{ \\"url\\": \\"10.0.0.7\\" }"
 
-node scripts\command-wrapper.js ionic cordova run android -l -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android
+node scripts\command-wrapper.js ionic capacitor run android -l --external -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android
 
-node scripts\command-wrapper.js ionic cordova run android -l -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android --dom-ex="{ \\"url\\": \\"10.0.0.7\\" }"
+node scripts\command-wrapper.js ionic capacitor run android -l --external -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android --dom-ex="{ \\"url\\": \\"10.0.0.7\\" }"
 
 # Extra
 

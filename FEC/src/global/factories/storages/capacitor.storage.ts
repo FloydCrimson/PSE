@@ -1,11 +1,11 @@
-import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { StoragePlugin } from '@capacitor/core';
 
 import { StorageFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
 
-export class BuiltInStorage<T> implements StorageFactoryImplementation<T> {
+export class CapacitorStorage<T> implements StorageFactoryImplementation<T> {
 
     constructor(
-        private readonly nativeStorage: NativeStorage
+        private readonly storagePlugin: StoragePlugin
     ) { }
 
     public ready(): Promise<boolean> {
@@ -14,29 +14,27 @@ export class BuiltInStorage<T> implements StorageFactoryImplementation<T> {
 
     public set<K extends keyof T>(key: K, data: T[K]): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
-            this.nativeStorage.setItem(<string>key, data).then((resolved) => {
-                resolve(true);
-            }, (rejected) => {
-                reject(rejected);
-            }).catch((caught) => {
-                reject(caught);
-            });
+            try {
+                this.storagePlugin.set({ key: key as string, value: JSON.stringify(data) }).then((resolved) => {
+                    resolve(true);
+                }, (rejected) => {
+                    reject(rejected);
+                }).catch((caught) => {
+                    reject(caught);
+                });
+            } catch (error) {
+                reject(error);
+            }
         });
     }
 
     public get<K extends keyof T>(key: K): Promise<T[K]> {
         return new Promise<T[K]>((resolve, reject) => {
-            this.nativeStorage.keys().then((resolved) => {
-                if (resolved.indexOf(key) >= 0) {
-                    this.nativeStorage.getItem(<string>key).then((resolved) => {
-                        resolve(<T[K]>resolved);
-                    }, (rejected) => {
-                        reject(rejected);
-                    }).catch((caught) => {
-                        reject(caught);
-                    });
-                } else {
-                    resolve(undefined);
+            this.storagePlugin.get({ key: key as string }).then((resolved) => {
+                try {
+                    resolve(JSON.parse(resolved.value) as T[K]);
+                } catch (error) {
+                    reject(error);
                 }
             }, (rejected) => {
                 reject(rejected);
@@ -48,7 +46,7 @@ export class BuiltInStorage<T> implements StorageFactoryImplementation<T> {
 
     public remove<K extends keyof T>(key: K): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
-            this.nativeStorage.remove(<string>key).then((resolved) => {
+            this.storagePlugin.remove({ key: key as string }).then((resolved) => {
                 resolve(true);
             }, (rejected) => {
                 reject(rejected);
@@ -60,7 +58,7 @@ export class BuiltInStorage<T> implements StorageFactoryImplementation<T> {
 
     public clear(): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
-            this.nativeStorage.clear().then((resolved) => {
+            this.storagePlugin.clear().then((resolved) => {
                 resolve(true);
             }, (rejected) => {
                 reject(rejected);
@@ -71,11 +69,3 @@ export class BuiltInStorage<T> implements StorageFactoryImplementation<T> {
     }
 
 }
-
-// ERROR
-// NATIVE_WRITE_FAILED = 1
-// ITEM_NOT_FOUND = 2
-// NULL_REFERENCE = 3
-// UNDEFINED_TYPE = 4
-// JSON_ERROR = 5
-// WRONG_PARAMETER = 6

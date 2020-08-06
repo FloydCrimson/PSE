@@ -14,7 +14,7 @@ export class KeyValueStorage<T> implements StorageFactoryImplementation<T> {
 
     public set<K extends keyof T>(key: K, data: T[K]): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
-            this.nativeStoragePlugin.setItem(<string>key, data, (success) => {
+            this.nativeStoragePlugin.setItem(key as string, data, (success) => {
                 resolve(true);
             }, (error) => {
                 reject(error);
@@ -24,8 +24,8 @@ export class KeyValueStorage<T> implements StorageFactoryImplementation<T> {
 
     public get<K extends keyof T>(key: K): Promise<T[K]> {
         return new Promise<T[K]>((resolve, reject) => {
-            this.nativeStoragePlugin.getItem(<string>key, (success) => {
-                resolve(<T[K]>success);
+            this.nativeStoragePlugin.getItem(key as string, (success) => {
+                resolve(success as T[K]);
             }, (error) => {
                 reject(error);
             });
@@ -34,7 +34,7 @@ export class KeyValueStorage<T> implements StorageFactoryImplementation<T> {
 
     public remove<K extends keyof T>(key: K): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
-            this.nativeStoragePlugin.remove(<string>key, (success) => {
+            this.nativeStoragePlugin.remove(key as string, (success) => {
                 resolve(true);
             }, (error) => {
                 reject(error);

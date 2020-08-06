@@ -14,7 +14,7 @@ export class BuiltInStorage<T> implements StorageFactoryImplementation<T> {
 
     public set<K extends keyof T>(key: K, data: T[K]): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
-            this.nativeStorage.setItem(<string>key, data).then((resolved) => {
+            this.nativeStorage.setItem(key as string, data).then((resolved) => {
                 resolve(true);
             }, (rejected) => {
                 reject(rejected);
@@ -28,8 +28,8 @@ export class BuiltInStorage<T> implements StorageFactoryImplementation<T> {
         return new Promise<T[K]>((resolve, reject) => {
             this.nativeStorage.keys().then((resolved) => {
                 if (resolved.indexOf(key) >= 0) {
-                    this.nativeStorage.getItem(<string>key).then((resolved) => {
-                        resolve(<T[K]>resolved);
+                    this.nativeStorage.getItem(key as string).then((resolved) => {
+                        resolve(resolved as T[K]);
                     }, (rejected) => {
                         reject(rejected);
                     }).catch((caught) => {
@@ -48,7 +48,7 @@ export class BuiltInStorage<T> implements StorageFactoryImplementation<T> {
 
     public remove<K extends keyof T>(key: K): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
-            this.nativeStorage.remove(<string>key).then((resolved) => {
+            this.nativeStorage.remove(key as string).then((resolved) => {
                 resolve(true);
             }, (rejected) => {
                 reject(rejected);
