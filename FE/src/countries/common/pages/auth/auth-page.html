@@ -5,5 +5,16 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content>
+<ion-content fullscreen="true">
+  <div class="form-container">
+    <h1>Login</h1>
+    <form [formGroup]="loginForm">
+      <ion-item>
+        <ion-label>Password</ion-label>
+        <ion-input type="password" formControlName="password"></ion-input>
+      </ion-item>
+    </form>
+    <p>{{ getErrorFromFormGroup(loginForm) }}</p>
+    <ion-button (click)="onLoginClicked()" [disabled]="loginForm?.status !== 'VALID'">Continue</ion-button>
+  </div>
 </ion-content>

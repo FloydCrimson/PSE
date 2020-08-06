@@ -57,7 +57,7 @@ export class HomePage {
       if (!result) {
         console.warn('logout failed.');
       }
-      this.routingService.navigateBack(RoutesIndex.UnauthPageRoute);
+      this.routingService.navigateBack(RoutesIndex.AuthPageRoute);
     });
   }
 

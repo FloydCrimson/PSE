@@ -20,10 +20,10 @@ export class IonicStorage<T> implements StorageFactoryImplementation<T> {
         });
     }
 
-    public set<K extends keyof T>(key: K, data: T[K]): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+    public set<K extends keyof T>(key: K, data: T[K]): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.storage.set(key as string, data).then((resolved) => {
-                resolve(true);
+                resolve();
             }, (rejected) => {
                 reject(rejected);
             }).catch((caught) => {
@@ -44,10 +44,10 @@ export class IonicStorage<T> implements StorageFactoryImplementation<T> {
         });
     }
 
-    public remove<K extends keyof T>(key: K): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+    public remove<K extends keyof T>(key: K): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.storage.remove(key as string).then((resolved) => {
-                resolve(true);
+                resolve();
             }, (rejected) => {
                 reject(rejected);
             }).catch((caught) => {
@@ -56,10 +56,10 @@ export class IonicStorage<T> implements StorageFactoryImplementation<T> {
         });
     }
 
-    public clear(): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+    public clear(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.storage.clear().then((resolved) => {
-                resolve(true);
+                resolve();
             }, (rejected) => {
                 reject(rejected);
             }).catch((caught) => {

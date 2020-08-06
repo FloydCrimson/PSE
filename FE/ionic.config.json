@@ -1,11 +1,11 @@
 {
-  "name": "New Ionic App",
+  "name": "pse-fe",
   "hooks": {
     "build:before": "./scripts/ionic-before.js",
     "serve:before": "./scripts/ionic-before.js"
   },
   "integrations": {
-    "cordova": {}
+    "capacitor": {}
   },
   "type": "angular"
 }

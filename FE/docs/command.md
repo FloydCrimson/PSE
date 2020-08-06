@@ -31,17 +31,17 @@ node scripts\command-wrapper.js ionic serve -b -- --co=en --env=dev --env-ex="{ 
 
 # Android
 
-node scripts\command-wrapper.js ionic cordova build android -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android
+node scripts\command-wrapper.js ionic capacitor run android -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android
 
-node scripts\command-wrapper.js ionic cordova build android -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android --dom-ex="{ \\"url\\": \\"10.0.0.7\\" }"
+node scripts\command-wrapper.js ionic capacitor run android -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android --dom-ex="{ \\"url\\": \\"10.0.0.7\\" }"
 
-node scripts\command-wrapper.js ionic cordova run android -l -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android
+node scripts\command-wrapper.js ionic capacitor run android -l --external -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android
 
-node scripts\command-wrapper.js ionic cordova run android -l -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android --dom-ex="{ \\"url\\": \\"10.0.0.7\\" }"
+node scripts\command-wrapper.js ionic capacitor run android -l --external -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android --dom-ex="{ \\"url\\": \\"10.0.0.7\\" }"
 
 # Extra
 
-| Parameters                        | Value                                  | Description        |
-|:----------------------------------|:---------------------------------------|:------------------:|
-| `--environment-extra`, `--env-ex` | `"{ \"enableRouterTracing\": false }"` | Disable router log |
-| `--domain-extra`, `--dom-ex`      | `"{ \"url\": \"10.0.0.7\" }"`          | Change endpoint    |
+| Parameters                        | Value                                                                                                 | Description        |
+|:----------------------------------|:------------------------------------------------------------------------------------------------------|:------------------:|
+| `--environment-extra`, `--env-ex` | `"{ \"enableRouterTracing\": false }"`                                                                | Disable router log |
+| `--domain-extra`, `--dom-ex`      | `"{ \"protocols\": { \"rest\": { \"url\": \"10.0.0.7\" }, \"socket\": { \"url\": \"10.0.0.7\" } } }"` | Change endpoint    |
