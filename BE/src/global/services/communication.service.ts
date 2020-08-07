@@ -1,35 +1,26 @@
 import { ChildProcess } from 'child_process';
 
-import { CommunicationMessageImplementation, CommunicationMethodImplementation } from '../common/implementations/communication.implementation';
+import { CommunicationMessageImplementation, CommunicationErrorImplementation, CommunicationMethodImplementation } from '../common/implementations/communication.implementation';
 
 export class CommunicationServerService {
 
     constructor(
-        private readonly map: Map<string, ChildProcess>
+        private readonly children: Map<string, ChildProcess>
     ) { }
 
     public dispatch(): void {
-        this.map.forEach((child) => {
+        this.children.forEach((child) => {
             child.on('message', (message: CommunicationMessageImplementation) => {
                 if (message.answered) {
-                    if (this.map.has(message.sender)) {
-                        const child = this.map.get(message.sender);
-                        const sent = child.send(message);
-                        if (!sent) {
-                            console.warn('message not sent to sender', message);
-                        }
-                    } else {
-                        console.warn('sender not found', message);
-                    }
+                    const sender = this.children.get(message.sender);
+                    sender.send(message);
                 } else {
-                    if (this.map.has(message.receiver)) {
-                        const child = this.map.get(message.receiver);
-                        const sent = child.send(message);
-                        if (!sent) {
-                            console.warn('message not sent to receiver', message);
-                        }
+                    if (this.children.has(message.receiver)) {
+                        const receiver = this.children.get(message.receiver);
+                        receiver.send(message);
                     } else {
-                        console.warn('receiver not found', message);
+                        const sender = this.children.get(message.sender);
+                        sender.send({ ...message, value: { type: 'NO_RECEIVER' } as CommunicationErrorImplementation, answered: false, error: true });
                     }
                 }
             });
@@ -40,72 +31,54 @@ export class CommunicationServerService {
 
 export class CommunicationClientService {
 
-    private map: Map<string, [Function, Function]>;
+    private requests: Map<number, [Function, Function, NodeJS.Timer]>;
+    private id: number;
 
     constructor(
         private readonly communicationService: any,
         private readonly sender: string
     ) {
-        this.map = new Map<string, [Function, Function]>();
+        this.requests = new Map<number, [Function, Function, NodeJS.Timer]>();
+        this.id = 0;
     }
 
     public receive(): void {
         process.on('message', (message: CommunicationMessageImplementation) => {
             if (message.sender === this.sender) {
-                if (message.answered) {
-                    if (this.map.has(message.id)) {
-                        const [resolve, reject] = this.map.get(message.id);
-                        if (message.error) {
-                            reject(message.value);
-                        } else {
-                            resolve(message.value);
-                        }
-                        this.map.delete(message.id);
-                    } else {
-                        console.warn('id not found', message);
-                    }
-                } else {
-                    console.warn('received unanswered message', message);
+                if (this.requests.has(message.id)) {
+                    const [resolve, reject, timer] = this.requests.get(message.id);
+                    message.error ? reject(message.value) : resolve(message.value);
+                    timer && clearTimeout(timer);
+                    this.requests.delete(message.id);
                 }
             } else if (message.receiver === this.sender) {
                 if (message.name in this.communicationService) {
                     (this.communicationService[message.name] as CommunicationMethodImplementation<any, any>)(message.value).then((result) => {
-                        if (process.send) {
-                            process.send({ ...message, value: result, answered: true, error: false });
-                        } else {
-                            console.warn('process.send is undefined', message);
-                        }
+                        process.send({ ...message, value: result, answered: true, error: false });
                     }, (error) => {
-                        if (process.send) {
-                            process.send({ ...message, value: error, answered: true, error: true });
-                        } else {
-                            console.warn('process.send is undefined', message);
-                        }
+                        process.send({ ...message, value: { type: 'REJECT', error } as CommunicationErrorImplementation, answered: true, error: true });
                     }).catch((error) => {
-                        if (process.send) {
-                            process.send({ ...message, value: error, answered: true, error: true });
-                        } else {
-                            console.warn('process.send is undefined', message);
-                        }
+                        process.send({ ...message, value: { type: 'CATCH', error } as CommunicationErrorImplementation, answered: true, error: true });
                     });
                 } else {
-                    console.warn('method not found', message);
+                    process.send({ ...message, value: { type: 'NO_METHOD' } as CommunicationErrorImplementation, answered: true, error: true });
                 }
-            } else {
-                console.warn('wrong sender or receiver', message);
             }
         });
     }
 
-    public send(message: { receiver: string; name: string; value: any; }): Promise<any> {
+    public send(message: { receiver: string; name: string; value: any; }, timeout?: number): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            const id = Date.now().toString();
-            this.map.set(id, [resolve, reject]);
-            if (process.send) {
-                process.send({ ...message, sender: this.sender, id, answered: false, error: false });
-            } else {
-                console.warn('process.send is undefined', message);
-            }
+            const id = this.id++;
+            const timer = timeout ? setTimeout((id: number) => {
+                if (this.requests.has(id)) {
+                    const [resolve, reject, timer] = this.requests.get(id);
+                    reject({ type: 'TIMEOUT' } as CommunicationErrorImplementation);
+                    this.requests.delete(id);
+                }
+            }, timeout, id) : undefined;
+            this.requests.set(id, [resolve, reject, timer]);
+            process.send({ ...message, sender: this.sender, id, answered: false, error: false });
         });
     }
 
