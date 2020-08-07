@@ -1,10 +1,10 @@
 const path = require('path');
 const webpack = require('webpack');
-const commandParameters = require('../scripts/command-parameters');
+const commandParameters = require('./command-parameters');
 
 module.exports = (config, options) => {
     const projectDirectory = path.resolve(__dirname, '../');
-    const parameters = commandParameters.loadParameters(path.join(projectDirectory, 'config'));
+    const parameters = commandParameters.loadParameters(projectDirectory);
 
     const placeholder = '{{ALIAS}}';
     const aliases = [

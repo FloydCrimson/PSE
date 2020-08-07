@@ -18,7 +18,7 @@ console.log('[command-wrapper] Real command:      ' + commands.join(' '));
 console.log('[command-wrapper] Parameters:        ' + JSON.stringify(parameters));
 
 const projectDirectory = path.resolve(__dirname, '../');
-commandParameters.saveParameters(path.join(projectDirectory, 'config'), parameters);
+commandParameters.saveParameters(projectDirectory, parameters);
 
 const commandPath = execSync('where ' + commands[0]).toString().trim().split('\n')[0];
 execSync(['"' + commandPath + '"', ...commands.slice(1)].join(' '), { stdio: 'inherit' });

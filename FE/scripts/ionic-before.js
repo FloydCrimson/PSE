@@ -4,7 +4,7 @@ const commandParameters = require('./command-parameters');
 
 module.exports = function (context) {
     const projectDirectory = path.resolve(__dirname, '../');
-    const parameters = commandParameters.loadParameters(path.join(projectDirectory, 'config'));
+    const parameters = commandParameters.loadParameters(projectDirectory);
 
     // COMMAND INTEGRATION
 
@@ -15,7 +15,7 @@ module.exports = function (context) {
         platform = context.build.platform || platform;
     }
     parameters['--platform'] = platform;
-    commandParameters.saveParameters(path.join(projectDirectory, 'config'), parameters);
+    commandParameters.saveParameters(projectDirectory, parameters);
 
     // HAPI PATCHER
 
@@ -36,41 +36,43 @@ module.exports = function (context) {
         { parameters: ['--environment-extra', '--env-ex'], path: path.join(projectDirectory, 'src', 'environments', 'environment-extra.json') },
         { parameters: ['--domain-extra', '--dom-ex'], path: path.join(projectDirectory, 'src', 'domains', 'domain-extra.json') }
     ];
-    for (const extra of extras) {
+    extras.forEach((extra) => {
         let found = false;
-        for (const parameter of extra.parameters) {
-            if (parameter in parameters) {
-                try {
-                    const config = JSON.parse(parameters[parameter]);
-                    fs.writeFileSync(extra.path, JSON.stringify(config, undefined, '\t'));
-                    found = true;
-                } catch (error) {
-                    console.warn('[ionic-before] unable to write "' + parameter + '" into json:   ' + parameters[parameter]);
-                    console.warn('[ionic-before] error:   ' + JSON.stringify(error));
-                }
+        let value = parameters[extra.parameters.find((p) => parameters[p])];
+        if (value) {
+            try {
+                const config = JSON.parse(value);
+                fs.writeFileSync(extra.path, JSON.stringify(config, undefined, '\t'));
+                found = true;
+            } catch (error) {
+                console.warn('[ionic-before] unable to write "' + parameter + '" into json:   ' + value);
+                console.warn('[ionic-before] error:   ' + JSON.stringify(error));
             }
         }
         if (!found) {
             fs.writeFileSync(extra.path, JSON.stringify({}, undefined, '\t'));
         }
-    };
+    });
 
     // TSCONFIG
 
     const tsconfigs = [
-        { prefix: 'src/countries/', value: parameters['--country'], suffix: '/**/*.ts' },
-        { prefix: 'src/domains/', value: parameters['--domain'], suffix: '/**/*.ts' },
-        { prefix: 'src/environments/', value: parameters['--environment'], suffix: '/**/*.ts' },
-        { prefix: 'src/platforms/', value: parameters['--platform'], suffix: '/**/*.ts' }
+        { parameters: ['--country', '--co'], prefix: 'src/countries/', suffix: '/**/*.ts' },
+        { parameters: ['--domain', '--dom'], prefix: 'src/domains/', suffix: '/**/*.ts' },
+        { parameters: ['--environment', '--env'], prefix: 'src/environments/', suffix: '/**/*.ts' },
+        { parameters: ['--platform', '--plt'], prefix: 'src/platforms/', suffix: '/**/*.ts' }
     ];
     const tsconfigAppDirectory = path.resolve(projectDirectory, 'tsconfig.app.json');
     const tsconfigAppJSON = JSON.parse(fs.readFileSync(tsconfigAppDirectory).toString());
     tsconfigs.forEach((tsconfig) => {
-        const regex = new RegExp('^(' + tsconfig.prefix.replace(/\/|\*/g, (c) => '\\' + c) + ').+(' + tsconfig.suffix.replace(/\/|\*/g, (c) => '\\' + c) + ')$');
-        const common = tsconfig.prefix + 'common' + tsconfig.suffix;
-        const alias = tsconfig.prefix + tsconfig.value + tsconfig.suffix;
-        tsconfigAppJSON.include = tsconfigAppJSON.include.filter((i) => !(regex.test(i) && i !== common));
-        tsconfigAppJSON.include.push(alias);
+        const value = parameters[tsconfig.parameters.find((p) => parameters[p])];
+        if (value) {
+            const regex = new RegExp('^(' + tsconfig.prefix.replace(/\/|\*/g, (c) => '\\' + c) + ').+(' + tsconfig.suffix.replace(/\/|\*/g, (c) => '\\' + c) + ')$');
+            const common = tsconfig.prefix + 'common' + tsconfig.suffix;
+            const alias = tsconfig.prefix + value + tsconfig.suffix;
+            tsconfigAppJSON.include = tsconfigAppJSON.include.filter((i) => !(regex.test(i) && i !== common));
+            tsconfigAppJSON.include.push(alias);
+        }
     });
     tsconfigAppJSON.include.sort();
     const tsconfigAppCustomDirectory = path.resolve(projectDirectory, 'tsconfig.app.custom.json');
