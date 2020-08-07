@@ -55,5 +55,26 @@ module.exports = function (context) {
         }
     };
 
+    // TSCONFIG
+
+    const tsconfigs = [
+        { prefix: 'src/countries/', value: parameters['--country'], suffix: '/**/*.ts' },
+        { prefix: 'src/domains/', value: parameters['--domain'], suffix: '/**/*.ts' },
+        { prefix: 'src/environments/', value: parameters['--environment'], suffix: '/**/*.ts' },
+        { prefix: 'src/platforms/', value: parameters['--platform'], suffix: '/**/*.ts' }
+    ];
+    const tsconfigAppDirectory = path.resolve(projectDirectory, 'tsconfig.app.json');
+    const tsconfigAppJSON = JSON.parse(fs.readFileSync(tsconfigAppDirectory).toString());
+    tsconfigs.forEach((tsconfig) => {
+        const regex = new RegExp('^(' + tsconfig.prefix.replace(/\/|\*/g, (c) => '\\' + c) + ').+(' + tsconfig.suffix.replace(/\/|\*/g, (c) => '\\' + c) + ')$');
+        const common = tsconfig.prefix + 'common' + tsconfig.suffix;
+        const alias = tsconfig.prefix + tsconfig.value + tsconfig.suffix;
+        tsconfigAppJSON.include = tsconfigAppJSON.include.filter((i) => !(regex.test(i) && i !== common));
+        tsconfigAppJSON.include.push(alias);
+    });
+    tsconfigAppJSON.include.sort();
+    const tsconfigAppCustomDirectory = path.resolve(projectDirectory, 'tsconfig.app.custom.json');
+    fs.writeFileSync(tsconfigAppCustomDirectory, JSON.stringify(tsconfigAppJSON, undefined, '\t'));
+
     //
 };

@@ -4,16 +4,16 @@ const fs = require('fs');
 let commandParametersModule = {};
 
 commandParametersModule.saveParameters = function (directory, parameters) {
-    const configDirectory = path.join(directory, 'parameters.json');
-    fs.writeFileSync(configDirectory, JSON.stringify(parameters, undefined, '\t'));
+    const parametersDirectory = path.join(directory, 'parameters.json');
+    fs.writeFileSync(parametersDirectory, JSON.stringify(parameters, undefined, '\t'));
 }
 
 commandParametersModule.loadParameters = function (directory) {
-    const configDirectory = path.join(directory, 'parameters.json');
-    if (fs.existsSync(configDirectory)) {
-        return JSON.parse(fs.readFileSync(configDirectory).toString());
+    const parametersDirectory = path.join(directory, 'parameters.json');
+    if (fs.existsSync(parametersDirectory)) {
+        return JSON.parse(fs.readFileSync(parametersDirectory).toString());
     } else {
-        console.warn(configDirectory + ' does not exist.');
+        console.warn(parametersDirectory + ' does not exist.');
         return {};
     }
 }
