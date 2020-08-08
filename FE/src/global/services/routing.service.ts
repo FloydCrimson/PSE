@@ -10,7 +10,7 @@ import { RouteImplementation } from 'global/common/implementations/route.impleme
 })
 export class RoutingService {
 
-    private paramsMap = new Map<string, any>();
+    private map = new Map<string, any>();
 
     constructor(
         private readonly navController: NavController,
@@ -22,7 +22,7 @@ export class RoutingService {
         if (params) {
             const token = route.path;
             options.state.token = token;
-            this.paramsMap.set(token, params);
+            this.map.set(token, params);
         }
         switch (type) {
             case 'Forward':
@@ -40,8 +40,8 @@ export class RoutingService {
         const navigation = this.router.getCurrentNavigation();
         if (navigation && navigation.extras && navigation.extras.state && navigation.extras.state.token && navigation.extras.state.token === route.path) {
             const token = navigation.extras.state.token;
-            const params: P = this.paramsMap.get(token);
-            this.paramsMap.delete(token);
+            const params: P = this.map.get(token);
+            this.map.delete(token);
             return params;
         } else {
             return undefined;
