@@ -1,4 +1,4 @@
-import * as CryptoJS from 'crypto-js';
+import * as CryptoJS from 'crypto-js'; // TODO: Check error => Module not found: Error: Can't resolve 'crypto'
 
 export class CrypterProvider {
 

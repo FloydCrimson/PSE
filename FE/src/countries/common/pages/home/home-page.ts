@@ -1,10 +1,6 @@
 import { Component } from '@angular/core';
 
 import { RoutingService } from 'global/services/routing.service';
-import { SessionService } from 'global/services/session.service';
-
-import { BackendEchoRest } from 'countries/common/rests/backend.echo.rest';
-import { BackendEchoSocket } from 'countries/common/sockets/backend.echo.socket';
 
 import * as RoutesIndex from '@countries/routes.index';
 
@@ -16,49 +12,22 @@ import * as RoutesIndex from '@countries/routes.index';
 export class HomePage {
 
   constructor(
-    private readonly routingService: RoutingService,
-    private readonly backendEchoRest: BackendEchoRest,
-    private readonly backendEchoSocket: BackendEchoSocket,
-    private readonly sessionService: SessionService
-  ) { }
-
-  public onEchoGETClick() {
-    this.backendEchoRest.EchoGET({ text: 'EchoGET' }).subscribe((result) => {
-      console.log('HomePage.EchoGET', result);
-    });
+    private readonly routingService: RoutingService
+  ) {
+    const navParams = this.routingService.getNavigationParams(RoutesIndex.HomePageRoute);
+    console.log('navParams', navParams);
   }
 
-  public onEchoPOSTClick() {
-    this.backendEchoRest.EchoPOST({ text: 'EchoPOST' }).subscribe((result) => {
-      console.log('HomePage.EchoPOST', result);
-    });
+  public navigateForward(): void {
+    this.routingService.navigate('Forward', RoutesIndex.TestPageRoute, { page: 'HomePage' }, { animationDirection: 'forward' });
   }
 
-  public onEchoAuthPOSTClick() {
-    this.backendEchoRest.EchoAuthPOST({ text: 'EchoAuthPOST' }).subscribe((result) => {
-      console.log('HomePage.EchoAuthPOST', result);
-    });
+  public navigateBack(): void {
+    this.routingService.navigate('Back', RoutesIndex.TestPageRoute, { page: 'HomePage' }, { animationDirection: 'forward' });
   }
 
-  public onEchoSENDClick() {
-    this.backendEchoSocket.EchoSEND({ text: 'EchoSEND' }).subscribe((result) => {
-      console.log('HomePage.EchoSEND', result);
-    });
-  }
-
-  public onEchoAuthSENDClick() {
-    this.backendEchoSocket.EchoAuthSEND({ text: 'EchoAuthSEND' }).subscribe((result) => {
-      console.log('HomePage.EchoAuthSEND', result);
-    });
-  }
-
-  public onLogOutClick() {
-    this.sessionService.logout().subscribe((result) => {
-      if (!result) {
-        console.warn('logout failed.');
-      }
-      this.routingService.navigateBack(RoutesIndex.AuthPageRoute);
-    });
+  public navigateRoot(): void {
+    this.routingService.navigate('Root', RoutesIndex.TestPageRoute, { page: 'HomePage' }, { animationDirection: 'forward' });
   }
 
 }
