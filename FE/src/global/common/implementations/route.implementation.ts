@@ -1,6 +1,6 @@
 import { LoadChildren } from '@angular/router';
 
-export interface RouteImplementation<I, O> {
+export interface RouteImplementation<P> {
     path: string;
     loadChildren: LoadChildren;
 }

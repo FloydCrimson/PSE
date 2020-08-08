@@ -17,7 +17,7 @@ export class RoutingService {
         private readonly router: Router
     ) { }
 
-    public navigate<I, O>(type: 'Forward' | 'Back' | 'Root', route: RouteImplementation<I, O>, params?: I, options?: NavigationOptions): Promise<boolean> {
+    public navigate<P>(type: 'Forward' | 'Back' | 'Root', route: RouteImplementation<P>, params?: P, options?: NavigationOptions): Promise<boolean> {
         options = { animated: true, ...options, state: {} };
         if (params) {
             const token = route.path;
@@ -36,11 +36,11 @@ export class RoutingService {
         }
     }
 
-    public getNavigationParams<I, O>(route: RouteImplementation<I, O>): I {
+    public getNavigationParams<P>(route: RouteImplementation<P>): P {
         const navigation = this.router.getCurrentNavigation();
         if (navigation && navigation.extras && navigation.extras.state && navigation.extras.state.token && navigation.extras.state.token === route.path) {
             const token = navigation.extras.state.token;
-            const params: I = this.paramsMap.get(token);
+            const params: P = this.paramsMap.get(token);
             this.paramsMap.delete(token);
             return params;
         } else {
