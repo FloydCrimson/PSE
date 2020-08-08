@@ -4,24 +4,27 @@
     "outDir": "./out-tsc/app",
     "types": []
   },
+  "files": [
+    "src/main.ts",
+    "src/polyfills.ts"
+  ],
   "include": [
-    "src/*.ts",
     "src/app/**/*.ts",
+    "src/global/**/*.ts",
     "src/countries/common/**/*.ts",
     "src/countries/en/**/*.ts",
     "src/countries/it/**/*.ts",
     "src/domains/common/**/*.ts",
-    "src/domains/localhost-android/**/*.ts",
-    "src/domains/localhost-s-android/**/*.ts",
-    "src/domains/localhost-s/**/*.ts",
     "src/domains/localhost/**/*.ts",
+    "src/domains/localhost-android/**/*.ts",
+    "src/domains/localhost-s/**/*.ts",
+    "src/domains/localhost-s-android/**/*.ts",
     "src/environments/common/**/*.ts",
     "src/environments/dev/**/*.ts",
     "src/environments/prod/**/*.ts",
-    "src/global/**/*.ts",
+    "src/platforms/common/**/*.ts",
     "src/platforms/android/**/*.ts",
     "src/platforms/browser/**/*.ts",
-    "src/platforms/common/**/*.ts",
     "src/platforms/ios/**/*.ts"
   ],
   "exclude": [

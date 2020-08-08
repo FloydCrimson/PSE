@@ -8,20 +8,20 @@
         "countries/en/*",
         "countries/it/*"
       ],
-      "@platforms/*": [
-        "platforms/browser/*",
-        "platforms/android/*",
-        "platforms/ios/*"
+      "@domains/*": [
+        "domains/localhost/*",
+        "domains/localhost-android/*",
+        "domains/localhost-s/*",
+        "domains/localhost-s-android/*"
       ],
       "@environments/*": [
         "environments/dev/*",
         "environments/prod/*"
       ],
-      "@domains/*": [
-        "domains/localhost/*",
-        "domains/localhost-s/*",
-        "domains/localhost-android/*",
-        "domains/localhost-android-s/*"
+      "@platforms/*": [
+        "platforms/android/*",
+        "platforms/browser/*",
+        "platforms/ios/*"
       ]
     },
     "sourceMap": true,
