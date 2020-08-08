@@ -1,40 +1,39 @@
 ion-content {
-    ion-slides {
+    div.form-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
         height: 100%;
 
-        ion-slide {
+        form {
+            display: flex;
             flex-direction: column;
-            justify-content: start;
 
-            form {
+            ion-item {
                 display: flex;
-                flex-direction: column;
-
-                ion-item {
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: space-between;
-                }
-
-                label {
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: space-between;
-                    margin-top: 10px;
-
-                    input {
-                        width: 60%;
-                    }
-                }
+                flex-direction: row;
+                justify-content: space-between;
             }
 
-            ion-button {
-                --border-radius: 0px;
-                position: absolute;
-                bottom: 40px;
-                width: 100%;
-                margin: 0px;
+            label {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                margin-top: 10px;
+
+                input {
+                    width: 60%;
+                }
             }
+        }
+
+        ion-button {
+            --border-radius: 0px;
+            position: absolute;
+            bottom: 40px;
+            width: 100%;
+            margin: 0px;
         }
     }
 }
