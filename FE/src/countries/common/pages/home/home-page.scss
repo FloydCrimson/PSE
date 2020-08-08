@@ -1,0 +1,19 @@
+ion-content {
+    div.bar {
+        width: 10%;
+        height: 100%;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        overflow-y: scroll;
+        scroll-behavior: smooth;
+
+        div.char {
+            margin: auto;
+        }
+    }
+
+    div.list {
+        margin-left: 10%;
+    }
+}

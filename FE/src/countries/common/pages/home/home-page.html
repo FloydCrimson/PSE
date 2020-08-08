@@ -5,17 +5,17 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content fullscreen="true">
-  <ion-item>
-    <ion-button (click)="navigateForward()">navigateForward</ion-button>
-  </ion-item>
-  <ion-item>
-    <ion-button (click)="navigateBack()">navigateBack</ion-button>
-  </ion-item>
-  <ion-item>
-    <ion-button (click)="navigateRoot()">navigateRoot</ion-button>
-  </ion-item>
-  <ion-item>
-    <ion-button (click)="present()">present</ion-button>
-  </ion-item>
+<ion-content #content fullscreen="true">
+  <div class="bar" slot="fixed">
+    <div class="char" *ngFor="let group of groups" (click)="onCharClick(group)">
+      {{ group.char }}
+    </div>
+  </div>
+  <div class="list">
+    <ng-container *ngFor="let group of groups">
+      <div class="board" *ngFor="let board of group.boards" [ngClass]="group.char" (click)="onBoardClick(board)">
+        {{ '/' + board.board + '/   ' + board.title }}
+      </div>
+    </ng-container>
+  </div>
 </ion-content>
