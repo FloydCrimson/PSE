@@ -8,11 +8,11 @@ import { RoutingService } from 'global/services/routing.service';
 import * as RoutesIndex from '@countries/routes.index';
 
 @Component({
-  selector: 'home-page',
-  templateUrl: 'home-page.html',
-  styleUrls: ['home-page.scss'],
+  selector: 'board-page',
+  templateUrl: 'board-page.html',
+  styleUrls: ['board-page.scss'],
 })
-export class HomePage implements OnInit {
+export class BoardPage implements OnInit {
 
   @ViewChild(IonContent, { static: false }) content: HTMLIonContentElement & { el: HTMLElement };
 

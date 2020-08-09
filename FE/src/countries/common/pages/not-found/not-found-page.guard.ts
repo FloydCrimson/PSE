@@ -13,7 +13,7 @@ export class NotFoundPageGuard implements CanActivate {
     ) { }
 
     public async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
-        return this.router.parseUrl(RoutesIndex.HomePageRoute.path);
+        return this.router.parseUrl(RoutesIndex.BoardPageRoute.path);
     }
 
 }
