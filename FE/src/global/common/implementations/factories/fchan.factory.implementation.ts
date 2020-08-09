@@ -70,7 +70,7 @@ export type GetPageJSON = { threads: { posts: PagePost[] }[]; };
 export type GetPostsJSON = { threads: { posts: PostPost[] }[]; };
 
 export type ThreadThread = Pick<Thread, 'no' | 'last_modified' | 'replies'>;
-export type CatalogThread = { page: number; threads: Omit<Thread, 'archived' | 'archived_on'>[]; }[];
+export type CatalogThread = Omit<Thread, 'archived' | 'archived_on'>;
 export type PagePost = Omit<Thread, 'last_replies' | 'archived' | 'archived_on'>;
 export type PostPost = Omit<Thread, 'omitted_posts' | 'omitted_images' | 'last_modified' | 'last_replies'>;
 export type LastReplyThread = Pick<Thread, 'no' | 'now' | 'name' | 'com' | 'filename' | 'ext' | 'w' | 'h' | 'tn_w' | 'tn_h' | 'tim' | 'time' | 'md5' | 'fsize' | 'resto'>;

@@ -1,0 +1,14 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      CatalogPage
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen="true">
+  <div class="list">
+    <div class="thread" *ngFor="let thread of threads" (click)="onThreadClick(thread)">
+      <span>{{ thread.no }}</span>
+    </div>
+  </div>
+</ion-content>

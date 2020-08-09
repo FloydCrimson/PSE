@@ -1,0 +1,9 @@
+ion-content {
+    div.list {
+        >div.thread {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+        }
+    }
+}

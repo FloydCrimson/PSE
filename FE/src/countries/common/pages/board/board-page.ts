@@ -49,15 +49,14 @@ export class BoardPage implements OnInit {
 
   public onCharClick(group: { char: string; boards: Board[]; }): void {
     const child = this.content.el.getElementsByClassName('board ' + group.char)[0] as HTMLDivElement;
-    const parent = child.offsetParent as HTMLElement
     if (child) {
-      const diff = child.offsetTop + parent.offsetTop;
-      this.content.scrollToPoint(undefined, diff, Math.abs(diff - parent.scrollTop));
+      const diff = child.offsetTop;
+      this.content.scrollToPoint(undefined, diff, 500);
     }
   }
 
   public onBoardClick(board: Board): void {
-    console.log('onBoardClick', board);
+    this.routingService.navigate('Forward', RoutesIndex.CatalogPageRoute, { input: { board }, route: { board: board.board } }, { animationDirection: 'forward' });
   }
 
 }
