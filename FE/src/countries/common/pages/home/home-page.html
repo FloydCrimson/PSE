@@ -7,14 +7,15 @@
 </ion-header>
 <ion-content #content fullscreen="true">
   <div class="bar" slot="fixed">
-    <div class="char" *ngFor="let group of groups" (click)="onCharClick(group)">
-      {{ group.char }}
+    <div class="group" *ngFor="let group of groups" (click)="onCharClick(group)">
+      <span class="char">{{ group.char }}</span>
     </div>
   </div>
   <div class="list">
     <ng-container *ngFor="let group of groups">
       <div class="board" *ngFor="let board of group.boards" [ngClass]="group.char" (click)="onBoardClick(board)">
-        {{ '/' + board.board + '/   ' + board.title }}
+        <span class="initials">{{ '/' + board.board + '/' }}</span>
+        <span class="title">{{ board.title }}</span>
       </div>
     </ng-container>
   </div>

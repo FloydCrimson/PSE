@@ -3,17 +3,34 @@ ion-content {
         width: 10%;
         height: 100%;
         display: flex;
-        justify-content: space-between;
         flex-direction: column;
+        justify-content: space-evenly;
         overflow-y: scroll;
         scroll-behavior: smooth;
 
-        div.char {
+        >div.group {
             margin: auto;
+
+            >span.char {}
         }
     }
 
     div.list {
         margin-left: 10%;
+
+        >div.board {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+
+            >span.initials {
+                position: absolute;
+                left: 15%;
+            }
+
+            >span.title {
+                margin-left: 15%;
+            }
+        }
     }
 }

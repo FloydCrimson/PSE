@@ -17,6 +17,14 @@ Extra
 | `--domain-extra`, `--dom-ex`      | [DomainImplementation](../src/domains/common/implementations/domains.implementation.ts)               |
 
 
+# Build
+
+node scripts\command-wrapper.js ionic build -- --country=en --environment=dev --environment-extra="{ \\"enableRouterTracing\\": false }" --domain=localhost
+
+node scripts\command-wrapper.js ionic build -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost
+
+npx cap copy
+
 # Browser
 
 node scripts\command-wrapper.js ionic serve -b -- --country=en --environment=dev --environment-extra="{ \\"enableRouterTracing\\": false }" --domain=localhost

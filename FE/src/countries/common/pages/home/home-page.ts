@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 
 import { Board } from 'global/common/implementations/factories/fchan.factory.implementation';
@@ -14,7 +14,7 @@ import * as RoutesIndex from '@countries/routes.index';
 })
 export class HomePage implements OnInit {
 
-  @ViewChild(IonContent, { static: true }) content: { el: HTMLElement };
+  @ViewChild(IonContent, { static: false }) content: HTMLIonContentElement & { el: HTMLElement };
 
   public groups: { char: string; boards: Board[]; }[] = [];
 
@@ -46,8 +46,12 @@ export class HomePage implements OnInit {
   }
 
   public onCharClick(group: { char: string; boards: Board[]; }): void {
-    const div = this.content.el.getElementsByClassName('board ' + group.char)[0] as HTMLDivElement;
-    div.scrollIntoView({ behavior: 'smooth' });
+    const child = this.content.el.getElementsByClassName('board ' + group.char)[0] as HTMLDivElement;
+    const parent = child.offsetParent as HTMLElement
+    if (child) {
+      const diff = child.offsetTop + parent.offsetTop;
+      this.content.scrollToPoint(undefined, diff, Math.abs(diff - parent.scrollTop));
+    }
   }
 
   public onBoardClick(board: Board): void {
