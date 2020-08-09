@@ -1,7 +1,5 @@
 import { Observable } from 'rxjs';
 
-import { ResponseRestImplementation } from '../response-rest.implementation';
-
 export abstract class FChanFactoryImplementation {
 
     // https://github.com/4chan/4chan-API
@@ -65,11 +63,17 @@ export abstract class FChanFactoryImplementation {
 }
 
 export type GetBoardsJSON = { boards: Board[]; troll_flags: { [acronym: string]: string; } };
-export type GetThreadsJSON = { page: number; threads: Pick<Thread, 'no' | 'last_modified' | 'replies'>[]; }[];
-export type GetCatalogJSON = { page: number; threads: Omit<Thread, 'archived' | 'archived_on'>[]; }[];
+export type GetThreadsJSON = { page: number; threads: ThreadThread[]; }[];
+export type GetCatalogJSON = { page: number; threads: CatalogThread[]; }[];
 export type GetArchiveJSON = number[];
-export type GetPageJSON = { threads: { posts: Omit<Thread, 'last_replies' | 'archived' | 'archived_on'>[] }[]; };
-export type GetPostsJSON = { threads: { posts: Omit<Thread, 'omitted_posts' | 'omitted_images' | 'last_modified' | 'last_replies'>[] }[]; };
+export type GetPageJSON = { threads: { posts: PagePost[] }[]; };
+export type GetPostsJSON = { threads: { posts: PostPost[] }[]; };
+
+export type ThreadThread = Pick<Thread, 'no' | 'last_modified' | 'replies'>;
+export type CatalogThread = { page: number; threads: Omit<Thread, 'archived' | 'archived_on'>[]; }[];
+export type PagePost = Omit<Thread, 'last_replies' | 'archived' | 'archived_on'>;
+export type PostPost = Omit<Thread, 'omitted_posts' | 'omitted_images' | 'last_modified' | 'last_replies'>;
+export type LastReplyThread = Pick<Thread, 'no' | 'now' | 'name' | 'com' | 'filename' | 'ext' | 'w' | 'h' | 'tn_w' | 'tn_h' | 'tim' | 'time' | 'md5' | 'fsize' | 'resto'>;
 
 export interface Board {
     board: string; // The directory the board is located in
@@ -145,7 +149,7 @@ export interface Thread {
     since4pass?: number; // Year 4chan pass bought
     unique_ips?: number; // Number of unique posters in a thread
     m_img?: 1; // Mobile optimized image exists for post
-    last_replies?: Pick<Thread, 'no' | 'now' | 'name' | 'com' | 'filename' | 'ext' | 'w' | 'h' | 'tn_w' | 'tn_h' | 'tim' | 'time' | 'md5' | 'fsize' | 'resto'>[]; // JSON representation of the most recent replies to a thread
+    last_replies?: LastReplyThread[]; // JSON representation of the most recent replies to a thread
     archived?: 1; // Thread has reached the board's archive
     archived_on?: number; // Thread has reached the board's archive
 }

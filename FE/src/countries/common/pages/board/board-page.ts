@@ -39,6 +39,8 @@ export class BoardPage implements OnInit {
           }
           return gs;
         }, []);
+      } else {
+        console.error('fchanFactory.getBoards', result);
       }
     }, (error) => {
       console.error('fchanFactory.getBoards', error);

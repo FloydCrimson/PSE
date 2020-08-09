@@ -5,7 +5,7 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content #content fullscreen="true">
+<ion-content fullscreen="true">
   <div class="bar" slot="fixed">
     <div class="group" *ngFor="let group of groups" (click)="onCharClick(group)">
       <span class="char">{{ group.char }}</span>
