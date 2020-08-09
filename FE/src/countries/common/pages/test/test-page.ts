@@ -14,20 +14,20 @@ export class TestPage {
   constructor(
     private readonly routingService: RoutingService
   ) {
-    const navParams = this.routingService.getNavigationParams(RoutesIndex.TestPageRoute);
-    console.log('navParams', navParams);
+    const { input, query, route } = this.routingService.getNavigationParams(RoutesIndex.TestPageRoute);
+    console.log('TestPage.NavigationParams', input, query, route);
   }
 
   public navigateForward(): void {
-    this.routingService.navigate('Forward', RoutesIndex.HomePageRoute, { page: 'TestPage' }, { animationDirection: 'back' });
+    this.routingService.navigate('Forward', RoutesIndex.HomePageRoute, { input: { title: 'TestPage' } }, { animationDirection: 'back' });
   }
 
   public navigateBack(): void {
-    this.routingService.navigate('Back', RoutesIndex.HomePageRoute, { page: 'TestPage' }, { animationDirection: 'back' });
+    this.routingService.navigate('Back', RoutesIndex.HomePageRoute, { input: { title: 'TestPage' } }, { animationDirection: 'back' });
   }
 
   public navigateRoot(): void {
-    this.routingService.navigate('Root', RoutesIndex.HomePageRoute, { page: 'TestPage' }, { animationDirection: 'back' });
+    this.routingService.navigate('Root', RoutesIndex.HomePageRoute, { input: { title: 'TestPage' } }, { animationDirection: 'back' });
   }
 
 }

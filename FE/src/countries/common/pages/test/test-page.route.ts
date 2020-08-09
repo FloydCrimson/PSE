@@ -1,6 +1,7 @@
 import { RouteImplementation } from 'global/common/implementations/route.implementation';
 
-export const TestPageRoute: RouteImplementation<any> = {
-    path: 'home/test',
+export const TestPageRoute: RouteImplementation<{ title: string; }, undefined, { page: number; }> = {
+    path: 'home/test/:page',
+    route: ['page'],
     loadChildren: () => import('./test-page.module').then(m => m.TestPageModule)
 };

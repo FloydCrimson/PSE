@@ -59,7 +59,7 @@ export class AuthPage {
       exhaustMap(([{ type, value }, key]) => this.sessionService.login({ type, value, key, algorithm: 'sha256' }))
     ).subscribe((result) => {
       if (result) {
-        this.routingService.navigate('Root', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
+        this.routingService.navigate('Root', RoutesIndex.HomePageRoute, { input: { title: 'AuthPage' } }, { animationDirection: 'forward' });
       }
     });
   }
