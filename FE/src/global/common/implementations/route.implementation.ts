@@ -2,6 +2,6 @@ import { LoadChildren } from '@angular/router';
 
 export interface RouteImplementation<I = {}, Q = {}, R = {}> {
     path: string;
-    route?: [keyof R];
+    route?: (keyof R)[];
     loadChildren: LoadChildren;
 }
