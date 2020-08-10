@@ -67,7 +67,7 @@ export type GetThreadsJSON = { page: number; threads: ThreadThread[]; }[];
 export type GetCatalogJSON = { page: number; threads: CatalogThread[]; }[];
 export type GetArchiveJSON = number[];
 export type GetPageJSON = { threads: { posts: PagePost[] }[]; };
-export type GetPostsJSON = { threads: { posts: PostPost[] }[]; };
+export type GetPostsJSON = { posts: PostPost[]; };
 
 export type ThreadThread = Pick<Thread, 'no' | 'last_modified' | 'replies'>;
 export type CatalogThread = Omit<Thread, 'archived' | 'archived_on'>;

@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      ThreadPage
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen="true">
+  <ion-list class="list">
+    <ion-card class="post" *ngFor="let post of posts | slice:0:length; trackBy: onTrackByPosts">
+      <img *ngIf="post.tim" [src]="getUserImageUrlFromThread(post)">
+      <ion-card-header *ngIf="post.sub">
+        <ion-card-title>
+          <span [innerHTML]="post.sub"></span>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content *ngIf="post.com">
+        <span [innerHTML]="post.com"></span>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

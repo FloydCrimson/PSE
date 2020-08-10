@@ -45,7 +45,7 @@ export class CatalogPage implements OnInit {
   }
 
   public onThreadClick(thread: CatalogThread): void {
-    console.log('onThreadClick', thread);
+    this.routingService.navigate('Forward', RoutesIndex.ThreadPageRoute, { input: { board: this.board, thread }, route: { board: this.board.board, no: thread.no } }, { animationDirection: 'forward' });
   }
 
   public onTrackByThreads(index: number, thread: CatalogThread): number {
@@ -54,6 +54,9 @@ export class CatalogPage implements OnInit {
 
   public onIonInfinite(event): void {
     this.length = Math.min(this.threads.length, this.length + 10);
+    if (this.length === this.threads.length) {
+      event.target.disabled = true;
+    }
     event.target.complete();
   }
 
