@@ -8,7 +8,7 @@
 <ion-content fullscreen="true">
   <ion-list class="list">
     <ion-card class="post" *ngFor="let post of posts | slice:0:length; trackBy: onTrackByPosts">
-      <img *ngIf="post.tim" [src]="getUserImageUrlFromThread(post)">
+      <media-component [board]="board" [media]="post"></media-component>
       <ion-card-header *ngIf="post.sub">
         <ion-card-title>
           <span [innerHTML]="post.sub"></span>

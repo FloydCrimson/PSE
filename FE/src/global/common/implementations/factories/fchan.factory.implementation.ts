@@ -45,7 +45,7 @@ export abstract class FChanFactoryImplementation {
     // MEDIA
 
     public static getUserImageUrl(board: string, tim: number, ext: '.jpg' | '.png' | '.gif' | '.pdf' | '.swf' | '.webm', thumbnail?: boolean): string {
-        return `https://i.4cdn.org/${board}/${tim}${thumbnail ? `s` : ``}${ext}`;
+        return `https://i.4cdn.org/${board}/${tim}${thumbnail ? `s.jpg` : `${ext}`}`;
     }
 
     public static getCountryFlagUrl(country: string, troll?: boolean): string {

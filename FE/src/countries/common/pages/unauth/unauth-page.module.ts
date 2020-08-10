@@ -19,6 +19,8 @@ import { UnauthPage } from './unauth-page';
       }
     ])
   ],
-  declarations: [UnauthPage]
+  declarations: [
+    UnauthPage
+  ]
 })
 export class UnauthPageModule { }

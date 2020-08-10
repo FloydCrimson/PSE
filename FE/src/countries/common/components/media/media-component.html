@@ -1,0 +1,6 @@
+<div class="media-container" *ngIf="status !== 'undefined'">
+  <img *ngIf="type === 'img'" [width]="media.w" [height]="media.h" [src]="src">
+  <video *ngIf="type === 'video'" [width]="media.w" [height]="media.h" [poster]="thumbnail" controls>
+    <source [src]="src" type="video/webm">
+  </video>
+</div>

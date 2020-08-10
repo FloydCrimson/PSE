@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { CatalogPage } from './catalog-page';
+import { MediaComponent } from 'countries/common/components/media/media-component';
 
 @NgModule({
   imports: [
@@ -18,6 +19,12 @@ import { CatalogPage } from './catalog-page';
       }
     ])
   ],
-  declarations: [CatalogPage]
+  entryComponents: [
+    MediaComponent
+  ],
+  declarations: [
+    CatalogPage,
+    MediaComponent
+  ]
 })
 export class CatalogPageModule { }

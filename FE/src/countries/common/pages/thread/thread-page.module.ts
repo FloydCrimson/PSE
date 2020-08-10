@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { ThreadPage } from './thread-page';
+import { MediaComponent } from 'countries/common/components/media/media-component';
 
 @NgModule({
   imports: [
@@ -18,6 +19,12 @@ import { ThreadPage } from './thread-page';
       }
     ])
   ],
-  declarations: [ThreadPage]
+  entryComponents: [
+    MediaComponent
+  ],
+  declarations: [
+    ThreadPage,
+    MediaComponent
+  ]
 })
 export class ThreadPageModule { }
