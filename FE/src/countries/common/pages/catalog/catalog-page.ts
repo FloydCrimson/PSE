@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 
-import { CatalogThread, Board } from 'global/common/implementations/factories/fchan.factory.implementation';
+import { CatalogThread, Board, FChanFactoryImplementation } from 'global/common/implementations/factories/fchan.factory.implementation';
 import { FChanFactory } from 'global/factories/fchan.factory';
 import { RoutingService } from 'global/services/routing.service';
 
@@ -18,6 +18,7 @@ export class CatalogPage implements OnInit {
 
   public board: Board;
   public threads: CatalogThread[] = [];
+  public length: number = 10;
 
   constructor(
     private readonly routingService: RoutingService,
@@ -41,6 +42,23 @@ export class CatalogPage implements OnInit {
     }, (error) => {
       console.error('fchanFactory.getCatalog', error);
     });
+  }
+
+  public onThreadClick(thread: CatalogThread): void {
+    console.log('onThreadClick', thread);
+  }
+
+  public onTrackByThreads(index: number, thread: CatalogThread): number {
+    return thread.no;
+  }
+
+  public onIonInfinite(event): void {
+    this.length = Math.min(this.threads.length, this.length + 10);
+    event.target.complete();
+  }
+
+  public getUserImageUrlFromThread(thread: CatalogThread): string {
+    return FChanFactoryImplementation.getUserImageUrl(this.board.board, thread.tim, thread.ext);
   }
 
 }

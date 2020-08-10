@@ -6,9 +6,21 @@
   </ion-toolbar>
 </ion-header>
 <ion-content fullscreen="true">
-  <div class="list">
-    <div class="thread" *ngFor="let thread of threads" (click)="onThreadClick(thread)">
-      <span>{{ thread.no }}</span>
-    </div>
-  </div>
+  <ion-list class="list">
+    <ion-card class="thread" *ngFor="let thread of threads | slice:0:length; trackBy: onTrackByThreads" (click)="onThreadClick(thread)">
+      <img *ngIf="thread.tim" [src]="getUserImageUrlFromThread(thread)">
+      <ion-card-header *ngIf="thread.sub">
+        <ion-card-title>
+          <span [innerHTML]="thread.sub"></span>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content *ngIf="thread.com">
+        <span [innerHTML]="thread.com"></span>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>
