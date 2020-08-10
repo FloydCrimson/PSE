@@ -1,4 +1,7 @@
 div.media-container {
+    display: flex;
+    justify-content: center;
+
     >img {
         max-width: 100%;
         height: auto;

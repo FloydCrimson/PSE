@@ -1,9 +1,8 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 import { FChanFactoryImplementation, GetBoardsJSON, GetThreadsJSON, GetCatalogJSON, GetArchiveJSON, GetPageJSON, GetPostsJSON } from 'global/common/implementations/factories/fchan.factory.implementation';
-import { ErrorRestImplementation } from 'global/common/implementations/error-rest.implementation';
 
 export class AngularFChan extends FChanFactoryImplementation {
 
@@ -51,8 +50,9 @@ export class AngularFChan extends FChanFactoryImplementation {
                 const response: { success: boolean; response: O; } = { success: result.status === 200 || result.status === 304, response: result.body };
                 return response;
             }),
-            catchError(error => {
-                return throwError({ error: error, statusCode: ('status' in error) ? error.status : -1 } as ErrorRestImplementation);
+            catchError((error) => {
+                const response: { success: boolean; response: O; } = { success: false, response: error };
+                return of(response);
             })
         );
     }

@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 
 import { Board } from 'global/common/implementations/factories/fchan.factory.implementation';
-import { FChanFactory } from 'global/factories/fchan.factory';
 import { RoutingService } from 'global/services/routing.service';
+import { FChanService } from 'global/services/fchan.service';
 
 import * as RoutesIndex from '@countries/routes.index';
 
@@ -20,7 +20,7 @@ export class BoardPage implements OnInit {
 
   constructor(
     private readonly routingService: RoutingService,
-    private readonly fchanFactory: FChanFactory
+    private readonly fchanService: FChanService
   ) { }
 
   public ngOnInit(): void {
@@ -28,7 +28,7 @@ export class BoardPage implements OnInit {
   }
 
   private initialize(): void {
-    this.fchanFactory.get('API').getBoards().subscribe((result) => {
+    this.fchanService.getBoards().subscribe((result) => {
       if (result.success) {
         this.groups = result.response.boards.reduce((gs, b) => {
           const group = gs.find((g) => g.char === b.board[0]);

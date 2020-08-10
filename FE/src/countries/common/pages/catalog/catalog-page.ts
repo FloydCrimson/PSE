@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 
 import { CatalogThread, Board, FChanFactoryImplementation } from 'global/common/implementations/factories/fchan.factory.implementation';
-import { FChanFactory } from 'global/factories/fchan.factory';
 import { RoutingService } from 'global/services/routing.service';
+import { FChanService } from 'global/services/fchan.service';
 
 import * as RoutesIndex from '@countries/routes.index';
 
@@ -22,7 +22,7 @@ export class CatalogPage implements OnInit {
 
   constructor(
     private readonly routingService: RoutingService,
-    private readonly fchanFactory: FChanFactory
+    private readonly fchanService: FChanService
   ) {
     const params = this.routingService.getNavigationParams(RoutesIndex.CatalogPageRoute);
     this.board = params.input.board;
@@ -33,7 +33,7 @@ export class CatalogPage implements OnInit {
   }
 
   private initialize(): void {
-    this.fchanFactory.get('API').getCatalog(this.board.board).subscribe((result) => {
+    this.fchanService.getCatalog(this.board.board).subscribe((result) => {
       if (result.success) {
         this.threads = result.response.reduce((ts, t) => ts.concat(t.threads), []);
       } else {

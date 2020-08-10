@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 
 import { Board, FChanFactoryImplementation, CatalogThread, PostPost } from 'global/common/implementations/factories/fchan.factory.implementation';
-import { FChanFactory } from 'global/factories/fchan.factory';
 import { RoutingService } from 'global/services/routing.service';
+import { FChanService } from 'global/services/fchan.service';
 
 import * as RoutesIndex from '@countries/routes.index';
 
@@ -23,7 +23,7 @@ export class ThreadPage implements OnInit {
 
   constructor(
     private readonly routingService: RoutingService,
-    private readonly fchanFactory: FChanFactory
+    private readonly fchanService: FChanService
   ) {
     const params = this.routingService.getNavigationParams(RoutesIndex.ThreadPageRoute);
     this.board = params.input.board;
@@ -35,7 +35,7 @@ export class ThreadPage implements OnInit {
   }
 
   private initialize(): void {
-    this.fchanFactory.get('API').getPosts(this.board.board, this.thread.no).subscribe((result) => {
+    this.fchanService.getPosts(this.board.board, this.thread.no).subscribe((result) => {
       if (result.success) {
         this.posts = result.response.posts;
       } else {
