@@ -17,7 +17,7 @@ export class RoutingService {
         private readonly router: Router
     ) { }
 
-    public navigate<I = {}, Q = {}, R = {}>(type: 'Forward' | 'Back' | 'Root', route: RouteImplementation<I, Q, R>, params?: { input?: I; query?: Q; route?: R; }, options?: NavigationOptions): Promise<boolean> {
+    public navigate<I = undefined, Q = undefined, R = undefined>(type: 'Forward' | 'Back' | 'Root', route: RouteImplementation<I, Q, R>, params?: { input?: I; query?: Q; route?: R; }, options?: NavigationOptions): Promise<boolean> {
         params = { ...params };
         options = { animated: true, queryParamsHandling: 'preserve', ...options, queryParams: params.query, state: {} };
         const token = route.path;
@@ -35,7 +35,7 @@ export class RoutingService {
         }
     }
 
-    public getNavigationParams<I = {}, Q = {}, R = {}>(route: RouteImplementation<I, Q, R>): { input?: I; query?: Q; route?: R; } {
+    public getNavigationParams<I = undefined, Q = undefined, R = undefined>(route: RouteImplementation<I, Q, R>): { input?: I; query?: Q; route?: R; } {
         const navigation = this.router.getCurrentNavigation();
         if (navigation && navigation.extras && navigation.extras.state && navigation.extras.state.token && navigation.extras.state.token === route.path) {
             const token = navigation.extras.state.token;
@@ -49,7 +49,7 @@ export class RoutingService {
 
     //
 
-    private getPath<R = {}>(path: string, route?: R): string {
+    private getPath<R = undefined>(path: string, route?: R): string {
         if (route) {
             for (const key in route) {
                 const regex = new RegExp([`(^:${key}$)`, `(^:${key}\\/)`, `(\\/:${key}$)`, `(\\/:${key}\\/)`].join('|'), 'g');
