@@ -8,7 +8,7 @@ import * as RoutesIndex from '@countries/routes.index';
 @Component({
   selector: 'home-page',
   templateUrl: 'home-page.html',
-  styleUrls: ['home-page.scss'],
+  styleUrls: ['home-page.scss']
 })
 export class HomePage {
 

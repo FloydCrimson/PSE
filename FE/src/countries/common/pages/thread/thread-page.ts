@@ -10,7 +10,7 @@ import * as RoutesIndex from '@countries/routes.index';
 @Component({
   selector: 'thread-page',
   templateUrl: 'thread-page.html',
-  styleUrls: ['thread-page.scss'],
+  styleUrls: ['thread-page.scss']
 })
 export class ThreadPage implements OnInit {
 
@@ -51,7 +51,11 @@ export class ThreadPage implements OnInit {
   }
 
   public onReferenceClick(no: number): void {
-    console.log('onReferenceClick', no);
+    const child = this.content.el.getElementsByClassName('post ' + no)[0] as HTMLDivElement;
+    if (child) {
+      const diff = child.offsetTop;
+      this.content.scrollToPoint(undefined, diff, 500);
+    }
   }
 
   public onTrackByPosts(index: number, post: PostPost): number {

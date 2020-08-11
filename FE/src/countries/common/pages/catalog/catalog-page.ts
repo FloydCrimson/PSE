@@ -10,7 +10,7 @@ import * as RoutesIndex from '@countries/routes.index';
 @Component({
   selector: 'catalog-page',
   templateUrl: 'catalog-page.html',
-  styleUrls: ['catalog-page.scss'],
+  styleUrls: ['catalog-page.scss']
 })
 export class CatalogPage implements OnInit {
 

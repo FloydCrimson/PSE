@@ -1,1 +1,35 @@
-ion-card.thread {}
+ion-card {
+    ion-card-header {
+        ion-card-title {
+            span.sub {
+                a.quotelink {}
+
+                span.quote {
+                    color: #789922;
+                }
+
+                s.hidden {
+                    color: #000 !important;
+                    background: #000 !important;
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+
+    ion-card-content {
+        span.com {
+            a.quotelink {}
+
+            span.quote {
+                color: #789922;
+            }
+
+            s.hidden {
+                color: #000 !important;
+                background: #000 !important;
+                text-decoration: none;
+            }
+        }
+    }
+}

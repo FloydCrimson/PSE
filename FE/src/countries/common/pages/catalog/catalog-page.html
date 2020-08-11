@@ -7,12 +7,14 @@
 </ion-header>
 <ion-content fullscreen="true">
   <ion-list class="list">
-    <comment-component *ngFor="let thread of threads | slice:0:length; trackBy: onTrackByThreads"
-      [board]="board" 
-      [thread]="thread" 
-      (thread-click)="onThreadClick(thread)" 
-      (reference-click)="onReferenceClick(no)">
-    </comment-component>
+    <ion-item class="thread" lines="none" *ngFor="let thread of threads | slice:0:length; trackBy: onTrackByThreads" [ngClass]="thread.no.toString()">
+      <comment-component
+        [board]="board" 
+        [thread]="thread" 
+        (thread-click)="onThreadClick($event)" 
+        (reference-click)="onReferenceClick($event)">
+      </comment-component>
+    </ion-item>
   </ion-list>
   <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
     <ion-infinite-scroll-content loadingSpinner="bubbles">

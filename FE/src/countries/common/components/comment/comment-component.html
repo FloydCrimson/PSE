@@ -1,4 +1,4 @@
-<ion-card class="thread" [ngClass]="getThreadId()" (click)="onThreadClick()">
+<ion-card (click)="onThreadClick()">
   <media-component [board]="board" [media]="thread"></media-component>
   <ion-card-header *ngIf="thread.sub">
     <ion-card-title>

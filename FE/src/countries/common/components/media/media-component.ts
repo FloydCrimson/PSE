@@ -6,7 +6,7 @@ import { MediaService } from 'global/services/media.service';
 @Component({
   selector: 'media-component',
   templateUrl: 'media-component.html',
-  styleUrls: ['media-component.scss'],
+  styleUrls: ['media-component.scss']
 })
 export class MediaComponent implements OnInit {
 
