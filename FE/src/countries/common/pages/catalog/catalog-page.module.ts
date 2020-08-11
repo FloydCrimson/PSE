@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { CatalogPage } from './catalog-page';
-import { CommentComponent } from 'countries/common/components/comment/comment-component';
+import { PostComponent } from 'countries/common/components/post/post-component';
 import { MediaComponent } from 'countries/common/components/media/media-component';
 
 @NgModule({
@@ -21,12 +21,12 @@ import { MediaComponent } from 'countries/common/components/media/media-componen
     ])
   ],
   entryComponents: [
-    CommentComponent,
+    PostComponent,
     MediaComponent
   ],
   declarations: [
     CatalogPage,
-    CommentComponent,
+    PostComponent,
     MediaComponent
   ]
 })

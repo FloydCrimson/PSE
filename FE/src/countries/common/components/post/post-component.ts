@@ -4,19 +4,19 @@ import { IonCard } from '@ionic/angular';
 import { Board, Thread } from 'global/common/implementations/factories/fchan.factory.implementation';
 
 @Component({
-  selector: 'comment-component',
-  templateUrl: 'comment-component.html',
-  styleUrls: ['comment-component.scss'],
+  selector: 'post-component',
+  templateUrl: 'post-component.html',
+  styleUrls: ['post-component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class CommentComponent implements AfterViewInit {
+export class PostComponent implements AfterViewInit {
 
   @ViewChild(IonCard, { static: false }) card: HTMLIonCardElement & { el: HTMLElement };
 
   @Input('board') board: Board;
-  @Input('thread') thread: Thread;
+  @Input('post') post: Thread;
 
-  @Output('thread-click') onThreadClickEmitter = new EventEmitter<Thread>();
+  @Output('post-click') onPostClickEmitter = new EventEmitter<Thread>();
   @Output('reference-click') onReferenceClickEmitter = new EventEmitter<number>();
 
   constructor() { }
@@ -53,8 +53,8 @@ export class CommentComponent implements AfterViewInit {
     });
   }
 
-  public onThreadClick(): void {
-    this.onThreadClickEmitter.emit(this.thread);
+  public onPostClick(): void {
+    this.onPostClickEmitter.emit(this.post);
   }
 
   public onReferenceClick(no: number): void {

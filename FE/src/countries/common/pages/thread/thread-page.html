@@ -8,12 +8,12 @@
 <ion-content fullscreen="true">
   <ion-list class="list">
     <ion-item class="post" lines="none" *ngFor="let post of posts | slice:0:length; trackBy: onTrackByPosts" [ngClass]="post.no.toString()">
-      <comment-component
+      <post-component
         [board]="board" 
-        [thread]="post" 
-        (thread-click)="onPostClick($event)" 
+        [post]="post" 
+        (post-click)="onPostClick($event)" 
         (reference-click)="onReferenceClick($event)">
-      </comment-component>
+      </post-component>
     </ion-item>
   </ion-list>
   <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">

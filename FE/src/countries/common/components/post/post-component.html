@@ -1,0 +1,11 @@
+<ion-card (click)="onPostClick()">
+  <media-component [board]="board" [media]="post"></media-component>
+  <ion-card-header *ngIf="post.sub">
+    <ion-card-title>
+      <span class="sub" [innerHTML]="post.sub"></span>
+    </ion-card-title>
+  </ion-card-header>
+  <ion-card-content *ngIf="post.com">
+    <span class="com" [innerHTML]="post.com"></span>
+  </ion-card-content>
+</ion-card>
