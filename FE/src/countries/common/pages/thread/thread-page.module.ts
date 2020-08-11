@@ -8,12 +8,14 @@ import { ThreadPage } from './thread-page';
 import { PostComponent } from 'countries/common/components/post/post-component';
 import { MediaComponent } from 'countries/common/components/media/media-component';
 import { CommentComponent } from 'countries/common/components/comment/comment-component';
+import { ComponentsModule } from 'countries/common/components/components.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+    ComponentsModule,
     RouterModule.forChild([
       {
         path: '',
@@ -27,10 +29,7 @@ import { CommentComponent } from 'countries/common/components/comment/comment-co
     CommentComponent
   ],
   declarations: [
-    ThreadPage,
-    PostComponent,
-    MediaComponent,
-    CommentComponent
+    ThreadPage
   ]
 })
 export class ThreadPageModule { }
