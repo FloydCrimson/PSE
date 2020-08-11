@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 
-import { CatalogThread, Board, FChanFactoryImplementation } from 'global/common/implementations/factories/fchan.factory.implementation';
+import { CatalogThread, Board } from 'global/common/implementations/factories/fchan.factory.implementation';
 import { RoutingService } from 'global/services/routing.service';
 import { FChanService } from 'global/services/fchan.service';
 
@@ -48,20 +48,20 @@ export class CatalogPage implements OnInit {
     this.routingService.navigate('Forward', RoutesIndex.ThreadPageRoute, { input: { board: this.board, thread }, route: { board: this.board.board, no: thread.no } }, { animationDirection: 'forward' });
   }
 
+  public onReferenceClick(no: number): void {
+    console.log('onReferenceClick', no);
+  }
+
   public onTrackByThreads(index: number, thread: CatalogThread): number {
     return thread.no;
   }
 
   public onIonInfinite(event): void {
-    this.length = Math.min(this.threads.length, this.length + 10);
+    this.length = Math.min(this.threads.length, this.length + 5);
     if (this.length === this.threads.length) {
       event.target.disabled = true;
     }
     event.target.complete();
-  }
-
-  public getUserImageUrlFromThread(thread: CatalogThread): string {
-    return FChanFactoryImplementation.getUserImageUrl(this.board.board, thread.tim, thread.ext);
   }
 
 }

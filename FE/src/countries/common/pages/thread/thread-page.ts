@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 
-import { Board, FChanFactoryImplementation, CatalogThread, PostPost } from 'global/common/implementations/factories/fchan.factory.implementation';
+import { Board, CatalogThread, PostPost } from 'global/common/implementations/factories/fchan.factory.implementation';
 import { RoutingService } from 'global/services/routing.service';
 import { FChanService } from 'global/services/fchan.service';
 
@@ -46,20 +46,24 @@ export class ThreadPage implements OnInit {
     });
   }
 
+  public onPostClick(post: PostPost): void {
+    console.log('onPostClick', post);
+  }
+
+  public onReferenceClick(no: number): void {
+    console.log('onReferenceClick', no);
+  }
+
   public onTrackByPosts(index: number, post: PostPost): number {
     return post.no;
   }
 
   public onIonInfinite(event): void {
-    this.length = Math.min(this.posts.length, this.length + 10);
+    this.length = Math.min(this.posts.length, this.length + 5);
     if (this.length === this.posts.length) {
       event.target.disabled = true;
     }
     event.target.complete();
-  }
-
-  public getUserImageUrlFromThread(post: PostPost): string {
-    return FChanFactoryImplementation.getUserImageUrl(this.board.board, post.tim, post.ext);
   }
 
 }

@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { ThreadPage } from './thread-page';
+import { CommentComponent } from 'countries/common/components/comment/comment-component';
 import { MediaComponent } from 'countries/common/components/media/media-component';
 
 @NgModule({
@@ -20,10 +21,12 @@ import { MediaComponent } from 'countries/common/components/media/media-componen
     ])
   ],
   entryComponents: [
+    CommentComponent,
     MediaComponent
   ],
   declarations: [
     ThreadPage,
+    CommentComponent,
     MediaComponent
   ]
 })

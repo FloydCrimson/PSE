@@ -4,7 +4,7 @@
     <img *ngIf="status === 'loaded'" [width]="media.w" [height]="media.h" [src]="src">
   </ng-container>
   <ng-container *ngIf="type === 'video'">
-    <video *ngIf="status === 'loading'" [width]="media.w" [height]="media.h" [poster]="thumbnail" controls>
+    <video *ngIf="status === 'loading' || status === 'loaded'" [width]="media.w" [height]="media.h" [poster]="thumbnail" controls>
       <source *ngIf="status === 'loaded'" [src]="src" type="video/webm">
     </video>
   </ng-container>

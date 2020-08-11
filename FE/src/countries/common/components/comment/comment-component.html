@@ -1,0 +1,11 @@
+<ion-card class="thread" [ngClass]="getThreadId()" (click)="onThreadClick()">
+  <media-component [board]="board" [media]="thread"></media-component>
+  <ion-card-header *ngIf="thread.sub">
+    <ion-card-title>
+      <span class="sub" [innerHTML]="thread.sub"></span>
+    </ion-card-title>
+  </ion-card-header>
+  <ion-card-content *ngIf="thread.com">
+    <span class="com" [innerHTML]="thread.com"></span>
+  </ion-card-content>
+</ion-card>
