@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { ThreadPage } from './thread-page';
 import { PostComponent } from 'countries/common/components/post/post-component';
 import { MediaComponent } from 'countries/common/components/media/media-component';
+import { CommentComponent } from 'countries/common/components/comment/comment-component';
 
 @NgModule({
   imports: [
@@ -22,12 +23,14 @@ import { MediaComponent } from 'countries/common/components/media/media-componen
   ],
   entryComponents: [
     PostComponent,
-    MediaComponent
+    MediaComponent,
+    CommentComponent
   ],
   declarations: [
     ThreadPage,
     PostComponent,
-    MediaComponent
+    MediaComponent,
+    CommentComponent
   ]
 })
 export class ThreadPageModule { }

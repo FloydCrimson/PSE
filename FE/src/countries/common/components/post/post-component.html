@@ -2,10 +2,16 @@
   <media-component [board]="board" [media]="post"></media-component>
   <ion-card-header *ngIf="post.sub">
     <ion-card-title>
-      <span class="sub" [innerHTML]="post.sub"></span>
+      <comment-component
+       [comment]="post.sub"
+       (reference-click)="onReferenceClick($event)">
+      </comment-component>
     </ion-card-title>
   </ion-card-header>
   <ion-card-content *ngIf="post.com">
-    <span class="com" [innerHTML]="post.com"></span>
+    <comment-component
+     [comment]="post.com"
+     (reference-click)="onReferenceClick($event)">
+    </comment-component>
   </ion-card-content>
 </ion-card>
