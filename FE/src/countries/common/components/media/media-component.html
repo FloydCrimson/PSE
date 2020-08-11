@@ -1,6 +1,11 @@
 <div class="media-container" *ngIf="status !== 'undefined'">
-  <img *ngIf="type === 'img'" [width]="media.w" [height]="media.h" [src]="src">
-  <video *ngIf="type === 'video'" [width]="media.w" [height]="media.h" [poster]="thumbnail" controls>
-    <source [src]="src" type="video/webm">
-  </video>
+  <ng-container *ngIf="type === 'img'">
+    <img *ngIf="status === 'loading'" [width]="media.w" [height]="media.h" [src]="thumbnail">
+    <img *ngIf="status === 'loaded'" [width]="media.w" [height]="media.h" [src]="src">
+  </ng-container>
+  <ng-container *ngIf="type === 'video'">
+    <video *ngIf="status === 'loading'" [width]="media.w" [height]="media.h" [poster]="thumbnail" controls>
+      <source *ngIf="status === 'loaded'" [src]="src" type="video/webm">
+    </video>
+  </ng-container>
 </div>

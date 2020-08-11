@@ -6,6 +6,8 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { HTTP } from '@ionic-native/http/ngx';
+import { FileTransfer } from '@ionic-native/file-transfer/ngx';
+import { File } from '@ionic-native/file/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -29,6 +31,8 @@ import { AppRoutingModule } from './app-routing.module';
   providers: [
     Deeplinks,
     HTTP,
+    FileTransfer,
+    File,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

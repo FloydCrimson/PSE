@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 
 import { FChanFactoryImplementation, Board, Thread } from 'global/common/implementations/factories/fchan.factory.implementation';
+import { MediaService } from 'global/services/media.service';
 
 @Component({
   selector: 'media-component',
@@ -12,19 +13,23 @@ export class MediaComponent implements OnInit {
   @Input('board') board: Board;
   @Input('media') media: Thread;
 
-  public thumbnail: string;
-  public src: string;
   public type: 'img' | 'video' | 'flash';
   public status: 'undefined' | 'loading' | 'loaded' | 'error' | 'deleted' = 'undefined';
+  public thumbnail: string;
+  public src: string;
 
-  constructor() { }
+  constructor(
+    private readonly mediaService: MediaService
+  ) { }
 
-  public ngOnInit(): void {
+  public async ngOnInit(): Promise<void> {
     if (this.media.tim) {
-      this.thumbnail = FChanFactoryImplementation.getUserImageUrl(this.board.board, this.media.tim, this.media.ext, true);
-      this.src = FChanFactoryImplementation.getUserImageUrl(this.board.board, this.media.tim, this.media.ext);
       this.type = (this.media.ext === '.swf') ? 'flash' : ((this.media.ext === '.webm') ? 'video' : 'img');
       this.status = 'loading';
+      this.thumbnail = FChanFactoryImplementation.getUserImageUrl(this.board.board, this.media.tim, this.media.ext, true);
+      const srcResponse = await this.mediaService.download(FChanFactoryImplementation.getUserImageUrl(this.board.board, this.media.tim, this.media.ext));
+      this.src = srcResponse.url;
+      this.status = srcResponse.success ? 'loaded' : 'error';
     } else {
       this.status = 'undefined';
     }
