@@ -1,10 +1,10 @@
-<div class="media-container" *ngIf="status !== 'undefined'" (click)="onMediaClick()" [ngClass]="{ 'loading': status === 'loading', 'error': status === 'error', 'deleted': status === 'deleted' }">
+<div class="media-container" *ngIf="status !== 'undefined'" [ngClass]="{ 'loading': status === 'loading', 'error': status === 'error', 'deleted': status === 'deleted' }">
   <ng-container *ngIf="type === 'img'">
-    <img *ngIf="status !== 'loaded'" [width]="media.w" [height]="media.h" [src]="thumbnail">
+    <img #thumbnail *ngIf="status !== 'loaded'" [width]="media.w" [height]="media.h" [src]="srct">
     <img *ngIf="status === 'loaded'" [width]="media.w" [height]="media.h" [src]="src">
   </ng-container>
   <ng-container *ngIf="type === 'video'">
-    <video [width]="media.w" [height]="media.h" [poster]="thumbnail" controls>
+    <video #video [width]="media.w" [height]="media.h" [poster]="srct" controls>
       <source *ngIf="status === 'loaded'" [src]="src" type="video/webm">
     </video>
   </ng-container>

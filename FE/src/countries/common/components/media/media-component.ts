@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 
 import { FChanFactoryImplementation, Board, Thread } from 'global/common/implementations/factories/fchan.factory.implementation';
 import { MediaService } from 'global/services/media.service';
@@ -10,12 +10,24 @@ import { MediaService } from 'global/services/media.service';
 })
 export class MediaComponent implements OnInit {
 
+  @ViewChild('thumbnail', { static: false }) set thumbnail(thumbnail: { nativeElement: HTMLImageElement; }) {
+    if (thumbnail) {
+      thumbnail.nativeElement.addEventListener('click', _ => this.onMediaClick());
+    }
+  };
+
+  @ViewChild('video', { static: false }) set video(video: { nativeElement: HTMLVideoElement; }) {
+    if (video) {
+      video.nativeElement.addEventListener('waiting', _ => this.onMediaClick());
+    }
+  };
+
   @Input('board') board: Board;
   @Input('media') media: Thread;
 
   public type: 'img' | 'video' | 'flash';
   public status: 'undefined' | 'pause' | 'loading' | 'loaded' | 'error' | 'deleted' = 'undefined';
-  public thumbnail: string;
+  public srct: string;
   public src: string;
 
   constructor(
@@ -26,7 +38,7 @@ export class MediaComponent implements OnInit {
     if (this.media.tim) {
       this.type = (this.media.ext === '.swf') ? 'flash' : ((this.media.ext === '.webm') ? 'video' : 'img');
       this.status = 'pause';
-      this.thumbnail = FChanFactoryImplementation.getUserImageUrl(this.board.board, this.media.tim, this.media.ext, true);
+      this.srct = FChanFactoryImplementation.getUserImageUrl(this.board.board, this.media.tim, this.media.ext, true);
       const src = FChanFactoryImplementation.getUserImageUrl(this.board.board, this.media.tim, this.media.ext);
       const cached = await this.mediaService.cached(src);
       if (cached) {
