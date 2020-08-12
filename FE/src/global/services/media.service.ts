@@ -8,17 +8,17 @@ import { Capacitor } from '@capacitor/core';
 })
 export class MediaService {
 
-    private stack: Map<string, [((value?: { success: boolean; url?: string; error?: any; }) => void)[], ((reason?: any) => void)[]]>;
+    private stack: Map<string, [((value?: { success: boolean; url?: string; }) => void)[], ((reason?: any) => void)[]]>;
 
     constructor(
         private readonly fileTransfer: FileTransfer,
         private readonly file: File
     ) {
-        this.stack = new Map<string, [((value?: { success: boolean; url?: string; error?: any; }) => void)[], ((reason?: any) => void)[]]>();
+        this.stack = new Map<string, [((value?: { success: boolean; url?: string; }) => void)[], ((reason?: any) => void)[]]>();
     }
 
-    public download(urlRemote: string): Promise<{ success: boolean; url?: string; error?: any; }> {
-        return new Promise<{ success: boolean; url?: string; error?: any; }>((resolve, reject) => {
+    public download(urlRemote: string): Promise<{ success: boolean; url?: string; }> {
+        return new Promise<{ success: boolean; url?: string; }>((resolve, reject) => {
             if (this.stack.has(urlRemote)) {
                 const [resolvers, rejecters] = this.stack.get(urlRemote);
                 resolvers.push(resolve);
@@ -32,6 +32,14 @@ export class MediaService {
         });
     }
 
+    public cached(urlRemote: string): Promise<boolean> {
+        return this.file.checkFile(this.file.applicationStorageDirectory, new URL(urlRemote).pathname.replace(/^\/+/, '')).then((result) => result, _ => false).catch(_ => false);
+    }
+
+    private transfer(urlRemote: string, urlLocal: string): Promise<boolean> {
+        return this.fileTransfer.create().download(urlRemote, urlLocal, true).then(_ => true, _ => false).catch(_ => false);
+    }
+
     //
 
     private next(): void {
@@ -39,36 +47,34 @@ export class MediaService {
             const urlRemote = this.stack.keys().next().value;
             const urlLocal = this.file.applicationStorageDirectory + new URL(urlRemote).pathname.replace(/^\/+/, '');
             const [resolvers, rejecters] = this.stack.get(urlRemote);
-            this.file.checkFile(this.file.applicationStorageDirectory, new URL(urlRemote).pathname.replace(/^\/+/, '')).then(_ => {
-                this.nextResolve(resolvers, urlRemote, urlLocal);
-                console.log('Media cached.', urlRemote, urlLocal);
-            }, _ => {
-                console.log('Media not cached. Downloading...', urlRemote, urlLocal);
-                this.fileTransfer.create().download(urlRemote, urlLocal, true).then(_ => {
+            this.cached(urlRemote).then((result) => {
+                if (result) {
+                    console.log('Media cached.', urlRemote, urlLocal);
                     this.nextResolve(resolvers, urlRemote, urlLocal);
-                    console.log('Media downloaded.', urlRemote, urlLocal);
-                }, (error) => {
-                    this.nextReject(resolvers, urlRemote, error);
-                    console.warn('Unable to download.', urlRemote, urlLocal, error);
-                }).catch((error) => {
-                    this.nextReject(resolvers, urlRemote, error);
-                    console.warn('Unable to download.', urlRemote, urlLocal, error);
-                });
-            }).catch((error) => {
-                this.nextReject(resolvers, urlRemote, error);
-                console.warn('Unable to check cache existance.', urlRemote, urlLocal, error);
+                } else {
+                    console.log('Media not cached. Downloading...', urlRemote, urlLocal);
+                    this.transfer(urlRemote, urlLocal).then((result) => {
+                        if (result) {
+                            console.log('Media downloaded.', urlRemote, urlLocal);
+                            this.nextResolve(resolvers, urlRemote, urlLocal);
+                        } else {
+                            console.warn('Unable to download.', urlRemote, urlLocal);
+                            this.nextReject(resolvers, urlRemote);
+                        }
+                    });
+                }
             });
         }
     }
 
-    private nextResolve(resolvers: ((value?: { success: boolean; url?: string; error?: any; }) => void)[], urlRemote: string, urlLocal: string): void {
+    private nextResolve(resolvers: ((value?: { success: boolean; url?: string; }) => void)[], urlRemote: string, urlLocal: string): void {
         resolvers.forEach((resolve) => resolve({ success: true, url: Capacitor.convertFileSrc(urlLocal) }));
         this.stack.delete(urlRemote);
         this.next();
     }
 
-    private nextReject(resolvers: ((value?: { success: boolean; url?: string; error?: any; }) => void)[], urlRemote: string, error: any): void {
-        resolvers.forEach((resolve) => resolve({ success: false, error }));
+    private nextReject(resolvers: ((value?: { success: boolean; url?: string; }) => void)[], urlRemote: string): void {
+        resolvers.forEach((resolve) => resolve({ success: false }));
         this.stack.delete(urlRemote);
         this.next();
     }
