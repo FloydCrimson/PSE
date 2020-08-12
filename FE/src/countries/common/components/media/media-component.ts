@@ -29,6 +29,7 @@ export class MediaComponent implements OnInit {
   public status: 'undefined' | 'pause' | 'loading' | 'loaded' | 'error' | 'deleted' = 'undefined';
   public srct: string;
   public src: string;
+  public visible: boolean = false;
 
   constructor(
     private readonly mediaService: MediaService
@@ -38,6 +39,12 @@ export class MediaComponent implements OnInit {
     if (this.media.tim) {
       this.type = (this.media.ext === '.swf') ? 'flash' : ((this.media.ext === '.webm') ? 'video' : 'img');
       this.status = 'pause';
+    }
+  }
+
+  public async onViewportVisibilityChange(event: { visible: boolean; }): Promise<void> {
+    if (this.status === 'pause' && !this.visible && event.visible) {
+      this.visible = event.visible;
       this.srct = FChanFactoryImplementation.getUserImageUrl(this.board.board, this.media.tim, this.media.ext, true);
       const src = FChanFactoryImplementation.getUserImageUrl(this.board.board, this.media.tim, this.media.ext);
       const cached = await this.mediaService.cached(src);

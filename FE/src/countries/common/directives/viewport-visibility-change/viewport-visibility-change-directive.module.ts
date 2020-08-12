@@ -16,6 +16,9 @@ import { ViewportVisibilityChangeDirective } from './viewport-visibility-change-
     ],
     exports: [
         ViewportVisibilityChangeDirective
+    ],
+    providers: [
+        ViewportVisibilityChangeDirective
     ]
 })
 export class ViewportVisibilityChangeDirectiveModule { }
