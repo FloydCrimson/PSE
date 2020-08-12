@@ -10,12 +10,11 @@ ion-content {
 
         >div.group {
             margin: auto;
-
-            >span.char {}
         }
     }
 
     ion-list.list {
+        padding-top: 0px;
         margin-left: 10%;
 
         >ion-item.board {

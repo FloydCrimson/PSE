@@ -1,4 +1,12 @@
 div.comment-container {
+    a.quotelink {
+        color: blue;
+    }
+
+    span.deadlink {
+        color: red;
+    }
+
     span.quote {
         color: #789922;
     }

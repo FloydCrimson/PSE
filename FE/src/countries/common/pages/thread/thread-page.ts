@@ -5,6 +5,8 @@ import { Board, CatalogThread, PostPost } from 'global/common/implementations/fa
 import { RoutingService } from 'global/services/routing.service';
 import { FChanService } from 'global/services/fchan.service';
 
+import { CommentReference } from 'countries/common/components/comment/comment-component';
+
 import * as RoutesIndex from '@countries/routes.index';
 
 @Component({
@@ -50,11 +52,26 @@ export class ThreadPage implements OnInit {
     console.log('onPostClick', post);
   }
 
-  public onReferenceClick(no: number): void {
-    const child = this.content.el.getElementsByClassName('post ' + no)[0] as HTMLDivElement;
-    if (child) {
-      const diff = child.offsetTop;
-      this.content.scrollToPoint(undefined, diff, 500);
+  public onReferenceClick<T extends keyof CommentReference>(reference: { type: T; value: CommentReference[T]; }): void {
+    if (reference.type === 'board-no-ref') {
+      console.log(reference);
+    } else if (reference.type === 'board-no') {
+      console.log(reference);
+    } else if (reference.type === 'ref') {
+      const value = reference.value as CommentReference['ref'];
+      const child = this.content.el.getElementsByClassName('post ' + value.ref)[0] as HTMLDivElement;
+      if (child) {
+        const diff = child.offsetTop;
+        this.content.scrollToPoint(undefined, diff, 500);
+      }
+    } else {
+      try {
+        const value = reference.value as CommentReference['unrecognized'];
+        const url = new URL(value.href);
+        window.open(url.href, '_system')
+      } catch (error) {
+        console.log('Unrecognized link found.', reference);
+      }
     }
   }
 
