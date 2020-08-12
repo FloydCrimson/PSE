@@ -5,28 +5,20 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { ThreadPage } from './thread-page';
-import { PostComponent } from 'countries/common/components/post/post-component';
-import { MediaComponent } from 'countries/common/components/media/media-component';
-import { CommentComponent } from 'countries/common/components/comment/comment-component';
-import { ComponentsModule } from 'countries/common/components/components.module';
+import { PostComponentModule } from 'countries/common/components/post/post-component.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ComponentsModule,
+    PostComponentModule,
     RouterModule.forChild([
       {
         path: '',
         component: ThreadPage
       }
     ])
-  ],
-  entryComponents: [
-    PostComponent,
-    MediaComponent,
-    CommentComponent
   ],
   declarations: [
     ThreadPage
