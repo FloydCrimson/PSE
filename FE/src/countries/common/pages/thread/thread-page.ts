@@ -3,11 +3,13 @@ import { IonContent } from '@ionic/angular';
 
 import { Board, CatalogThread, PostPost } from 'global/common/implementations/factories/fchan.factory.implementation';
 import { RoutingService } from 'global/services/routing.service';
+import { ModalService } from 'global/services/modal.service';
 import { FChanService } from 'global/services/fchan.service';
 
 import { CommentReference } from 'countries/common/components/comment/comment-component';
 
 import * as RoutesIndex from '@countries/routes.index';
+import * as ModalsIndex from '@countries/modals.index';
 
 @Component({
   selector: 'thread-page',
@@ -25,6 +27,7 @@ export class ThreadPage implements OnInit {
 
   constructor(
     private readonly routingService: RoutingService,
+    private readonly modalService: ModalService,
     private readonly fchanService: FChanService
   ) {
     const params = this.routingService.getNavigationParams(RoutesIndex.ThreadPageRoute);
@@ -59,10 +62,11 @@ export class ThreadPage implements OnInit {
       console.log(reference);
     } else if (reference.type === 'ref') {
       const value = reference.value as CommentReference['ref'];
-      const child = this.content.el.getElementsByClassName('post ' + value.ref)[0] as HTMLDivElement;
-      if (child) {
-        const diff = child.offsetTop;
-        this.content.scrollToPoint(undefined, diff, 500);
+      const post = this.posts.find((post) => post.no === value.ref);
+      if (post) {
+        this.modalService.present(ModalsIndex.PostComponentModal, { board: this.board, post, overlay: true }, { cssClass: 'modal-overlay background-transparent' }).then((result) => {
+          console.log('this.modalService.dismiss');
+        });
       }
     } else {
       try {
