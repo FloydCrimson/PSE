@@ -57,7 +57,7 @@ export class CatalogPage implements OnInit {
   }
 
   public onIonInfinite(event): void {
-    this.length = Math.min(this.threads.length, this.length + 5);
+    this.length = Math.min(this.threads.length, this.length + 10);
     if (this.length === this.threads.length) {
       event.target.disabled = true;
     }

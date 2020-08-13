@@ -80,7 +80,7 @@ export class ThreadPage implements OnInit {
   }
 
   public onIonInfinite(event): void {
-    this.length = Math.min(this.posts.length, this.length + 5);
+    this.length = Math.min(this.posts.length, this.length + 10);
     if (this.length === this.posts.length) {
       event.target.disabled = true;
     }
