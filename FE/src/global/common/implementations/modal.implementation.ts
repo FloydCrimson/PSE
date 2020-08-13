@@ -1,5 +1,3 @@
-import { LoadChildren } from '@angular/router';
-
-export interface ModalImplementation<I, O> {
+export interface ModalImplementation<I = undefined, O = undefined> {
     loadChildren: () => Promise<Function | HTMLElement | string | null>;
 }

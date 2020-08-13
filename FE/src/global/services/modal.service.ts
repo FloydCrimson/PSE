@@ -15,7 +15,7 @@ export class ModalService {
         private readonly modalController: ModalController
     ) { }
 
-    public present<I, O>(modal: ModalImplementation<I, O>, input?: I, options?: ModalOptions): Promise<O> {
+    public present<I = undefined, O = undefined>(modal: ModalImplementation<I, O>, input?: I, options?: ModalOptions): Promise<O> {
         options = { animated: true, ...options, componentProps: { input } };
         return modal.loadChildren().then((loaded) => {
             options.component = loaded;
@@ -28,7 +28,7 @@ export class ModalService {
         });
     }
 
-    public dismiss<I, O>(modal: ModalImplementation<I, O>, output?: O): Promise<boolean> {
+    public dismiss<I = undefined, O = undefined>(modal: ModalImplementation<I, O>, output?: O): Promise<boolean> {
         return modal.loadChildren().then((loaded) => {
             for (let i = this.array.length - 1; i >= 0; i--) {
                 const [component, element] = this.array[i];
