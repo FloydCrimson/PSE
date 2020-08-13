@@ -3,6 +3,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Board, Thread } from 'global/common/implementations/factories/fchan.factory.implementation';
 import { ModalService } from 'global/services/modal.service';
 
+import { CommentReference } from '../comment/comment-component';
+
 import * as ModalsIndex from '@countries/modals.index';
 
 @Component({
@@ -17,7 +19,7 @@ export class PostComponent {
   @Input('overlay') overlay: boolean = false;
 
   @Output('post-click') onPostClickEmitter = new EventEmitter<Thread>();
-  @Output('reference-click') onReferenceClickEmitter = new EventEmitter<number>();
+  @Output('reference-click') onReferenceClickEmitter = new EventEmitter<{ type: keyof CommentReference; value: CommentReference[keyof CommentReference]; }>();
 
   constructor(
     private readonly modalService: ModalService
@@ -27,8 +29,8 @@ export class PostComponent {
     this.onPostClickEmitter.emit(this.post);
   }
 
-  public onReferenceClick(no: number): void {
-    this.onReferenceClickEmitter.emit(no);
+  public onReferenceClick<T extends keyof CommentReference>(reference: { type: T; value: CommentReference[T]; }): void {
+    this.onReferenceClickEmitter.emit(reference);
   }
 
   public onCloseClick(): void {
