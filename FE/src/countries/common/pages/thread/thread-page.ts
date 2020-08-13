@@ -67,7 +67,12 @@ export class ThreadPage implements OnInit {
         const modal = await this.modalService.present(ModalsIndex.PostComponentModal, { board: this.board, post, overlay: true, onPostClickEmitter: new EventEmitter<Thread>(), onReferenceClickEmitter: new EventEmitter<{ type: keyof CommentReference; value: CommentReference[keyof CommentReference]; }>() }, { cssClass: 'modal-overlay background-transparent' });
         modal.componentProps.onPostClickEmitter.subscribe((post: Thread) => console.log('onPostClickEmitter', value));
         modal.componentProps.onReferenceClickEmitter.subscribe(async (reference: { type: keyof CommentReference; value: CommentReference[keyof CommentReference]; }) => {
-          await modal.dismiss();
+          // const child = this.content.el.getElementsByClassName('post ' + value.ref)[0] as HTMLDivElement;
+          // if (child) {
+          //   const diff = child.offsetTop;
+          //   await this.content.scrollToPoint(undefined, diff, 500);
+          // }
+          // await modal.dismiss();
           await this.onReferenceClick(reference);
         });
         await modal.present();
