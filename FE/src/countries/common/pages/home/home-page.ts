@@ -33,10 +33,9 @@ export class HomePage {
     this.routingService.navigate('Root', RoutesIndex.TestPageRoute, { input: { title: 'HomePage' }, route: { page: 1 } }, { animationDirection: 'forward' });
   }
 
-  public present(): void {
-    this.modalService.present(ModalsIndex.OverlayPageModal, { text: 'ciaone' }).then((output) => {
-      console.log('onDismiss', output);
-    });
+  public async present(): Promise<void> {
+    const modal = await this.modalService.present(ModalsIndex.OverlayPageModal, { text: 'ciaone' });
+    await modal.present();
   }
 
 }
