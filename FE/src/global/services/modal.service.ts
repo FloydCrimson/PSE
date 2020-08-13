@@ -40,7 +40,7 @@ export class ModalService {
 
 }
 
-class HTMLIonModalElementCustom<I = undefined, O = undefined> extends HTMLIonModalElement {
+interface HTMLIonModalElementCustom<I = undefined, O = undefined> extends HTMLIonModalElement {
     "componentProps"?: I;
     "dismiss": (data?: O, role?: string | undefined) => Promise<boolean>;
     "onDidDismiss": <T = O>() => Promise<{ data?: T; role?: string; }>;
