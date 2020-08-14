@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { FChanFactoryImplementation, Board, Thread } from 'global/common/implementations/factories/fchan.factory.implementation';
 import { MediaService } from 'global/services/media.service';
@@ -9,18 +9,6 @@ import { MediaService } from 'global/services/media.service';
   styleUrls: ['media-component.scss']
 })
 export class MediaComponent implements OnInit {
-
-  @ViewChild('thumbnail', { static: false }) set thumbnail(thumbnail: { nativeElement: HTMLImageElement; }) {
-    if (thumbnail) {
-      thumbnail.nativeElement.addEventListener('click', _ => this.onMediaClick());
-    }
-  };
-
-  @ViewChild('video', { static: false }) set video(video: { nativeElement: HTMLVideoElement; }) {
-    if (video) {
-      video.nativeElement.addEventListener('waiting', _ => this.onMediaClick());
-    }
-  };
 
   @Input('board') board: Board;
   @Input('media') media: Thread;

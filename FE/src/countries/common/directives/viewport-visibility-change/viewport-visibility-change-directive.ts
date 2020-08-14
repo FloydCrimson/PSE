@@ -1,4 +1,4 @@
-import { Directive, Output, EventEmitter, ElementRef, HostListener, AfterViewInit } from '@angular/core';
+import { Directive, Output, EventEmitter, ElementRef, AfterViewInit } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 
 @Directive({
