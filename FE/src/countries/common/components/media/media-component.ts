@@ -24,7 +24,6 @@ export class MediaComponent implements OnInit {
 
   @Input('board') board: Board;
   @Input('media') media: Thread;
-  @Input('initialize') initialize: boolean = false;
 
   public type: 'img' | 'video' | 'flash';
   public status: 'undefined' | 'pause' | 'loading' | 'loaded' | 'error' | 'deleted' = 'undefined';
@@ -40,9 +39,6 @@ export class MediaComponent implements OnInit {
     if (this.media.tim) {
       this.type = (this.media.ext === '.swf') ? 'flash' : ((this.media.ext === '.webm') ? 'video' : 'img');
       this.status = 'pause';
-      if (this.initialize) {
-        await this.onViewportVisibilityChange({ visible: true });
-      }
     }
   }
 

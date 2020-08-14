@@ -1,17 +1,5 @@
-<ion-header *ngIf="overlay">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button (click)="onCloseClick()">
-        <ion-icon name="close-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>
-      PostComponent
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-<ion-card (click)="onPostClick()" [ngClass]="{ 'overlay': overlay }">
-  <media-component [board]="board" [media]="post" [initialize]="overlay"></media-component>
+<ion-card (click)="onPostClick()">
+  <media-component [board]="board" [media]="post"></media-component>
   <ion-card-header *ngIf="post.sub">
     <ion-card-title>
       <comment-component
