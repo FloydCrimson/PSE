@@ -4,6 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 
 import { MediaComponentModule } from '../media/media-component.module';
+import { TitleComponentModule } from '../title/title-component.module';
 import { CommentComponentModule } from '../comment/comment-component.module';
 
 import { PostComponent } from './post-component';
@@ -14,6 +15,7 @@ import { PostComponent } from './post-component';
         FormsModule,
         IonicModule,
         MediaComponentModule,
+        TitleComponentModule,
         CommentComponentModule
     ],
     declarations: [

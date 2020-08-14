@@ -13,6 +13,7 @@ export class PostComponent {
 
   @Input('board') board: Board;
   @Input('post') post: Thread;
+  @Input('show-info') showInfo: boolean;
 
   @Output('post-click') onPostClickEmitter = new EventEmitter<Thread>();
   @Output('reference-click') onReferenceClickEmitter = new EventEmitter<{ type: keyof CommentReference; value: CommentReference[keyof CommentReference]; }>();

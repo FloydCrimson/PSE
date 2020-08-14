@@ -1,6 +1,13 @@
 div.media-container {
+    --fchan-color-post-content-background: var(--fchan-color-post-content-background-nws);
+
+    &.worksafe {
+        --fchan-color-post-content-background: var(--fchan-color-post-content-background-ws);
+    }
+
     display: flex;
     justify-content: center;
+    background: var(--fchan-color-post-title-background);
 
     >img {
         max-width: 100%;

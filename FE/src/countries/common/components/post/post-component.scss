@@ -1,5 +1,19 @@
 ion-card {
-    &.overlay {
-        overflow-y: scroll;
+    --fchan-color-post-title-background: var(--fchan-color-post-title-background-nws);
+    --fchan-color-post-content-background: var(--fchan-color-post-content-background-nws);
+
+    &.worksafe {
+        --fchan-color-post-title-background: var(--fchan-color-post-title-background-ws);
+        --fchan-color-post-content-background: var(--fchan-color-post-content-background-ws);
+    }
+
+    ion-card-header {
+        background: var(--fchan-color-post-title-background);
+        padding: 13px;
+    }
+
+    ion-card-content {
+        background: var(--fchan-color-post-content-background);
+        padding: 13px;
     }
 }

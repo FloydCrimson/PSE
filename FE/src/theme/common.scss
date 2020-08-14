@@ -1,17 +1,28 @@
 :root {
     // Uncomment to simulate safe-area
+
     // --ion-safe-area-top: 20px;
     // --ion-safe-area-left: 0;
     // --ion-safe-area-right: 0;
     // --ion-safe-area-bottom: 20px;
-}
 
-ion-modal.modal-overlay {
-    &.background-transparent {
+    // 4chan
 
-        div.modal-wrapper,
-        div.modal-wrapper:first-child {
-            background: transparent;
-        }
-    }
+    --fchan-color-post-title-background-ws: #c9cde8;
+    --fchan-color-post-title-background-nws: #ead6ca;
+    --fchan-color-post-title-text-title-ws: #0f0c5d;
+    --fchan-color-post-title-text-title-nws: #cc1105;
+
+    --fchan-color-post-title-text-op-default: #117743;
+    --fchan-color-post-title-text-op-mod: purple;
+
+    --fchan-color-post-content-background-ws: #d6daf0;
+    --fchan-color-post-content-background-nws: #f5e9e1;
+    --fchan-color-post-content-text-body-ws: #000;
+    --fchan-color-post-content-text-body-nws: maroon;
+    --fchan-color-post-content-text-link-ws: #d00;
+    --fchan-color-post-content-text-link-nws: navy;
+
+    --fchan-color-post-list-background-ws: #eef2ff;
+    --fchan-color-post-list-background-nws: #ffffee;
 }

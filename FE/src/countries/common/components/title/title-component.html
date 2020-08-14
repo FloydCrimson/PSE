@@ -1,0 +1,7 @@
+<div class="title-container" [ngClass]="{ 'worksafe': board.ws_board === 1 }">
+    <span class="name">{{ post.name || 'Anonymous' }}</span>
+    <ng-container *ngIf="post.sub">
+        <br>
+        <span class="sub">{{ post.sub }}</span>
+    </ng-container>
+</div>

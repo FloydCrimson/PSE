@@ -1,4 +1,4 @@
-<div class="media-container" *ngIf="status !== 'undefined'" [ngClass]="{ 'loading': status === 'loading', 'error': status === 'error', 'deleted': status === 'deleted' }">
+<div class="media-container" *ngIf="status !== 'undefined'" [ngClass]="{ 'worksafe': board.ws_board === 1 }">
   <ng-container *ngIf="type === 'img'">
     <img #thumbnail *ngIf="status !== 'loaded'" [width]="media.w" [height]="media.h" [src]="srct" (viewport-visibility-change)="onViewportVisibilityChange($event)">
     <img *ngIf="status === 'loaded'" [width]="media.w" [height]="media.h" [src]="src">

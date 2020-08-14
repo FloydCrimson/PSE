@@ -1,0 +1,15 @@
+div.title-container {
+    --fchan-color-post-title-text-title: var(--fchan-color-post-title-text-title-nws);
+
+    &.worksafe {
+        --fchan-color-post-title-text-title: var(--fchan-color-post-title-text-title-ws);
+    }
+
+    span.name {
+        color: var(--fchan-color-post-title-text-op-default);
+    }
+
+    span.sub {
+        color: var(--fchan-color-post-title-text-title);
+    }
+}

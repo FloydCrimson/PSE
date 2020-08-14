@@ -1,5 +1,7 @@
 import { Component, Input, Output, EventEmitter, ViewChild, AfterViewInit, ViewEncapsulation } from '@angular/core';
 
+import { Board, Thread } from 'global/common/implementations/factories/fchan.factory.implementation';
+
 @Component({
   selector: 'comment-component',
   templateUrl: 'comment-component.html',
@@ -10,7 +12,8 @@ export class CommentComponent implements AfterViewInit {
 
   @ViewChild('container', { static: false }) container: HTMLDivElement & { nativeElement: HTMLElement };
 
-  @Input('comment') comment: string;
+  @Input('board') board: Board;
+  @Input('post') post: Thread;
 
   @Output('reference-click') onReferenceClickEmitter = new EventEmitter<{ type: keyof CommentReference; value: CommentReference[keyof CommentReference]; }>();
 
