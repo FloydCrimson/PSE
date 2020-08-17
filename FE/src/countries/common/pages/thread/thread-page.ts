@@ -18,8 +18,10 @@ export class ThreadPage implements OnInit {
 
   @ViewChild(IonContent, { static: false }) content: HTMLIonContentElement & { el: HTMLElement };
 
+  public cache: boolean;
   public board: Board;
   public thread: CatalogThread;
+
   public posts: PostPost[] = [];
   public length: number = 10;
 
@@ -28,6 +30,7 @@ export class ThreadPage implements OnInit {
     private readonly fchanService: FChanService
   ) {
     const params = this.routingService.getNavigationParams(RoutesIndex.ThreadPageRoute);
+    this.cache = params.input.cache;
     this.board = params.input.board;
     this.thread = params.input.thread;
   }
@@ -37,7 +40,7 @@ export class ThreadPage implements OnInit {
   }
 
   private initialize(): void {
-    this.fchanService.getPosts(this.board.board, this.thread.no).subscribe((result) => {
+    this.fchanService.getPosts(this.board.board, this.thread.no, this.cache).subscribe((result) => {
       if (result.success) {
         this.posts = result.response.posts;
       } else {

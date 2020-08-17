@@ -20,7 +20,7 @@ export class HomePage {
   public onContinueClicked(): void {
     this.sessionService.login().subscribe((result) => {
       if (result) {
-        this.routingService.navigate('Forward', RoutesIndex.BoardPageRoute, undefined, { animationDirection: 'forward' });
+        this.routingService.navigate('Root', RoutesIndex.BoardPageRoute, { input: { cache: false } }, { animationDirection: 'forward' });
       }
     });
   }

@@ -2,7 +2,7 @@ import { RouteImplementation } from 'global/common/implementations/route.impleme
 
 import { Board } from 'global/common/implementations/factories/fchan.factory.implementation';
 
-export const CatalogPageRoute: RouteImplementation<{ board: Board; }, { board: string; }> = {
+export const CatalogPageRoute: RouteImplementation<{ cache: boolean; board: Board; }, { board: string; }> = {
     path: 'catalog/:board',
     route: ['board'],
     loadChildren: () => import('./catalog-page.module').then(m => m.CatalogPageModule)

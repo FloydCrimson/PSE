@@ -16,7 +16,9 @@ export class CatalogPage implements OnInit {
 
   @ViewChild(IonContent, { static: false }) content: HTMLIonContentElement & { el: HTMLElement };
 
+  public cache: boolean;
   public board: Board;
+
   public threads: CatalogThread[] = [];
   public length: number = 10;
 
@@ -25,6 +27,7 @@ export class CatalogPage implements OnInit {
     private readonly fchanService: FChanService
   ) {
     const params = this.routingService.getNavigationParams(RoutesIndex.CatalogPageRoute);
+    this.cache = params.input.cache;
     this.board = params.input.board;
   }
 
@@ -33,7 +36,7 @@ export class CatalogPage implements OnInit {
   }
 
   private initialize(): void {
-    this.fchanService.getCatalog(this.board.board).subscribe((result) => {
+    this.fchanService.getCatalog(this.board.board, this.cache).subscribe((result) => {
       if (result.success) {
         this.threads = result.response.reduce((ts, t) => ts.concat(t.threads), []);
       } else {
@@ -45,7 +48,7 @@ export class CatalogPage implements OnInit {
   }
 
   public onThreadClick(thread: CatalogThread): void {
-    this.routingService.navigate('Forward', RoutesIndex.ThreadPageRoute, { input: { board: this.board, thread }, route: { board: this.board.board, no: thread.no } }, { animationDirection: 'forward' });
+    this.routingService.navigate('Root', RoutesIndex.ThreadPageRoute, { input: { cache: false, board: this.board, thread }, route: { board: this.board.board, no: thread.no } }, { animationDirection: 'forward' });
   }
 
   public onReferenceClick(no: number): void {

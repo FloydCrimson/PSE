@@ -23,12 +23,12 @@ export class FChanService {
         this.cachePosts = new Map<string, BehaviorSubject<{ success: boolean; response: GetPostsJSON; }>>();
     }
 
-    public getBoards(cache: boolean = true): Observable<{ success: boolean; response: GetBoardsJSON; }> {
+    public getBoards(cache: boolean): Observable<{ success: boolean; response: GetBoardsJSON; }> {
         const behavior = this.cacheBoards;
         return this.cacher(behavior, this.fchanFactory.get('API').getBoards(), cache);
     }
 
-    public getCatalog(board: string, cache: boolean = true): Observable<{ success: boolean; response: GetCatalogJSON; }> {
+    public getCatalog(board: string, cache: boolean): Observable<{ success: boolean; response: GetCatalogJSON; }> {
         if (!this.cacheCatalog.has(board)) {
             this.cacheCatalog.set(board, new BehaviorSubject<{ success: boolean; response: GetCatalogJSON; }>(null));
         }
@@ -36,7 +36,7 @@ export class FChanService {
         return this.cacher(behavior, this.fchanFactory.get('API').getCatalog(board), cache);
     }
 
-    public getPosts(board: string, no: number, cache: boolean = true): Observable<{ success: boolean; response: GetPostsJSON; }> {
+    public getPosts(board: string, no: number, cache: boolean): Observable<{ success: boolean; response: GetPostsJSON; }> {
         if (!this.cachePosts.has(board + '+' + no)) {
             this.cachePosts.set(board + '+' + no, new BehaviorSubject<{ success: boolean; response: GetPostsJSON; }>(null));
         }
