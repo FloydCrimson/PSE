@@ -10,38 +10,38 @@ import { RouteImplementation } from 'global/common/implementations/route.impleme
 })
 export class RoutingService {
 
-    private map = new Map<string, { input?: any; query?: any; route?: any; }>();
+    private map = new Map<string, { input?: any; route?: any; query?: any; fragment?: any; }>();
 
     constructor(
         private readonly navController: NavController,
         private readonly router: Router
     ) { }
 
-    public navigate<I = undefined, Q = undefined, R = undefined>(type: 'Forward' | 'Back' | 'Root', route: RouteImplementation<I, Q, R>, params?: { input?: I; query?: Q; route?: R; }, options?: NavigationOptions): Promise<boolean> {
+    public navigate<I, R, Q, F>(type: 'Forward' | 'Back' | 'Root', route: RouteImplementation<I, R, Q, F>, params?: { input?: I; route?: R; query?: Q; fragment?: F; }, options?: Omit<NavigationOptions, 'queryParams' | 'preserveQueryParams' | 'queryParamsHandling' | 'fragment' | 'preserveFragment' | 'state'>): Promise<boolean> {
         params = { ...params };
-        options = { animated: true, queryParamsHandling: 'preserve', ...options, queryParams: params.query, state: {} };
-        const token = route.path;
-        options.state.token = token;
-        this.map.set(token, params);
+        const config: NavigationOptions = { animated: true, ...options, queryParams: params.query, queryParamsHandling: 'preserve', fragment: params.fragment as any, preserveFragment: false };
+        const path = this.getPath(route.path, params.route);
+        if (Object.keys(params).length > 0) {
+            this.map.set(path, params);
+        }
         switch (type) {
             case 'Forward':
-                return this.navController.navigateForward(this.getPath(route.path, params.route), options);
+                return this.navController.navigateForward(path, config);
             case 'Back':
-                return this.navController.navigateBack(this.getPath(route.path, params.route), options);
+                return this.navController.navigateBack(path, config);
             case 'Root':
-                return this.navController.navigateRoot(this.getPath(route.path, params.route), options);
+                return this.navController.navigateRoot(path, config);
             default:
                 return Promise.reject(new Error('Unrecognized navigation type.'));
         }
     }
 
-    public getNavigationParams<I = undefined, Q = undefined, R = undefined>(route: RouteImplementation<I, Q, R>): { input?: I; query?: Q; route?: R; } {
-        const navigation = this.router.getCurrentNavigation();
-        if (navigation && navigation.extras && navigation.extras.state && navigation.extras.state.token && navigation.extras.state.token === route.path) {
-            const token = navigation.extras.state.token;
-            const { input, query, route } = this.map.get(token);
-            this.map.delete(token);
-            return { input, query, route };
+    public getNavigationParams<I, R, Q, F>(route: RouteImplementation<I, R, Q, F>): { input?: I; route?: R; query?: Q; fragment?: F; } {
+        const path = this.router.getCurrentNavigation().extractedUrl.toString().replace(/^\/+/, '').replace(/#.*$/, '').replace(/\?.*$/, '');
+        if (this.map.has(path)) {
+            const params = this.map.get(path);
+            this.map.delete(path);
+            return params;
         } else {
             return {};
         }
