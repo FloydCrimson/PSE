@@ -1,10 +1,12 @@
 ion-card {
     --fchan-color-post-title-background: var(--fchan-color-post-title-background-nws);
     --fchan-color-post-content-background: var(--fchan-color-post-content-background-nws);
+    --fchan-color-post-title-text-footer: var(--fchan-color-post-title-text-footer-nws);
 
     &.worksafe {
         --fchan-color-post-title-background: var(--fchan-color-post-title-background-ws);
         --fchan-color-post-content-background: var(--fchan-color-post-content-background-ws);
+        --fchan-color-post-title-text-footer: var(--fchan-color-post-title-text-footer-ws);
     }
 
     ion-card-header {
@@ -15,5 +17,18 @@ ion-card {
     ion-card-content {
         background: var(--fchan-color-post-content-background);
         padding: 13px;
+    }
+
+    div.info {
+        background: var(--fchan-color-post-title-background);
+        padding: 13px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        >span {
+            color: var(--fchan-color-post-title-text-footer);
+        }
     }
 }

@@ -45,7 +45,7 @@ export class ThreadPage implements OnInit, AfterViewInit {
           this.scrollToElement(this.posts[this.index].no);
         }
       } else {
-        console.error('Failed to load CatalogPage.');
+        console.error('Failed to load ThreadPage.');
       }
     });
   }

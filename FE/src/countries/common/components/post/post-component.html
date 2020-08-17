@@ -1,4 +1,4 @@
-<ion-card (click)="onPostClick()" [ngClass]="{ 'worksafe': board.ws_board === 1 }">
+<ion-card [ngClass]="{ 'worksafe': board.ws_board === 1 }">
   <media-component [board]="board" [media]="post"></media-component>
   <ion-card-header>
     <ion-card-title>
@@ -15,4 +15,8 @@
      (reference-click)="onReferenceClick($event)">
     </comment-component>
   </ion-card-content>
+  <div class="info" *ngIf="showInfo">
+    <span>{{ post.replies }} Replies / {{ post.images }} Images</span>
+    <span (click)="onPostClick()">View Thread</span>
+  </div>
 </ion-card>
