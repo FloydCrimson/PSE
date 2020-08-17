@@ -1,4 +1,4 @@
-<ion-header [ngClass]="{ 'worksafe': board.ws_board === 1 }">
+<ion-header [ngClass]="{ 'worksafe': board?.ws_board === 1 }">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button (back-button-click)="onBackButtonClick($event)">
@@ -10,7 +10,7 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content fullscreen="true" [ngClass]="{ 'worksafe': board.ws_board === 1 }">
+<ion-content fullscreen="true" [ngClass]="{ 'worksafe': board?.ws_board === 1 }">
   <ion-list class="list">
     <ion-item class="post" lines="none" *ngFor="let post of posts | slice:0:length; trackBy: onTrackByPosts" [ngClass]="post.no.toString()">
       <post-component

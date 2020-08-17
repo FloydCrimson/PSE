@@ -16,39 +16,40 @@ export class CatalogPage implements OnInit {
 
   @ViewChild(IonContent, { static: false }) content: HTMLIonContentElement & { el: HTMLElement };
 
-  public cache: boolean;
-  public board: Board;
+  public params = this.routingService.getNavigationParams(RoutesIndex.CatalogPageRoute);
 
+  public board: Board;
   public threads: CatalogThread[] = [];
   public length: number = 10;
 
   constructor(
     private readonly routingService: RoutingService,
     private readonly fchanService: FChanService
-  ) {
-    const params = this.routingService.getNavigationParams(RoutesIndex.CatalogPageRoute);
-    this.cache = params.input.cache;
-    this.board = params.input.board;
-  }
+  ) { }
 
   public ngOnInit(): void {
-    this.initialize();
+    this.initialize(this.params.input.cache);
   }
 
-  private initialize(): void {
-    this.fchanService.getCatalog(this.board.board, this.cache).subscribe((result) => {
+  private initialize(cache: boolean): void {
+    this.fchanService.getBoards(true).subscribe((result) => {
       if (result.success) {
-        this.threads = result.response.reduce((ts, t) => ts.concat(t.threads), []);
+        this.board = result.response.boards.find((board) => board.board === this.params.route.board);
+        this.fchanService.getCatalog(this.params.route.board, cache).subscribe((result) => {
+          if (result.success) {
+            this.threads = result.response.reduce((ts, t) => ts.concat(t.threads), []);
+          } else {
+            console.error('fchanFactory.getCatalog', result);
+          }
+        });
       } else {
-        console.error('fchanFactory.getCatalog', result);
+        console.error('fchanFactory.getBoards', result);
       }
-    }, (error) => {
-      console.error('fchanFactory.getCatalog', error);
     });
   }
 
   public onThreadClick(thread: CatalogThread): void {
-    this.routingService.navigate('Root', RoutesIndex.ThreadPageRoute, { input: { cache: false, board: this.board, thread }, route: { board: this.board.board, no: thread.no } }, { animationDirection: 'forward' });
+    this.routingService.navigate('Root', RoutesIndex.ThreadPageRoute, { input: { cache: false }, route: { board: this.params.route.board, no: thread.no } }, { animationDirection: 'forward' });
   }
 
   public onReferenceClick(no: number): void {
@@ -57,6 +58,10 @@ export class CatalogPage implements OnInit {
 
   public onBackButtonClick(event: Event): void {
     this.routingService.navigate('Root', RoutesIndex.BoardPageRoute, { input: { cache: true } }, { animationDirection: 'back' });
+  }
+
+  public onRefreshButtonClick(): void {
+    this.initialize(false);
   }
 
   public onTrackByThreads(index: number, thread: CatalogThread): number {

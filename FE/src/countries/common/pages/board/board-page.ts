@@ -16,24 +16,21 @@ export class BoardPage implements OnInit {
 
   @ViewChild(IonContent, { static: false }) content: HTMLIonContentElement & { el: HTMLElement };
 
-  public cache: boolean;
+  public params = this.routingService.getNavigationParams(RoutesIndex.BoardPageRoute);
 
   public groups: { char: string; boards: Board[]; }[] = [];
 
   constructor(
     private readonly routingService: RoutingService,
     private readonly fchanService: FChanService
-  ) {
-    const params = this.routingService.getNavigationParams(RoutesIndex.BoardPageRoute);
-    this.cache = params.input.cache;
-  }
+  ) { }
 
   public ngOnInit(): void {
-    this.initialize();
+    this.initialize(this.params.input.cache);
   }
 
-  private initialize(): void {
-    this.fchanService.getBoards(this.cache).subscribe((result) => {
+  private initialize(cache: boolean): void {
+    this.fchanService.getBoards(cache).subscribe((result) => {
       if (result.success) {
         this.groups = result.response.boards.reduce((gs, b) => {
           const group = gs.find((g) => g.char === b.board[0]);
@@ -47,8 +44,6 @@ export class BoardPage implements OnInit {
       } else {
         console.error('fchanFactory.getBoards', result);
       }
-    }, (error) => {
-      console.error('fchanFactory.getBoards', error);
     });
   }
 
@@ -61,11 +56,15 @@ export class BoardPage implements OnInit {
   }
 
   public onBoardClick(board: Board): void {
-    this.routingService.navigate('Root', RoutesIndex.CatalogPageRoute, { input: { cache: false, board }, route: { board: board.board } }, { animationDirection: 'forward' });
+    this.routingService.navigate('Root', RoutesIndex.CatalogPageRoute, { input: { cache: false }, route: { board: board.board } }, { animationDirection: 'forward' });
   }
 
   public onBackButtonClick(event: Event): void {
     this.routingService.navigate('Root', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'back' });
+  }
+
+  public onRefreshButtonClick(): void {
+    this.initialize(false);
   }
 
 }

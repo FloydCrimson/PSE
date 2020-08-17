@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 
-import { Board, CatalogThread, PostPost } from 'global/common/implementations/factories/fchan.factory.implementation';
+import { Board, PostPost } from 'global/common/implementations/factories/fchan.factory.implementation';
 import { RoutingService } from 'global/services/routing.service';
 import { FChanService } from 'global/services/fchan.service';
 
@@ -18,36 +18,35 @@ export class ThreadPage implements OnInit {
 
   @ViewChild(IonContent, { static: false }) content: HTMLIonContentElement & { el: HTMLElement };
 
-  public cache: boolean;
-  public board: Board;
-  public thread: CatalogThread;
+  public params = this.routingService.getNavigationParams(RoutesIndex.ThreadPageRoute);
 
+  public board: Board;
   public posts: PostPost[] = [];
   public length: number = 10;
 
   constructor(
     private readonly routingService: RoutingService,
     private readonly fchanService: FChanService
-  ) {
-    const params = this.routingService.getNavigationParams(RoutesIndex.ThreadPageRoute);
-    this.cache = params.input.cache;
-    this.board = params.input.board;
-    this.thread = params.input.thread;
-  }
+  ) { }
 
   public ngOnInit(): void {
-    this.initialize();
+    this.initialize(this.params.input.cache);
   }
 
-  private initialize(): void {
-    this.fchanService.getPosts(this.board.board, this.thread.no, this.cache).subscribe((result) => {
+  private initialize(cache: boolean): void {
+    this.fchanService.getBoards(true).subscribe((result) => {
       if (result.success) {
-        this.posts = result.response.posts;
+        this.board = result.response.boards.find((board) => board.board === this.params.route.board);
+        this.fchanService.getPosts(this.params.route.board, this.params.route.no, cache).subscribe((result) => {
+          if (result.success) {
+            this.posts = result.response.posts;
+          } else {
+            console.error('fchanFactory.getPosts', result);
+          }
+        });
       } else {
-        console.error('fchanFactory.getPosts', result);
+        console.error('fchanFactory.getBoards', result);
       }
-    }, (error) => {
-      console.error('fchanFactory.getPosts', error);
     });
   }
 
@@ -79,7 +78,11 @@ export class ThreadPage implements OnInit {
   }
 
   public onBackButtonClick(event: Event): void {
-    this.routingService.navigate('Root', RoutesIndex.CatalogPageRoute, { input: { cache: true, board: this.board }, route: { board: this.board.board } }, { animationDirection: 'back' });
+    this.routingService.navigate('Root', RoutesIndex.CatalogPageRoute, { input: { cache: true }, route: { board: this.board.board } }, { animationDirection: 'back' });
+  }
+
+  public onRefreshButtonClick(): void {
+    this.initialize(false);
   }
 
   public onTrackByPosts(index: number, post: PostPost): number {
