@@ -1,4 +1,4 @@
-import { Directive, Output, EventEmitter, ElementRef, AfterViewInit } from '@angular/core';
+import { Directive, Output, EventEmitter, ElementRef, AfterViewInit, Input } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 
 @Directive({
@@ -7,25 +7,44 @@ import { IonContent } from '@ionic/angular';
 })
 export class ViewportVisibilityChangeDirective implements AfterViewInit {
 
+    @Input('unsubscribe-when-visible') unsubscribeWhenVisible = false;
+
     @Output('viewport-visibility-change') onViewportVisibilityChangeEmitter = new EventEmitter<{ visible: boolean; }>();
 
+    private content: HTMLElement;
+    private item: HTMLElement;
+    private scroll: HTMLElement;
     private visible: boolean;
+    private id;
 
     constructor(
         private readonly elementRef: ElementRef<HTMLElement>
     ) { }
 
     public async ngAfterViewInit(): Promise<void> {
-        const content = this.getAncestorByTagName(this.elementRef.nativeElement, 'ION-CONTENT');
-        const item = this.getAncestorByTagName(this.elementRef.nativeElement, 'ION-ITEM');
-        if (content && item) {
-            const scroll = await (content as HTMLIonContentElement).getScrollElement();
-            scroll.addEventListener('scroll', _ => {
-                if (this.visible !== this.isVisible(scroll, item)) {
-                    this.onViewportVisibilityChangeEmitter.emit({ visible: this.visible = !this.visible });
+        this.content = this.getAncestorByTagName(this.elementRef.nativeElement, 'ION-CONTENT');
+        this.item = this.getAncestorByTagName(this.elementRef.nativeElement, 'ION-ITEM');
+        if (this.content && this.item) {
+            this.scroll = await (this.content as HTMLIonContentElement).getScrollElement();
+            this.id = setInterval(() => {
+                if (this.item.clientHeight > 48) {
+                    this.onViewportVisibilityChangeEmitter.emit({ visible: this.visible = this.isVisible(this.scroll, this.item) });
+                    if (!this.visible || !this.unsubscribeWhenVisible) {
+                        this.scroll.addEventListener('scroll', this.onScrollDelegate, { passive: true });
+                    }
+                    clearInterval(this.id);
                 }
-            }, { passive: true });
-            this.onViewportVisibilityChangeEmitter.emit({ visible: this.visible = this.isVisible(scroll, item) });
+            }, 50);
+        }
+    }
+
+    private onScrollDelegate: (event: Event) => any = () => this.onScroll();
+    private onScroll(): void {
+        if (this.visible !== this.isVisible(this.scroll, this.item)) {
+            this.onViewportVisibilityChangeEmitter.emit({ visible: this.visible = !this.visible });
+        }
+        if (this.visible && this.unsubscribeWhenVisible) {
+            this.scroll.removeEventListener('scroll', this.onScrollDelegate)
         }
     }
 

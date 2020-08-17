@@ -1,5 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { IonContent } from '@ionic/angular';
+import { BehaviorSubject } from 'rxjs';
+import { skipWhile, take } from 'rxjs/operators';
 
 import { Board, PostPost } from 'global/common/implementations/factories/fchan.factory.implementation';
 import { RoutingService } from 'global/services/routing.service';
@@ -14,15 +16,18 @@ import * as RoutesIndex from '@countries/routes.index';
   templateUrl: 'thread-page.html',
   styleUrls: ['thread-page.scss']
 })
-export class ThreadPage implements OnInit {
+export class ThreadPage implements OnInit, AfterViewInit {
 
   @ViewChild(IonContent, { static: false }) content: HTMLIonContentElement & { el: HTMLElement };
 
   public params = this.routingService.getNavigationParams(RoutesIndex.ThreadPageRoute);
 
+  public bs = new BehaviorSubject<boolean>(null);
+
   public board: Board;
   public posts: PostPost[] = [];
-  public length: number = 10;
+  public length: number = 0;
+  public index: number = 0;
 
   constructor(
     private readonly routingService: RoutingService,
@@ -30,22 +35,44 @@ export class ThreadPage implements OnInit {
   ) { }
 
   public ngOnInit(): void {
-    this.initialize(this.params.input.cache);
+    this.initialize(this.params.input.cache, false);
   }
 
-  private initialize(cache: boolean): void {
+  public ngAfterViewInit(): void {
+    this.bs.asObservable().pipe(skipWhile((success) => success === null), take(1)).subscribe((success) => {
+      if (success) {
+        if (this.index > 0) {
+          this.scrollToElement(this.posts[this.index].no);
+        }
+      } else {
+        console.error('Failed to load CatalogPage.');
+      }
+    });
+  }
+
+  private initialize(cache: boolean, refresh: boolean): void {
     this.fchanService.getBoards(true).subscribe((result) => {
       if (result.success) {
         this.board = result.response.boards.find((board) => board.board === this.params.route.board);
         this.fchanService.getPosts(this.params.route.board, this.params.route.no, cache).subscribe((result) => {
           if (result.success) {
             this.posts = result.response.posts;
+            this.length = Math.min(this.posts.length, 10);
+            if (!refresh && this.params.fragment) {
+              const no = parseInt(this.params.fragment.replace(/^p/, ''));
+              const index = this.posts.findIndex((post) => post.no === no);
+              if (index > 0) {
+                this.length = Math.min(this.posts.length, index + 10);
+                this.index = index;
+              }
+            }
+            this.bs.next(true);
           } else {
-            console.error('fchanFactory.getPosts', result);
+            this.bs.next(false);
           }
         });
       } else {
-        console.error('fchanFactory.getBoards', result);
+        this.bs.next(false);
       }
     });
   }
@@ -56,16 +83,14 @@ export class ThreadPage implements OnInit {
 
   public async onReferenceClick<T extends keyof CommentReference>(reference: { type: T; value: CommentReference[T]; }): Promise<void> {
     if (reference.type === 'board-no-ref') {
-      console.log(reference);
+      const value = reference.value as CommentReference['board-no-ref'];
+      this.routingService.navigate('Forward', RoutesIndex.ThreadPageRoute, { input: { cache: false }, route: { board: value.board, no: value.no }, fragment: 'p' + value.ref }, { animationDirection: 'forward', replaceUrl: true });
     } else if (reference.type === 'board-no') {
-      console.log(reference);
+      const value = reference.value as CommentReference['board-no'];
+      this.routingService.navigate('Forward', RoutesIndex.CatalogPageRoute, { input: { cache: false }, route: { board: value.board }, fragment: 'p' + value.no }, { animationDirection: 'back', replaceUrl: true });
     } else if (reference.type === 'ref') {
       const value = reference.value as CommentReference['ref'];
-      const child = this.content.el.getElementsByClassName('post ' + value.ref)[0] as HTMLDivElement;
-      if (child) {
-        const diff = child.offsetTop;
-        await this.content.scrollToPoint(undefined, diff, 500);
-      }
+      this.scrollToElement(value.ref, 500);
     } else {
       try {
         const value = reference.value as CommentReference['unrecognized'];
@@ -78,11 +103,13 @@ export class ThreadPage implements OnInit {
   }
 
   public onBackButtonClick(event: Event): void {
-    this.routingService.navigate('Root', RoutesIndex.CatalogPageRoute, { input: { cache: true }, route: { board: this.board.board } }, { animationDirection: 'back' });
+    this.routingService.navigate('Forward', RoutesIndex.CatalogPageRoute, { input: { cache: true }, route: { board: this.board.board }, fragment: 'p' + this.params.route.no }, { animationDirection: 'back', replaceUrl: true });
   }
 
   public onRefreshButtonClick(): void {
-    this.initialize(false);
+    this.length = 0;
+    this.index = 0;
+    this.initialize(false, true);
   }
 
   public onTrackByPosts(index: number, post: PostPost): number {
@@ -95,6 +122,19 @@ export class ThreadPage implements OnInit {
       event.target.disabled = true;
     }
     event.target.complete();
+  }
+
+  private scrollToElement(no: number, duration?: number): void {
+    const child = this.content.el.getElementsByClassName('post ' + no)[0] as HTMLDivElement;
+    if (child) {
+      const id = setInterval(() => {
+        if (child.clientHeight > 0) {
+          const diff = child.offsetTop;
+          this.content.scrollToPoint(undefined, diff, duration);
+          clearInterval(id);
+        }
+      }, 50);
+    }
   }
 
 }

@@ -15,7 +15,9 @@ div.comment-container {
     }
 
     span.deadlink {
-        color: red;
+        color: var(--fchan-color-post-content-text-link);
+        text-decoration-line: underline;
+        text-decoration: line-through;
     }
 
     span.quote {
