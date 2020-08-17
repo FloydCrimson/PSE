@@ -64,4 +64,8 @@ export class BoardPage implements OnInit {
     this.routingService.navigate('Root', RoutesIndex.CatalogPageRoute, { input: { cache: false, board }, route: { board: board.board } }, { animationDirection: 'forward' });
   }
 
+  public onBackButtonClick(event: Event): void {
+    this.routingService.navigate('Root', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'back' });
+  }
+
 }

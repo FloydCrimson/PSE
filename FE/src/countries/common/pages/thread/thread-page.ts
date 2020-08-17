@@ -78,6 +78,10 @@ export class ThreadPage implements OnInit {
     }
   }
 
+  public onBackButtonClick(event: Event): void {
+    this.routingService.navigate('Root', RoutesIndex.CatalogPageRoute, { input: { cache: true, board: this.board }, route: { board: this.board.board } }, { animationDirection: 'back' });
+  }
+
   public onTrackByPosts(index: number, post: PostPost): number {
     return post.no;
   }

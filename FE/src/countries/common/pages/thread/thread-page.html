@@ -1,7 +1,9 @@
 <ion-header [ngClass]="{ 'worksafe': board.ws_board === 1 }">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-button (back-button-click)="onBackButtonClick($event)">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>
       ThreadPage

@@ -55,6 +55,10 @@ export class CatalogPage implements OnInit {
     console.log('onReferenceClick', no);
   }
 
+  public onBackButtonClick(event: Event): void {
+    this.routingService.navigate('Root', RoutesIndex.BoardPageRoute, { input: { cache: true } }, { animationDirection: 'back' });
+  }
+
   public onTrackByThreads(index: number, thread: CatalogThread): number {
     return thread.no;
   }

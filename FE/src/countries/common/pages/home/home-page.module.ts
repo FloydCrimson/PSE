@@ -12,12 +12,7 @@ import { HomePage } from './home-page';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        component: HomePage
-      }
-    ])
+    RouterModule.forChild([{ path: '', component: HomePage }])
   ],
   declarations: [
     HomePage

@@ -11,12 +11,7 @@ import { NotFoundPage } from './not-found-page';
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        component: NotFoundPage
-      }
-    ])
+    RouterModule.forChild([{ path: '', component: NotFoundPage }])
   ],
   declarations: [NotFoundPage]
 })

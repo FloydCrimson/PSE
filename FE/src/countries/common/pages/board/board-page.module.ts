@@ -4,6 +4,8 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
+import { BackButtonClickDirectiveModule } from 'countries/common/directives/back-button-click/back-button-click-directive.module';
+
 import { BoardPage } from './board-page';
 
 @NgModule({
@@ -11,12 +13,8 @@ import { BoardPage } from './board-page';
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        component: BoardPage
-      }
-    ])
+    BackButtonClickDirectiveModule,
+    RouterModule.forChild([{ path: '', component: BoardPage }])
   ],
   declarations: [
     BoardPage

@@ -4,21 +4,19 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { ThreadPage } from './thread-page';
+import { BackButtonClickDirectiveModule } from 'countries/common/directives/back-button-click/back-button-click-directive.module';
 import { PostComponentModule } from 'countries/common/components/post/post-component.module';
+
+import { ThreadPage } from './thread-page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+    BackButtonClickDirectiveModule,
     PostComponentModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        component: ThreadPage
-      }
-    ])
+    RouterModule.forChild([{ path: '', component: ThreadPage }])
   ],
   declarations: [
     ThreadPage
