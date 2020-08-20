@@ -84,10 +84,13 @@ export class ThreadPage implements OnInit, AfterViewInit {
   public async onReferenceClick<T extends keyof CommentReference>(reference: { type: T; value: CommentReference[T]; }): Promise<void> {
     if (reference.type === 'board-no-ref') {
       const value = reference.value as CommentReference['board-no-ref'];
-      this.routingService.navigate('Forward', RoutesIndex.ThreadPageRoute, { input: { cache: false }, route: { board: value.board, no: value.no }, fragment: 'p' + value.ref }, { animationDirection: 'forward', replaceUrl: true });
+      this.routingService.navigate('NavigateForward', RoutesIndex.ThreadPageRoute, { input: { cache: false }, route: { board: value.board, no: value.no }, fragment: 'p' + value.ref }, { animationDirection: 'forward' });
     } else if (reference.type === 'board-no') {
       const value = reference.value as CommentReference['board-no'];
-      this.routingService.navigate('Forward', RoutesIndex.CatalogPageRoute, { input: { cache: false }, route: { board: value.board }, fragment: 'p' + value.no }, { animationDirection: 'back', replaceUrl: true });
+      this.routingService.navigate('NavigateForward', RoutesIndex.ThreadPageRoute, { input: { cache: false }, route: { board: value.board, no: value.no } }, { animationDirection: 'forward' });
+    } else if (reference.type === 'board') {
+      const value = reference.value as CommentReference['board'];
+      this.routingService.navigate('NavigateForward', RoutesIndex.CatalogPageRoute, { input: { cache: false }, route: { board: value.board } }, { animationDirection: 'forward' });
     } else if (reference.type === 'ref') {
       const value = reference.value as CommentReference['ref'];
       this.scrollToElement(value.ref, 500);
@@ -103,7 +106,7 @@ export class ThreadPage implements OnInit, AfterViewInit {
   }
 
   public onBackButtonClick(event: Event): void {
-    this.routingService.navigate('Forward', RoutesIndex.CatalogPageRoute, { input: { cache: true }, route: { board: this.board.board }, fragment: 'p' + this.params.route.no }, { animationDirection: 'back', replaceUrl: true });
+    this.routingService.navigate('Pop');
   }
 
   public onRefreshButtonClick(): void {

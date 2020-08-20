@@ -1,11 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 
 import { Board, Thread } from 'global/common/implementations/factories/fchan.factory.implementation';
 
 @Component({
   selector: 'title-component',
   templateUrl: 'title-component.html',
-  styleUrls: ['title-component.scss']
+  styleUrls: ['title-component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class TitleComponent {
 

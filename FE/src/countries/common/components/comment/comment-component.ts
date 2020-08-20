@@ -52,10 +52,20 @@ export class CommentComponent implements AfterViewInit {
     } else if (/^(\/\w+\/thread\/\d+)$/.test(href)) {
       const [, board, , no] = href.split('/');
       return { type: 'board-no', value: { board, no: parseInt(no) } as CommentReference['board-no'] };
+    } else if (/^(\/\w+\/)$/.test(href)) {
+      const [, board] = href.split('/');
+      return { type: 'board', value: { board } as CommentReference['board'] };
     } else if (/^(#p\d+)$/.test(href)) {
       const [, ref] = href.replace('#p', '/').split('/');
       return { type: 'ref', value: { ref: parseInt(ref) } as CommentReference['ref'] };
     } else {
+      const origin = /^(http(s)?:\/\/(boards.4chan.org|boards.4channel.org))/;
+      if (origin.test(href)) {
+        const reference = this.getReference(href.replace(origin, ''));
+        if (reference.type !== 'unrecognized') {
+          return reference;
+        }
+      }
       return { type: 'unrecognized', value: { href } as CommentReference['unrecognized'] };
     }
   }
@@ -65,6 +75,7 @@ export class CommentComponent implements AfterViewInit {
 export interface CommentReference {
   'board-no-ref': { board: string; no: number; ref: number; };
   'board-no': { board: string; no: number; };
+  'board': { board: string; };
   'ref': { ref: number; };
   'unrecognized': { href: string; };
 }
