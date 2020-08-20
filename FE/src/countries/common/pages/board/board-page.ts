@@ -33,6 +33,11 @@ export class BoardPage implements OnInit {
     this.fchanService.getBoards(cache).subscribe((result) => {
       if (result.success) {
         this.groups = result.response.boards.reduce((gs, b) => {
+          // FILTER FLASH BOARD
+          if (b.board === 'f') {
+            return gs;
+          }
+          //
           const group = gs.find((g) => g.char === b.board[0]);
           if (group) {
             group.boards.push(b);

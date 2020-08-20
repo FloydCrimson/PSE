@@ -9,4 +9,7 @@
       <source [src]="src">
     </video>
   </ng-container>
+  <ng-container *ngIf="type === 'flash'">
+    <embed *ngIf="status === 'loaded'" allowscriptaccess="never" type="application/x-shockwave-flash" [width]="media.w" [height]="media.h" [src]="src">
+  </ng-container>
 </div>
