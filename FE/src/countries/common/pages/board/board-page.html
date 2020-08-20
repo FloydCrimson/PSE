@@ -18,16 +18,17 @@
   </div>
   <ion-list class="list">
     <ng-container *ngFor="let group of groups">
-      <ion-item class="board" *ngFor="let board of group.boards" [ngClass]="group.char" (click)="onBoardClick(board)">
-        <ion-label>
-          <div class="line-1">
-            <span class="initials">{{ '/' + board.board + '/' }}</span>
-            <span class="title">{{ board.title }}</span>
-          </div>
-          <div class="line-2">
-            <span class="description" [innerHTML]="board.meta_description"></span>
-          </div>
-        </ion-label>
+      <ion-item class="board" lines="none" *ngFor="let board of group.boards" [ngClass]="group.char" (click)="onBoardClick(board)">
+        <ion-card [ngClass]="{ 'worksafe': board.ws_board === 1 }">
+          <ion-card-header>
+            <ion-card-title>
+              <span class="title">{{ '/' + board.board + '/ - ' + board.title }}</span>
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <span class="content" [innerHTML]="board.meta_description"></span>
+          </ion-card-content>
+        </ion-card>
       </ion-item>
     </ng-container>
   </ion-list>

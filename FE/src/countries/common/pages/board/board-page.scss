@@ -7,42 +7,53 @@ ion-content {
         justify-content: space-evenly;
         overflow-y: scroll;
         scroll-behavior: smooth;
+        border-right: lightgrey solid 1px;
 
         >div.group {
             margin: auto;
         }
     }
 
-    ion-list.list {
+    ion-list {
+        background: transparent;
         padding-top: 0px;
         margin-left: 10%;
 
-        >ion-item.board {
-            >ion-label {
-                >div.line-1 {
-                    display: flex;
-                    flex-direction: row;
-                    text-align: center;
-                    font-weight: bold;
+        ion-item {
+            --background: transparent;
+            --padding-start: 0px;
+            --inner-padding-end: 0px;
 
-                    >span.initials {
-                        width: 20%;
-                        flex-grow: 1;
-                    }
+            ion-card {
+                --fchan-color-post-title-background: var(--fchan-color-post-title-background-nws);
+                --fchan-color-post-title-text-title: var(--fchan-color-post-title-text-title-nws);
+                --fchan-color-post-content-background: var(--fchan-color-post-content-background-nws);
+                --fchan-color-post-content-text-body: var(--fchan-color-post-content-text-body-nws);
 
-                    >span.title {
-                        width: 80%;
-                        flex-grow: 4;
+                &.worksafe {
+                    --fchan-color-post-title-background: var(--fchan-color-post-title-background-ws);
+                    --fchan-color-post-title-text-title: var(--fchan-color-post-title-text-title-ws);
+                    --fchan-color-post-content-background: var(--fchan-color-post-content-background-ws);
+                    --fchan-color-post-content-text-body: var(--fchan-color-post-content-text-body-ws);
+                }
+
+                ion-card-header {
+                    background: var(--fchan-color-post-title-background);
+                    padding: 13px;
+
+                    ion-card-title {
+                        span.title {
+                            color: var(--fchan-color-post-title-text-title);
+                        }
                     }
                 }
 
-                >div.line-2 {
-                    display: flex;
-                    text-align: center;
+                ion-card-content {
+                    background: var(--fchan-color-post-content-background);
+                    padding: 13px;
 
-                    >.description {
-                        font-size: smaller;
-                        white-space: pre-wrap;
+                    span.content {
+                        color: var(--fchan-color-post-content-text-body);
                     }
                 }
             }
