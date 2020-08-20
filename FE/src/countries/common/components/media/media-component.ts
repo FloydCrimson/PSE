@@ -37,14 +37,7 @@ export class MediaComponent implements OnInit {
       const src = FChanFactoryImplementation.getUserImageUrl(this.board.board, this.media.tim, this.media.ext);
       const cached = await this.mediaService.cached(src);
       if (cached) {
-        this.status = 'loading';
-        const response = await this.mediaService.download(src);
-        if (response.success) {
-          this.src = response.url;
-          this.status = 'loaded';
-        } else {
-          this.status = 'error';
-        }
+        await this.download(src);
       }
     }
   }
@@ -52,14 +45,27 @@ export class MediaComponent implements OnInit {
   public async onMediaClick(): Promise<void> {
     if (this.status !== 'loading' && this.status !== 'loaded') {
       const src = FChanFactoryImplementation.getUserImageUrl(this.board.board, this.media.tim, this.media.ext);
-      this.status = 'loading';
-      const response = await this.mediaService.download(src);
-      if (response.success) {
-        this.src = response.url;
-        this.status = 'loaded';
-      } else {
-        this.status = 'error';
-      }
+      await this.download(src);
+    }
+  }
+
+  private async download(src: string): Promise<void> {
+    this.status = 'loading';
+    const responseD = await this.mediaService.download(src);
+    if (responseD.success) {
+      // if (this.type === 'video') {
+      //   const responseC = await this.mediaService.convert(src, '.mp4');
+      //   if (responseC.success) {
+      //     this.src = responseC.url;
+      //   } else {
+      //     this.src = responseD.url;
+      //   }
+      // } else {
+        this.src = responseD.url;
+      // }
+      this.status = 'loaded';
+    } else {
+      this.status = 'error';
     }
   }
 

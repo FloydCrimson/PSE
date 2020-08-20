@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const execSync = require('child_process').execSync;
 const commandParameters = require('./command-parameters');
 
 module.exports = function (context) {
@@ -16,6 +17,21 @@ module.exports = function (context) {
     }
     parameters['--platform'] = platform;
     commandParameters.saveParameters(projectDirectory, parameters);
+
+    // FFMPEG.JS BROWSERIFY
+
+    const ffmpegLocation = path.resolve(projectDirectory, 'node_modules', 'ffmpeg.js', 'ffmpeg-mp4.js');
+    const ffmpegDestination = path.resolve(projectDirectory, 'libraries', 'ffmpeg.browser.js');
+    const ffmpegName = 'ffmpeg';
+    if (fs.existsSync(ffmpegLocation)) {
+        if (!fs.existsSync(ffmpegDestination)) {
+            console.warn('[ionic-before] ffmpeg.browser.js not found. Generating...');
+            const commandPath = execSync('where browserify').toString().trim().split('\n')[0];
+            execSync(['"' + commandPath + '"', '"' + ffmpegLocation + '"', '-o', '"' + ffmpegDestination + '"', '-s', ffmpegName].join(' '), { stdio: 'inherit' });
+        }
+    } else {
+        console.warn('[ionic-before] ffmpeg-mp4.js not found:   ' + ffmpegLocation);
+    }
 
     // HAPI PATCHER
 

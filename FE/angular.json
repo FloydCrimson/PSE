@@ -42,7 +42,9 @@
                 "input": "src/global.scss"
               }
             ],
-            "scripts": []
+            "scripts": [
+              "libraries/ffmpeg.browser.js"
+            ]
           },
           "configurations": {
             "production": {

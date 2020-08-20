@@ -6,7 +6,7 @@
   </ng-container>
   <ng-container *ngIf="type === 'video'">
     <video *ngIf="status === 'loaded'" [width]="media.w" [height]="media.h" [poster]="srct" controls>
-      <source [src]="src" type="video/webm">
+      <source [src]="src">
     </video>
   </ng-container>
 </div>
