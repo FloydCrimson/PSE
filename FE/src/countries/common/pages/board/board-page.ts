@@ -61,11 +61,10 @@ export class BoardPage implements OnInit {
   }
 
   public onBoardClick(board: Board): void {
-    this.routingService.navigate('NavigateForward', RoutesIndex.CatalogPageRoute, { input: { cache: false }, route: { board: board.board } }, { animationDirection: 'forward' });
-  }
-
-  public onBackButtonClick(event: Event): void {
-    this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'back' });
+    let params = RoutingService.getParams(RoutesIndex.CatalogPageRoute);
+    params.input = { cache: false };
+    params.route = { board: board.board };
+    this.routingService.navigate('NavigateForward', RoutesIndex.CatalogPageRoute, params, { animationDirection: 'forward' });
   }
 
   public onRefreshButtonClick(): void {

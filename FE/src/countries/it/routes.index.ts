@@ -1,4 +1,3 @@
-export { HomePageRoute } from 'countries/common/pages/home/home-page.route';
 export { BoardPageRoute } from 'countries/common/pages/board/board-page.route';
 export { CatalogPageRoute } from 'countries/common/pages/catalog/catalog-page.route';
 export { ThreadPageRoute } from 'countries/common/pages/thread/thread-page.route';

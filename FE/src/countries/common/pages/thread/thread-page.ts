@@ -84,13 +84,23 @@ export class ThreadPage implements OnInit, AfterViewInit {
   public async onReferenceClick<T extends keyof CommentReference>(reference: { type: T; value: CommentReference[T]; }): Promise<void> {
     if (reference.type === 'board-no-ref') {
       const value = reference.value as CommentReference['board-no-ref'];
-      this.routingService.navigate('NavigateForward', RoutesIndex.ThreadPageRoute, { input: { cache: false }, route: { board: value.board, no: value.no }, fragment: 'p' + value.ref }, { animationDirection: 'forward' });
+      let params = RoutingService.getParams(RoutesIndex.ThreadPageRoute);
+      params.input = { cache: false };
+      params.route = { board: value.board, no: value.no };
+      params.fragment = 'p' + value.ref;
+      this.routingService.navigate('NavigateForward', RoutesIndex.ThreadPageRoute, params, { animationDirection: 'forward' });
     } else if (reference.type === 'board-no') {
       const value = reference.value as CommentReference['board-no'];
-      this.routingService.navigate('NavigateForward', RoutesIndex.ThreadPageRoute, { input: { cache: false }, route: { board: value.board, no: value.no } }, { animationDirection: 'forward' });
+      let params = RoutingService.getParams(RoutesIndex.ThreadPageRoute);
+      params.input = { cache: false };
+      params.route = { board: value.board, no: value.no };
+      this.routingService.navigate('NavigateForward', RoutesIndex.ThreadPageRoute, params, { animationDirection: 'forward' });
     } else if (reference.type === 'board') {
       const value = reference.value as CommentReference['board'];
-      this.routingService.navigate('NavigateForward', RoutesIndex.CatalogPageRoute, { input: { cache: false }, route: { board: value.board } }, { animationDirection: 'forward' });
+      let params = RoutingService.getParams(RoutesIndex.CatalogPageRoute);
+      params.input = { cache: false };
+      params.route = { board: value.board };
+      this.routingService.navigate('NavigateForward', RoutesIndex.CatalogPageRoute, params, { animationDirection: 'forward' });
     } else if (reference.type === 'ref') {
       const value = reference.value as CommentReference['ref'];
       this.scrollToElement(value.ref, 500);
@@ -106,7 +116,10 @@ export class ThreadPage implements OnInit, AfterViewInit {
   }
 
   public onBackButtonClick(event: Event): void {
-    this.routingService.navigate('Pop');
+    let params = RoutingService.getParams(RoutesIndex.CatalogPageRoute);
+    params.input = { cache: false };
+    params.route = { board: this.board.board };
+    this.routingService.navigate('NavigateBack', RoutesIndex.CatalogPageRoute, params, { animationDirection: 'back' });
   }
 
   public onRefreshButtonClick(): void {

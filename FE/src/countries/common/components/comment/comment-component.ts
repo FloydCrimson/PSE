@@ -59,7 +59,7 @@ export class CommentComponent implements AfterViewInit {
       const [, ref] = href.replace('#p', '/').split('/');
       return { type: 'ref', value: { ref: parseInt(ref) } as CommentReference['ref'] };
     } else {
-      const origin = /^(http(s)?:\/\/(boards.4chan.org|boards.4channel.org))/;
+      const origin = /^((http(s)?:)?\/\/(boards.4chan.org|boards.4channel.org))/;
       if (origin.test(href)) {
         const reference = this.getReference(href.replace(origin, ''));
         if (reference.type !== 'unrecognized') {

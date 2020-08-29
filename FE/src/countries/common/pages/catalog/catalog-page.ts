@@ -78,19 +78,32 @@ export class CatalogPage implements OnInit, AfterViewInit {
   }
 
   public onThreadClick(thread: CatalogThread): void {
-    this.routingService.navigate('NavigateForward', RoutesIndex.ThreadPageRoute, { input: { cache: false }, route: { board: this.params.route.board, no: thread.no } }, { animationDirection: 'forward' });
+    let params = RoutingService.getParams(RoutesIndex.ThreadPageRoute);
+    params.input = { cache: false };
+    params.route = { board: this.params.route.board, no: thread.no };
+    this.routingService.navigate('NavigateForward', RoutesIndex.ThreadPageRoute, params, { animationDirection: 'forward' });
   }
 
   public async onReferenceClick<T extends keyof CommentReference>(reference: { type: T; value: CommentReference[T]; }): Promise<void> {
     if (reference.type === 'board-no-ref') {
       const value = reference.value as CommentReference['board-no-ref'];
-      this.routingService.navigate('NavigateForward', RoutesIndex.ThreadPageRoute, { input: { cache: false }, route: { board: value.board, no: value.no }, fragment: 'p' + value.ref }, { animationDirection: 'forward' });
+      let params = RoutingService.getParams(RoutesIndex.ThreadPageRoute);
+      params.input = { cache: false };
+      params.route = { board: value.board, no: value.no };
+      params.fragment = 'p' + value.ref;
+      this.routingService.navigate('NavigateForward', RoutesIndex.ThreadPageRoute, params, { animationDirection: 'forward' });
     } else if (reference.type === 'board-no') {
       const value = reference.value as CommentReference['board-no'];
-      this.routingService.navigate('NavigateForward', RoutesIndex.ThreadPageRoute, { input: { cache: false }, route: { board: value.board, no: value.no } }, { animationDirection: 'forward' });
+      let params = RoutingService.getParams(RoutesIndex.ThreadPageRoute);
+      params.input = { cache: false };
+      params.route = { board: value.board, no: value.no };
+      this.routingService.navigate('NavigateForward', RoutesIndex.ThreadPageRoute, params, { animationDirection: 'forward' });
     } else if (reference.type === 'board') {
       const value = reference.value as CommentReference['board'];
-      this.routingService.navigate('NavigateForward', RoutesIndex.CatalogPageRoute, { input: { cache: false }, route: { board: value.board } }, { animationDirection: 'forward' });
+      let params = RoutingService.getParams(RoutesIndex.CatalogPageRoute);
+      params.input = { cache: false };
+      params.route = { board: value.board };
+      this.routingService.navigate('NavigateForward', RoutesIndex.CatalogPageRoute, params, { animationDirection: 'forward' });
     } else {
       try {
         const value = reference.value as CommentReference['unrecognized'];
@@ -103,7 +116,9 @@ export class CatalogPage implements OnInit, AfterViewInit {
   }
 
   public onBackButtonClick(event: Event): void {
-    this.routingService.navigate('Pop');
+    let params = RoutingService.getParams(RoutesIndex.BoardPageRoute);
+    params.input = { cache: true };
+    this.routingService.navigate('NavigateBack', RoutesIndex.BoardPageRoute, params, { animationDirection: 'back' });
   }
 
   public onRefreshButtonClick(): void {

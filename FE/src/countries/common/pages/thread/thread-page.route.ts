@@ -2,6 +2,7 @@ import { RouteImplementation } from 'global/common/implementations/route.impleme
 
 export const ThreadPageRoute: RouteImplementation<{ cache: boolean; }, { board: string; no: number; }> = {
     path: ':board/thread/:no',
+    default: { cache: false },
     route: ['board', 'no'],
     loadChildren: () => import('./thread-page.module').then(m => m.ThreadPageModule)
 };

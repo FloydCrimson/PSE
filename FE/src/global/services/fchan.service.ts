@@ -4,7 +4,7 @@ import { take, timeout, tap, skip } from 'rxjs/operators';
 
 import { FChanFactory } from 'global/factories/fchan.factory';
 
-import { GetBoardsJSON, GetCatalogJSON, GetPostsJSON } from 'global/common/implementations/factories/fchan.factory.implementation';
+import { GetBoardsJSON, GetCatalogJSON, GetPostsJSON, GetArchiveJSON } from 'global/common/implementations/factories/fchan.factory.implementation';
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +13,7 @@ export class FChanService {
 
     private cacheBoards: BehaviorSubject<{ success: boolean; response: GetBoardsJSON; }>;
     private cacheCatalog: Map<string, BehaviorSubject<{ success: boolean; response: GetCatalogJSON; }>>;
+    private cacheArchive: Map<string, BehaviorSubject<{ success: boolean; response: GetArchiveJSON; }>>;
     private cachePosts: Map<string, BehaviorSubject<{ success: boolean; response: GetPostsJSON; }>>;
 
     constructor(
@@ -20,6 +21,7 @@ export class FChanService {
     ) {
         this.cacheBoards = new BehaviorSubject<{ success: boolean; response: GetBoardsJSON; }>(null);
         this.cacheCatalog = new Map<string, BehaviorSubject<{ success: boolean; response: GetCatalogJSON; }>>();
+        this.cacheArchive = new Map<string, BehaviorSubject<{ success: boolean; response: GetArchiveJSON; }>>();
         this.cachePosts = new Map<string, BehaviorSubject<{ success: boolean; response: GetPostsJSON; }>>();
     }
 
@@ -34,6 +36,14 @@ export class FChanService {
         }
         const behavior = this.cacheCatalog.get(board);
         return this.cacher(behavior, this.fchanFactory.get('API').getCatalog(board), cache);
+    }
+
+    public getArchive(board: string, cache: boolean): Observable<{ success: boolean; response: GetArchiveJSON; }> {
+        if (!this.cacheArchive.has(board)) {
+            this.cacheArchive.set(board, new BehaviorSubject<{ success: boolean; response: GetArchiveJSON; }>(null));
+        }
+        const behavior = this.cacheArchive.get(board);
+        return this.cacher(behavior, this.fchanFactory.get('API').getArchive(board), cache);
     }
 
     public getPosts(board: string, no: number, cache: boolean): Observable<{ success: boolean; response: GetPostsJSON; }> {
