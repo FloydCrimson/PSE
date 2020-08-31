@@ -22,15 +22,15 @@ export class HomePage {
   }
 
   public navigateForward(): void {
-    this.routingService.navigate('Forward', RoutesIndex.TestPageRoute, { input: { title: 'HomePage' }, route: { page: 1 } }, { animationDirection: 'forward' });
+    this.routingService.navigate('NavigateForward', RoutesIndex.TestPageRoute, { input: { title: 'HomePage' }, route: { page: 1 } }, { animationDirection: 'forward' });
   }
 
   public navigateBack(): void {
-    this.routingService.navigate('Back', RoutesIndex.TestPageRoute, { input: { title: 'HomePage' }, route: { page: 1 } }, { animationDirection: 'forward' });
+    this.routingService.navigate('NavigateBack', RoutesIndex.TestPageRoute, { input: { title: 'HomePage' }, route: { page: 1 } }, { animationDirection: 'forward' });
   }
 
   public navigateRoot(): void {
-    this.routingService.navigate('Root', RoutesIndex.TestPageRoute, { input: { title: 'HomePage' }, route: { page: 1 } }, { animationDirection: 'forward' });
+    this.routingService.navigate('NavigateRoot', RoutesIndex.TestPageRoute, { input: { title: 'HomePage' }, route: { page: 1 } }, { animationDirection: 'forward' });
   }
 
   public async present(): Promise<void> {

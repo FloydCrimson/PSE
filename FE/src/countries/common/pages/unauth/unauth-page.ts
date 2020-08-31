@@ -118,7 +118,7 @@ export class UnauthPage {
       exhaustMap(([value, key]) => this.sessionService.login({ type: 'nickname', value, key, algorithm: 'sha256' }))
     ).subscribe((result) => {
       if (result) {
-        this.routingService.navigate('Root', RoutesIndex.HomePageRoute, { input: { title: 'UnauthPage' } }, { animationDirection: 'forward' });
+        this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, { input: { title: 'UnauthPage' } }, { animationDirection: 'forward' });
       }
     });
   }

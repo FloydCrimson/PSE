@@ -19,15 +19,15 @@ export class TestPage {
   }
 
   public navigateForward(): void {
-    this.routingService.navigate('Forward', RoutesIndex.HomePageRoute, { input: { title: 'TestPage' } }, { animationDirection: 'back' });
+    this.routingService.navigate('NavigateForward', RoutesIndex.HomePageRoute, { input: { title: 'TestPage' } }, { animationDirection: 'back' });
   }
 
   public navigateBack(): void {
-    this.routingService.navigate('Back', RoutesIndex.HomePageRoute, { input: { title: 'TestPage' } }, { animationDirection: 'back' });
+    this.routingService.navigate('NavigateBack', RoutesIndex.HomePageRoute, { input: { title: 'TestPage' } }, { animationDirection: 'back' });
   }
 
   public navigateRoot(): void {
-    this.routingService.navigate('Root', RoutesIndex.HomePageRoute, { input: { title: 'TestPage' } }, { animationDirection: 'back' });
+    this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, { input: { title: 'TestPage' } }, { animationDirection: 'back' });
   }
 
 }
