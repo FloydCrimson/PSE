@@ -17,7 +17,7 @@ export class RoutingService {
 
     public navigate(type: 'Back', options?: AnimationOptions): Promise<boolean>;
     public navigate(type: 'Pop'): Promise<boolean>;
-    public navigate<I, R, Q, F>(type: 'NavigateBack' | 'NavigateForward' | 'NavigateRoot', route: RouteImplementation<I, R, Q, F>, params?: { input?: I; route?: R; query?: Q; fragment?: F; }, options?: Omit<NavigationOptions, 'queryParams' | 'preserveQueryParams' | 'queryParamsHandling' | 'fragment' | 'preserveFragment' | 'state'>): Promise<boolean>;
+    public navigate<I, R, Q>(type: 'NavigateBack' | 'NavigateForward' | 'NavigateRoot', route: RouteImplementation<I, R, Q>, params?: { input?: I; route?: R; query?: Q; fragment?: string; }, options?: Omit<NavigationOptions, 'queryParams' | 'preserveQueryParams' | 'queryParamsHandling' | 'fragment' | 'preserveFragment' | 'state'>): Promise<boolean>;
     public navigate(type: 'Back' | 'Pop' | 'NavigateBack' | 'NavigateForward' | 'NavigateRoot', ...args: any[]): Promise<boolean> {
         switch (type) {
             case 'Back':
@@ -40,7 +40,7 @@ export class RoutingService {
     private navigatePop(type: 'Pop'): Promise<boolean> {
         return this.navController.pop().then(_ => true, _ => false).catch(_ => false);
     }
-    private navigateRoute<I, R, Q, F>(type: 'NavigateBack' | 'NavigateForward' | 'NavigateRoot', route?: RouteImplementation<I, R, Q, F>, params?: { input?: I; route?: R; query?: Q; fragment?: F; }, options?: Omit<NavigationOptions, 'queryParams' | 'preserveQueryParams' | 'queryParamsHandling' | 'fragment' | 'preserveFragment' | 'state'>): Promise<boolean> {
+    private navigateRoute<I, R, Q>(type: 'NavigateBack' | 'NavigateForward' | 'NavigateRoot', route?: RouteImplementation<I, R, Q>, params?: { input?: I; route?: R; query?: Q; fragment?: string; }, options?: Omit<NavigationOptions, 'queryParams' | 'preserveQueryParams' | 'queryParamsHandling' | 'fragment' | 'preserveFragment' | 'state'>): Promise<boolean> {
         params = { ...params };
         const config: NavigationOptions = { animated: true, ...options, state: { input: params.input }, queryParams: params.query, queryParamsHandling: 'preserve', fragment: params.fragment as any, preserveFragment: false };
         const url = this.getURL(route.path, params.route);
@@ -54,9 +54,9 @@ export class RoutingService {
         }
     }
 
-    public getNavigationParams<I, R, Q, F>(route: RouteImplementation<I, R, Q, F>): { input?: I; route?: R; query?: Q; fragment?: F; } {
+    public getNavigationParams<I, R, Q>(route: RouteImplementation<I, R, Q>): { input?: I; route?: R; query?: Q; fragment?: string; } {
         const navigation = this.router.getCurrentNavigation();
-        const params: { input?: I; route?: R; query?: Q; fragment?: F; } = {
+        const params: { input?: I; route?: R; query?: Q; fragment?: string; } = {
             input: this.getInput(route.defaultInput, navigation.extras.state),
             route: this.getRoute(route.path, new URL(window.location.origin + navigation.finalUrl.toString()).pathname.replace(/^\/?/, '')),
             query: this.getQuery(navigation.finalUrl.queryParams),
@@ -67,8 +67,8 @@ export class RoutingService {
 
     //
 
-    public static getParams<I, R, Q, F>(route: RouteImplementation<I, R, Q, F>): { input?: I; route?: R; query?: Q; fragment?: F; } {
-        return { input: route.defaultInput } as { input?: I; route?: R; query?: Q; fragment?: F; };
+    public static getParams<I, R, Q>(route: RouteImplementation<I, R, Q>): { input?: I; route?: R; query?: Q; fragment?: string; } {
+        return { input: route.defaultInput } as { input?: I; route?: R; query?: Q; fragment?: string; };
     }
 
     //

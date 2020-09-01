@@ -2,7 +2,6 @@ import { RouteImplementation } from 'global/common/implementations/route.impleme
 
 export const CatalogPageRoute: RouteImplementation<{ cache: boolean; }, { board: string; }> = {
     path: ':board/catalog',
-    defaultInput: { cache: false },
-    route: ['board'],
-    loadChildren: () => import('./catalog-page.module').then(m => m.CatalogPageModule)
+    loadChildren: () => import('./catalog-page.module').then(m => m.CatalogPageModule),
+    defaultInput: { cache: false }
 };

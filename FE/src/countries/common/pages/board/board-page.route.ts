@@ -2,6 +2,6 @@ import { RouteImplementation } from 'global/common/implementations/route.impleme
 
 export const BoardPageRoute: RouteImplementation<{ cache: boolean; }> = {
     path: 'board',
-    defaultInput: { cache: false },
-    loadChildren: () => import('./board-page.module').then(m => m.BoardPageModule)
+    loadChildren: () => import('./board-page.module').then(m => m.BoardPageModule),
+    defaultInput: { cache: false }
 };
