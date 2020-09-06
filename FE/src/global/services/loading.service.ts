@@ -4,6 +4,8 @@ import { LoadingOptions } from '@ionic/core';
 
 import { LoadingImplementation } from 'global/common/implementations/loading.implementation';
 
+import { LoggingService } from './logging.service';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -14,14 +16,17 @@ export class LoadingService {
     private id: string = null;
 
     constructor(
-        private readonly loadingController: LoadingController
+        private readonly loadingController: LoadingController,
+        private readonly loggingService: LoggingService
     ) { }
 
     public present(loading: LoadingImplementation): Promise<boolean> {
+        this.loggingService.LOG('DEBUG', { class: LoadingService.name, function: this.present.name }, loading);
         return this.add('present', loading);
     }
 
     public dismiss(loading: LoadingImplementation): Promise<boolean> {
+        this.loggingService.LOG('DEBUG', { class: LoadingService.name, function: this.dismiss.name }, loading);
         return this.add('dismiss', loading);
     }
 
@@ -72,6 +77,7 @@ export class LoadingService {
             return this.loadingController.create(config).then((element) => {
                 this.array[index][1].element = element;
                 return element.present().then(_ => {
+                    this.loggingService.LOG('DEBUG', { class: LoadingService.name, function: this.push.name }, loading);
                     this.id = loading.id;
                     return true;
                 }, _ => false).catch(_ => false);
@@ -83,10 +89,11 @@ export class LoadingService {
 
     private pop(id: string): Promise<boolean> {
         const index = this.array.findIndex((e) => e[0] === id);
-        const [, { element, count }] = this.array[index];
+        const [, { loading, element, count }] = this.array[index];
         if (this.id === id) {
             if (count === 0) {
                 return element.dismiss().then((result) => {
+                    this.loggingService.LOG('DEBUG', { class: LoadingService.name, function: this.pop.name }, loading);
                     this.array.splice(index, 1);
                     this.id = null;
                     if (this.array.length > 0) {

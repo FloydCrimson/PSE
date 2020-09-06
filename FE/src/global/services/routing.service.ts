@@ -4,6 +4,7 @@ import { NavController } from '@ionic/angular';
 import { AnimationOptions, NavigationOptions } from '@ionic/angular/providers/nav-controller';
 
 import { RouteImplementation } from 'global/common/implementations/route.implementation';
+import { LoggingService } from './logging.service';
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +13,8 @@ export class RoutingService {
 
     constructor(
         private readonly navController: NavController,
-        private readonly router: Router
+        private readonly router: Router,
+        private readonly loggingService: LoggingService
     ) { }
 
     public navigate(type: 'Back', options?: AnimationOptions): Promise<boolean>;
@@ -104,7 +106,7 @@ export class RoutingService {
             return r;
         }, {}) : undefined;
         if (mismatch) {
-            console.warn('Mismatch between "path" and "url".', path, url);
+            this.loggingService.LOG('WARN', { class: RoutingService.name, function: this.getRoute.name, text: 'Mismatch between "path" and "url".' }, path, url);
             return undefined;
         } else {
             return (Object.keys(route).length > 0) ? (route as any) : undefined;

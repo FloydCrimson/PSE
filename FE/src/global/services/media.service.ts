@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Capacitor, Plugins, FilesystemDirectory } from '@capacitor/core';
 import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 
+import { LoggingService } from './logging.service';
+
 declare const ffmpeg;
 
 @Injectable({
@@ -12,7 +14,8 @@ export class MediaService {
     private stack = new Array<[string, { resolvers: ((value?: { success: boolean; url?: string; }) => void)[], rejecters: ((reason?: any) => void)[] }]>();
 
     constructor(
-        private readonly fileTransfer: FileTransfer
+        private readonly fileTransfer: FileTransfer,
+        private readonly loggingService: LoggingService
     ) { }
 
     public download(urlRemote: string): Promise<{ success: boolean; url?: string; }> {
@@ -42,8 +45,8 @@ export class MediaService {
                 const conversion: { MEMFS: { name: string; data: Uint8Array; }[] } = ffmpeg({
                     MEMFS: [{ name: 'input.webm', data: dataA }],
                     arguments: ['-i', 'input.webm', 'output' + ext],
-                    print: (...args) => console.log(args),
-                    printErr: (...args) => console.error(args)
+                    print: (...args) => this.loggingService.LOG('TRACE', { class: MediaService.name, function: this.convert.name, text: 'print' }, args),
+                    printErr: (...args) => this.loggingService.LOG('ERROR', { class: MediaService.name, function: this.convert.name, text: 'printErr' }, args)
                 });
                 if (conversion && conversion.MEMFS && conversion.MEMFS.length === 1) {
                     const dataB = MediaService.Uint8ArrayToBase64(conversion.MEMFS[0].data);
@@ -74,21 +77,21 @@ export class MediaService {
             if (urlLocal) {
                 const cached = await this.cached(urlRemote);
                 if (cached) {
-                    console.log('Media cached.', urlRemote, urlLocal);
+                    this.loggingService.LOG('INFO', { class: MediaService.name, function: this.next.name, text: 'Media cached.' }, urlRemote, urlLocal);
                     resolvers.forEach((resolve) => resolve({ success: true, url: Capacitor.convertFileSrc(urlLocal) }));
                 } else {
-                    console.log('Media not cached. Downloading...', urlRemote, urlLocal);
+                    this.loggingService.LOG('INFO', { class: MediaService.name, function: this.next.name, text: 'Media not cached. Downloading...' }, urlRemote, urlLocal);
                     const transferred = await this.transfer(urlRemote, urlLocal);
                     if (transferred) {
-                        console.log('Media downloaded.', urlRemote, urlLocal);
+                        this.loggingService.LOG('INFO', { class: MediaService.name, function: this.next.name, text: 'Media downloaded.' }, urlRemote, urlLocal);
                         resolvers.forEach((resolve) => resolve({ success: true, url: Capacitor.convertFileSrc(urlLocal) }));
                     } else {
-                        console.warn('Unable to download.', urlRemote, urlLocal);
+                        this.loggingService.LOG('WARN', { class: MediaService.name, function: this.next.name, text: 'Unable to download.' }, urlRemote, urlLocal);
                         resolvers.forEach((resolve) => resolve({ success: false }));
                     }
                 }
             } else {
-                console.warn('Unable to resolve local url.', urlRemote, urlLocal);
+                this.loggingService.LOG('WARN', { class: MediaService.name, function: this.next.name, text: 'Unable to resolve local url.' }, urlRemote, urlLocal);
                 resolvers.forEach((resolve) => resolve({ success: false }));
             }
             this.stack.shift();

@@ -20,7 +20,7 @@ export class LoggingService implements LoggingServiceImplementation {
         if ((LoggingLevelMap[this.environmentService.getEnvironment().loggingLevel] & type) === type) {
             const date = moment().format();
             const prefix = log;
-            this.getConsoleLogger(log)(`[PSE] [${prefix}] [${date}] [${message.class}.${message.function}]`, message.text, ...data);
+            this.getConsoleLogger(log)(`[PSE] [${prefix}] [${date}] [${message.class}.${message.function}]`, ...(message.text ? [message.text, ...data] : data));
         }
     }
 
