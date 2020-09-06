@@ -9,16 +9,16 @@ import { ModalImplementation } from 'global/common/implementations/modal.impleme
 })
 export class ModalService {
 
-    private array = new Array<[Function | HTMLElement | string | null, HTMLIonModalElementGenerics<any, any>]>();
+    private array = new Array<[Function | HTMLElement | string | null, HTMLIonModalElementC<any, any>]>();
 
     constructor(
         private readonly modalController: ModalController
     ) { }
 
-    public present<I, O>(modal: ModalImplementation<I, O>, input?: I, options?: Omit<ModalOptions, 'component' | 'componentProps'>): Promise<HTMLIonModalElementGenerics<I, O>> {
+    public create<I, O>(modal: ModalImplementation<I, O>, input?: I, options?: Omit<ModalOptions, 'component' | 'componentProps'>): Promise<HTMLIonModalElementC<I, O>> {
         return modal.loadChildren().then((loaded) => {
             const config: ModalOptions = { animated: true, ...options, component: loaded, componentProps: input };
-            return this.modalController.create(config).then((element: HTMLIonModalElementGenerics<I, O>) => {
+            return this.modalController.create(config).then((element: HTMLIonModalElementC<I, O>) => {
                 this.array.push([loaded, element]);
                 return element;
             });
@@ -40,9 +40,9 @@ export class ModalService {
 
 }
 
-interface HTMLIonModalElementGenerics<I, O> extends HTMLIonModalElement {
-    'componentProps'?: I;
-    'dismiss': (data?: O, role?: string | undefined) => Promise<boolean>;
-    'onDidDismiss': <T = O>() => Promise<{ data?: T; role?: string; }>;
-    'onWillDismiss': <T = O>() => Promise<{ data?: T; role?: string; }>;
+interface HTMLIonModalElementC<I, O> extends HTMLIonModalElement {
+    componentProps?: I;
+    dismiss: (data?: O, role?: string | undefined) => Promise<boolean>;
+    onDidDismiss: <T = O>() => Promise<{ data?: T; role?: string; }>;
+    onWillDismiss: <T = O>() => Promise<{ data?: T; role?: string; }>;
 }

@@ -9,23 +9,21 @@ declare const ffmpeg;
 })
 export class MediaService {
 
-    private stack: Map<string, [((value?: { success: boolean; url?: string; }) => void)[], ((reason?: any) => void)[]]>;
+    private stack = new Array<[string, { resolvers: ((value?: { success: boolean; url?: string; }) => void)[], rejecters: ((reason?: any) => void)[] }]>();
 
     constructor(
         private readonly fileTransfer: FileTransfer
-    ) {
-        this.stack = new Map<string, [((value?: { success: boolean; url?: string; }) => void)[], ((reason?: any) => void)[]]>();
-    }
+    ) { }
 
     public download(urlRemote: string): Promise<{ success: boolean; url?: string; }> {
         return new Promise<{ success: boolean; url?: string; }>((resolve, reject) => {
-            if (this.stack.has(urlRemote)) {
-                const [resolvers, rejecters] = this.stack.get(urlRemote);
-                resolvers.push(resolve);
-                rejecters.push(reject);
+            const index = this.stack.findIndex((e) => e[0] === urlRemote);
+            if (index >= 0) {
+                this.stack[index][1].resolvers.push(resolve);
+                this.stack[index][1].rejecters.push(reject);
             } else {
-                this.stack.set(urlRemote, [[resolve], [reject]]);
-                if (this.stack.size === 1) {
+                this.stack.push([urlRemote, { resolvers: [resolve], rejecters: [reject] }]);
+                if (this.stack.length === 1) {
                     this.next();
                 }
             }
@@ -70,43 +68,32 @@ export class MediaService {
     //
 
     private async next(): Promise<void> {
-        if (this.stack.size > 0) {
-            const urlRemote = this.stack.keys().next().value;
+        if (this.stack.length > 0) {
+            const [urlRemote, { resolvers, rejecters }] = this.stack[0];
             const urlLocal = await this.url(urlRemote);
-            const [resolvers, rejecters] = this.stack.get(urlRemote);
             if (urlLocal) {
                 const cached = await this.cached(urlRemote);
                 if (cached) {
                     console.log('Media cached.', urlRemote, urlLocal);
-                    this.nextResolve(resolvers, urlRemote, urlLocal);
+                    resolvers.forEach((resolve) => resolve({ success: true, url: Capacitor.convertFileSrc(urlLocal) }));
                 } else {
                     console.log('Media not cached. Downloading...', urlRemote, urlLocal);
                     const transferred = await this.transfer(urlRemote, urlLocal);
                     if (transferred) {
                         console.log('Media downloaded.', urlRemote, urlLocal);
-                        this.nextResolve(resolvers, urlRemote, urlLocal);
+                        resolvers.forEach((resolve) => resolve({ success: true, url: Capacitor.convertFileSrc(urlLocal) }));
                     } else {
                         console.warn('Unable to download.', urlRemote, urlLocal);
-                        this.nextReject(resolvers, urlRemote);
+                        resolvers.forEach((resolve) => resolve({ success: false }));
                     }
                 }
             } else {
                 console.warn('Unable to resolve local url.', urlRemote, urlLocal);
-                this.nextReject(resolvers, urlRemote);
+                resolvers.forEach((resolve) => resolve({ success: false }));
             }
+            this.stack.shift();
+            this.next();
         }
-    }
-
-    private nextResolve(resolvers: ((value?: { success: boolean; url?: string; }) => void)[], urlRemote: string, urlLocal: string): void {
-        resolvers.forEach((resolve) => resolve({ success: true, url: Capacitor.convertFileSrc(urlLocal) }));
-        this.stack.delete(urlRemote);
-        this.next();
-    }
-
-    private nextReject(resolvers: ((value?: { success: boolean; url?: string; }) => void)[], urlRemote: string): void {
-        resolvers.forEach((resolve) => resolve({ success: false }));
-        this.stack.delete(urlRemote);
-        this.next();
     }
 
     // SUPPORT

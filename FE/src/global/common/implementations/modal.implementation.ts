@@ -1,3 +1,3 @@
-export interface ModalImplementation<I = any | undefined, O = any | undefined> {
+export interface ModalImplementation<I = undefined, O = undefined> {
     loadChildren: () => Promise<Function | HTMLElement | string | null>;
 }

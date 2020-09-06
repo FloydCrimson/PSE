@@ -103,7 +103,12 @@ export class RoutingService {
             }
             return r;
         }, {}) : undefined;
-        return (!mismatch && Object.keys(route).length > 0) ? (route as any) : undefined;
+        if (mismatch) {
+            console.warn('Mismatch between "path" and "url".', path, url);
+            return undefined;
+        } else {
+            return (Object.keys(route).length > 0) ? (route as any) : undefined;
+        }
     }
 
     private getQuery<Q = { [key: string]: any; } | null>(queryParams: { [key: string]: any; }): Q {
