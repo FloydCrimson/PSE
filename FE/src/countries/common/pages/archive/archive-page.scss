@@ -1,0 +1,34 @@
+ion-header {
+    --fchan-color-post-list-background: var(--fchan-color-post-list-background-nws);
+
+    &.worksafe {
+        --fchan-color-post-list-background: var(--fchan-color-post-list-background-ws);
+    }
+
+    ion-toolbar {
+        --background: var(--fchan-color-post-list-background);
+    }
+}
+
+ion-content {
+    --fchan-color-post-title-background: var(--fchan-color-post-title-background-nws);
+    --fchan-color-post-content-background: var(--fchan-color-post-content-background-nws);
+
+    &.worksafe {
+        --fchan-color-post-title-background: var(--fchan-color-post-title-background-ws);
+        --fchan-color-post-content-background: var(--fchan-color-post-content-background-ws);
+    }
+
+    --background: var(--fchan-color-post-list-background);
+
+    ion-list {
+        background: transparent;
+        padding-top: 0px;
+
+        ion-item {
+            --background: transparent;
+            --padding-start: 0px;
+            --inner-padding-end: 0px;
+        }
+    }
+}

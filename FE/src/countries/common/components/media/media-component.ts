@@ -30,7 +30,7 @@ export class MediaComponent implements OnInit {
     }
   }
 
-  public async onViewportVisibilityChange(event: { visible: boolean; }): Promise<void> {
+  public async onMediaVisibilityChange(event: { visible: boolean; }): Promise<void> {
     if (this.status === 'pause' && !this.visible && event.visible) {
       this.visible = event.visible;
       this.srct = FChanFactoryImplementation.getUserImageUrl(this.board.board, this.media.tim, this.media.ext, true);

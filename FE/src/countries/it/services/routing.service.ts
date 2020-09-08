@@ -7,6 +7,7 @@ export const routes: Routes = [
     { path: '', redirectTo: RoutesIndex.BoardPageRoute.path, pathMatch: 'full' },
     { path: RoutesIndex.BoardPageRoute.path, loadChildren: RoutesIndex.BoardPageRoute.loadChildren },
     { path: RoutesIndex.CatalogPageRoute.path, loadChildren: RoutesIndex.CatalogPageRoute.loadChildren },
+    { path: RoutesIndex.ArchivePageRoute.path, loadChildren: RoutesIndex.ArchivePageRoute.loadChildren },
     { path: RoutesIndex.ThreadPageRoute.path, loadChildren: RoutesIndex.ThreadPageRoute.loadChildren },
     { path: '**', loadChildren: RoutesIndex.NotFoundPageRoute.loadChildren }
 ];

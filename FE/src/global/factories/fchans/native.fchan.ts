@@ -19,28 +19,28 @@ export class NativeFChan extends FChanFactoryImplementation {
         return this.call(url);
     }
 
-    public getThreads(board: string): Observable<{ success: boolean; response: GetThreadsJSON; }> {
-        const url: string = FChanFactoryImplementation.getThreadsUrl(board);
+    public getThreads(params: { board: string; }): Observable<{ success: boolean; response: GetThreadsJSON; }> {
+        const url: string = FChanFactoryImplementation.getThreadsUrl(params.board);
         return this.call(url);
     }
 
-    public getCatalog(board: string): Observable<{ success: boolean; response: GetCatalogJSON; }> {
-        const url: string = FChanFactoryImplementation.getCatalogUrl(board);
+    public getCatalog(params: { board: string; }): Observable<{ success: boolean; response: GetCatalogJSON; }> {
+        const url: string = FChanFactoryImplementation.getCatalogUrl(params.board);
         return this.call(url);
     }
 
-    public getArchive(board: string): Observable<{ success: boolean; response: GetArchiveJSON; }> {
-        const url: string = FChanFactoryImplementation.getArchiveUrl(board);
+    public getArchive(params: { board: string; }): Observable<{ success: boolean; response: GetArchiveJSON; }> {
+        const url: string = FChanFactoryImplementation.getArchiveUrl(params.board);
         return this.call(url);
     }
 
-    public getPage(board: string, page: number): Observable<{ success: boolean; response: GetPageJSON; }> {
-        const url: string = FChanFactoryImplementation.getPageUrl(board, page);
+    public getPage(params: { board: string; page: number; }): Observable<{ success: boolean; response: GetPageJSON; }> {
+        const url: string = FChanFactoryImplementation.getPageUrl(params.board, params.page);
         return this.call(url);
     }
 
-    public getPosts(board: string, no: number): Observable<{ success: boolean; response: GetPostsJSON; }> {
-        const url: string = FChanFactoryImplementation.getPostsUrl(board, no);
+    public getPosts(params: { board: string; no: number; }): Observable<{ success: boolean; response: GetPostsJSON; }> {
+        const url: string = FChanFactoryImplementation.getPostsUrl(params.board, params.no);
         return this.call(url);
     }
 

@@ -51,10 +51,10 @@ export class ThreadPage implements OnInit, AfterViewInit {
   }
 
   private initialize(cache: boolean, refresh: boolean): void {
-    this.fchanService.getBoards(true).subscribe((result) => {
+    this.fchanService.call('getBoards', [], true).subscribe((result) => {
       if (result.success) {
         this.board = result.response.boards.find((board) => board.board === this.params.route.board);
-        this.fchanService.getPosts(this.params.route.board, this.params.route.no, cache).subscribe((result) => {
+        this.fchanService.call('getPosts', [{ board: this.params.route.board, no: this.params.route.no }], cache).subscribe((result) => {
           if (result.success) {
             this.posts = result.response.posts;
             this.length = Math.min(this.posts.length, 10);

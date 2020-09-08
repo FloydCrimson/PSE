@@ -1,0 +1,42 @@
+<ion-header [ngClass]="{ 'worksafe': board?.ws_board === 1 }">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (back-button-click)="onBackButtonClick($event)">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      ArchivePage
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen="true" [ngClass]="{ 'worksafe': board?.ws_board === 1 }">
+  <ion-list class="list">
+    <ion-item class="post" lines="none" *ngFor="let post of posts | slice:0:length; trackBy: onTrackByPosts" [ngClass]="post.no.toString()">
+      <ng-container *ngIf="post.downloaded === true">
+        <post-component
+          [board]="board" 
+          [post]="post" 
+          [show-info]="true"
+          (post-click)="onPostClick($event)" 
+          (reference-click)="onReferenceClick($event)">
+        </post-component>
+      </ng-container>
+      <ng-container *ngIf="post.downloaded === false">
+        <ion-card (click)="onPostClick(post)" (viewport-visibility-change)="onPostVisibilityChange(post, $event)" [unsubscribe-when-visible]="true">
+          <ion-card-header>
+            <ion-card-title>
+              <div class="title-container">
+                <span class="no" [innerHTML]="post.no"></span>
+              </div>
+            </ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ng-container>
+    </ion-item>
+  </ion-list>
+  <ion-infinite-scroll threshold="20%" (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

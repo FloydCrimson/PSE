@@ -4,59 +4,37 @@ import { take, timeout, tap, skip } from 'rxjs/operators';
 
 import { FChanFactory } from 'global/factories/fchan.factory';
 
-import { GetBoardsJSON, GetCatalogJSON, GetPostsJSON, GetArchiveJSON } from 'global/common/implementations/factories/fchan.factory.implementation';
+import { FChanFactoryImplementation } from 'global/common/implementations/factories/fchan.factory.implementation';
 
 @Injectable({
     providedIn: 'root'
 })
 export class FChanService {
 
-    private cacheBoards: BehaviorSubject<{ success: boolean; response: GetBoardsJSON; }>;
-    private cacheCatalog: Map<string, BehaviorSubject<{ success: boolean; response: GetCatalogJSON; }>>;
-    private cacheArchive: Map<string, BehaviorSubject<{ success: boolean; response: GetArchiveJSON; }>>;
-    private cachePosts: Map<string, BehaviorSubject<{ success: boolean; response: GetPostsJSON; }>>;
+    private cache = new Map<string, BehaviorSubject<{ success: boolean; response: any; }>>();
+    private fchanFactoryImplemented = this.fchanFactory.get('API');
 
     constructor(
         private readonly fchanFactory: FChanFactory
-    ) {
-        this.cacheBoards = new BehaviorSubject<{ success: boolean; response: GetBoardsJSON; }>(null);
-        this.cacheCatalog = new Map<string, BehaviorSubject<{ success: boolean; response: GetCatalogJSON; }>>();
-        this.cacheArchive = new Map<string, BehaviorSubject<{ success: boolean; response: GetArchiveJSON; }>>();
-        this.cachePosts = new Map<string, BehaviorSubject<{ success: boolean; response: GetPostsJSON; }>>();
-    }
+    ) { }
 
-    public getBoards(cache: boolean): Observable<{ success: boolean; response: GetBoardsJSON; }> {
-        const behavior = this.cacheBoards;
-        return this.cacher(behavior, this.fchanFactory.get('API').getBoards(), cache);
-    }
-
-    public getCatalog(board: string, cache: boolean): Observable<{ success: boolean; response: GetCatalogJSON; }> {
-        if (!this.cacheCatalog.has(board)) {
-            this.cacheCatalog.set(board, new BehaviorSubject<{ success: boolean; response: GetCatalogJSON; }>(null));
+    public call<K extends keyof FChanFactoryImplementation>(method: K, params: Parameters<FChanFactoryImplementation[K]>, cache: boolean): ReturnType<FChanFactoryImplementation[K]> {
+        const key = method + '=' + JSON.stringify(params);
+        if (!this.cache.has(key)) {
+            this.cache.set(key, new BehaviorSubject<{ success: boolean; response: any; }>(null));
         }
-        const behavior = this.cacheCatalog.get(board);
-        return this.cacher(behavior, this.fchanFactory.get('API').getCatalog(board), cache);
+        const behavior = this.cache.get(key);
+        return this.cacher(behavior, this.fchanFactoryImplemented[method].call(this.fchanFactoryImplemented, ...params), cache) as ReturnType<FChanFactoryImplementation[K]>;
     }
 
-    public getArchive(board: string, cache: boolean): Observable<{ success: boolean; response: GetArchiveJSON; }> {
-        if (!this.cacheArchive.has(board)) {
-            this.cacheArchive.set(board, new BehaviorSubject<{ success: boolean; response: GetArchiveJSON; }>(null));
-        }
-        const behavior = this.cacheArchive.get(board);
-        return this.cacher(behavior, this.fchanFactory.get('API').getArchive(board), cache);
-    }
-
-    public getPosts(board: string, no: number, cache: boolean): Observable<{ success: boolean; response: GetPostsJSON; }> {
-        if (!this.cachePosts.has(board + '+' + no)) {
-            this.cachePosts.set(board + '+' + no, new BehaviorSubject<{ success: boolean; response: GetPostsJSON; }>(null));
-        }
-        const behavior = this.cachePosts.get(board + '+' + no);
-        return this.cacher(behavior, this.fchanFactory.get('API').getPosts(board, no), cache);
+    public cached<K extends keyof FChanFactoryImplementation>(method: K, params: Parameters<FChanFactoryImplementation[K]>): boolean {
+        const key = method + '=' + JSON.stringify(params);
+        return this.cache.has(key);
     }
 
     // private
 
-    private cacher<T>(behavior: BehaviorSubject<{ success: boolean; response: T; }>, observable: Observable<{ success: boolean; response: T; }>, cache: boolean): Observable<{ success: boolean; response: T; }> {
+    private cacher<T extends { success: boolean; }>(behavior: BehaviorSubject<T>, observable: Observable<T>, cache: boolean): Observable<T> {
         const value = behavior.getValue();
         if (cache && value !== null && value.success) {
             return behavior.asObservable().pipe(
