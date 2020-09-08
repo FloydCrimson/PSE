@@ -1,9 +1,9 @@
-import { Directive, AfterViewInit, Output, EventEmitter, HostListener } from '@angular/core';
+import { Directive, AfterViewInit, Output, EventEmitter, HostListener, OnDestroy } from '@angular/core';
 
 @Directive({
     selector: '[back-button-click]'
 })
-export class BackButtonClickDirective implements AfterViewInit {
+export class BackButtonClickDirective implements AfterViewInit, OnDestroy {
 
     @HostListener('click') onClick(event) {
         this.onBackButtonClickEmitter.emit(event);
@@ -13,10 +13,16 @@ export class BackButtonClickDirective implements AfterViewInit {
 
     constructor() { }
 
-    public async ngAfterViewInit(): Promise<void> {
-        document.addEventListener('ionBackButton', (event: CustomEvent) => {
-            event.detail.register(10, _ => this.onBackButtonClickEmitter.emit(event));
-        });
+    private readonly ionBackButtonEventDelegate = (event: CustomEvent) => {
+        event.detail.register(10, _ => this.onBackButtonClickEmitter.emit(event));
+    };
+
+    public ngAfterViewInit(): void {
+        document.addEventListener('ionBackButton', this.ionBackButtonEventDelegate);
+    }
+
+    public ngOnDestroy(): void {
+        document.removeEventListener('ionBackButton', this.ionBackButtonEventDelegate);
     }
 
 }
