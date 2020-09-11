@@ -14,7 +14,7 @@ export const AuthMiddleware: MiddlewareImplementation<undefined> = () => {
                 const credentialsFunc = (encoded) => {
                     const decoded = JSON.parse(CoderProvider.decode(encoded));
                     if ('id' in decoded || 'email' in decoded || 'nickname' in decoded) {
-                        return dispatcherService.get('CommunicationClientService').send({ receiver: 'database', name: 'AuthEntityFindOne', value: { conditions: decoded, options: { relations: ['user'] } } });
+                        return dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityFindOne', decoded, { relations: ['user'] });
                     }
                     return undefined;
                 };

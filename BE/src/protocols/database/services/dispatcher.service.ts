@@ -1,6 +1,7 @@
-import { FactoryExtension } from "../../../global/common/extensions/factory.extension";
-import { RepositoryService } from "./repository.service";
-import { CommunicationClientService } from "../../../global/services/communication.service";
+import { FactoryExtension } from '../../../global/common/extensions/factory.extension';
+import { RepositoryService } from './repository.service';
+import { CommunicationImplementationType } from '../../common/implementations/communication.implementation.type';
+import { CommunicationClientService } from '../../../global/services/communication.service';
 
 export class DispatcherService extends FactoryExtension<DispatcherServiceImplementation> {
 
@@ -12,5 +13,5 @@ export class DispatcherService extends FactoryExtension<DispatcherServiceImpleme
 
 export interface DispatcherServiceImplementation {
     RepositoryService: RepositoryService;
-    CommunicationClientService: CommunicationClientService;
+    CommunicationClientService: CommunicationClientService<CommunicationImplementationType, 'database'>;
 }

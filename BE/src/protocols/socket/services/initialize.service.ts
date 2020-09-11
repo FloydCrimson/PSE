@@ -8,6 +8,7 @@ import { InitializeImplementation } from '../../../global/common/implementations
 import { ProtocolConfigurationsType } from '../../../global/common/types/protocol-options.type';
 import { ServerProvider } from '../../../global/providers/server.provider';
 import { CommunicationClientService } from '../../../global/services/communication.service';
+import { CommunicationImplementationType } from '../../common/implementations/communication.implementation.type';
 import { RouteImplementation } from '../implementations/route.implementation';
 import { RequestImplementation } from '../implementations/request.implementation';
 import { DispatcherService } from './dispatcher.service';
@@ -103,7 +104,7 @@ export class InitializeService implements InitializeImplementation {
             // DISPATCHER
             if (result) {
                 const controllerService = new ControllerService(this.dispatcherService);
-                const communicationClientService = new CommunicationClientService(new CommunicationService(), 'socket');
+                const communicationClientService = new CommunicationClientService<CommunicationImplementationType, 'socket'>(new CommunicationService(), 'socket');
                 this.dispatcherService.set('ControllerService', controllerService);
                 this.dispatcherService.set('CommunicationClientService', communicationClientService);
                 communicationClientService.receive();

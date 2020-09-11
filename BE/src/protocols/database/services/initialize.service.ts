@@ -5,6 +5,7 @@ import { getConnectionOptions, createConnection } from 'typeorm';
 import { InitializeImplementation } from '../../../global/common/implementations/initialize.implementation';
 import { CommunicationClientService } from '../../../global/services/communication.service';
 import { ProtocolConfigurationsType } from '../../../global/common/types/protocol-options.type';
+import { CommunicationImplementationType } from '../../common/implementations/communication.implementation.type';
 import { DispatcherService } from './dispatcher.service';
 import { RepositoryService } from './repository.service';
 import { CommunicationService } from './communication.service';
@@ -43,7 +44,7 @@ export class InitializeService implements InitializeImplementation {
             // DISPATCHER
             if (result) {
                 const repositoryService = new RepositoryService(this.dispatcherService);
-                const communicationClientService = new CommunicationClientService(new CommunicationService(repositoryService), 'database');
+                const communicationClientService = new CommunicationClientService<CommunicationImplementationType, 'database'>(new CommunicationService(repositoryService), 'database');
                 this.dispatcherService.set('RepositoryService', repositoryService);
                 this.dispatcherService.set('CommunicationClientService', communicationClientService);
                 communicationClientService.receive();

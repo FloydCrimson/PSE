@@ -10,12 +10,12 @@ export class CommunicationService implements CommunicationServiceImplementation 
         private readonly repositoryService: RepositoryService
     ) { }
 
-    public async AuthEntityFindOne(params: { conditions?: FindConditions<EI.AuthEntity>; options?: FindOneOptions<EI.AuthEntity> }): Promise<EI.AuthEntity> {
-        return this.repositoryService.get('AuthEntity').findOne(params.conditions, params.options);
+    public async AuthEntityFindOne(conditions?: FindConditions<EI.AuthEntity>, options?: FindOneOptions<EI.AuthEntity>): Promise<EI.AuthEntity> {
+        return await this.repositoryService.get('AuthEntity').findOne(conditions, options);
     }
 
 }
 
 export interface CommunicationServiceImplementation {
-    AuthEntityFindOne: CommunicationMethodImplementation<{ conditions?: FindConditions<EI.AuthEntity>; options?: FindOneOptions<EI.AuthEntity> }, EI.AuthEntity>;
+    AuthEntityFindOne: CommunicationMethodImplementation<(conditions?: FindConditions<EI.AuthEntity>, options?: FindOneOptions<EI.AuthEntity>) => Promise<EI.AuthEntity>>;
 }
