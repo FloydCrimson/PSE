@@ -30,7 +30,7 @@ export class BoardPage implements OnInit {
   }
 
   private initialize(cache: boolean): void {
-    this.fchanService.call('getBoards', [], cache).subscribe((result) => {
+    this.fchanService.call(cache)('getBoards').subscribe((result) => {
       if (result.success) {
         this.groups = result.response.boards.reduce((gs, b) => {
           // FILTER FLASH BOARD

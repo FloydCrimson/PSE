@@ -18,16 +18,18 @@ export class FChanService {
         private readonly fchanFactory: FChanFactory
     ) { }
 
-    public call<K extends keyof FChanFactoryImplementation>(method: K, params: Parameters<FChanFactoryImplementation[K]>, cache: boolean): ReturnType<FChanFactoryImplementation[K]> {
-        const key = method + '=' + JSON.stringify(params);
-        if (!this.cache.has(key)) {
-            this.cache.set(key, new BehaviorSubject<{ success: boolean; response: any; }>(null));
-        }
-        const behavior = this.cache.get(key);
-        return this.cacher(behavior, this.fchanFactoryImplemented[method].call(this.fchanFactoryImplemented, ...params), cache) as ReturnType<FChanFactoryImplementation[K]>;
+    public call(cache: boolean): <K extends keyof FChanFactoryImplementation>(method: K, ...params: Parameters<FChanFactoryImplementation[K]>) => ReturnType<FChanFactoryImplementation[K]> {
+        return <K extends keyof FChanFactoryImplementation>(method: K, ...params: Parameters<FChanFactoryImplementation[K]>) => {
+            const key = method + '=' + JSON.stringify(params);
+            if (!this.cache.has(key)) {
+                this.cache.set(key, new BehaviorSubject<{ success: boolean; response: any; }>(null));
+            }
+            const behavior = this.cache.get(key);
+            return this.cacher(behavior, this.fchanFactoryImplemented[method].call(this.fchanFactoryImplemented, ...params), cache) as ReturnType<FChanFactoryImplementation[K]>;
+        };
     }
 
-    public cached<K extends keyof FChanFactoryImplementation>(method: K, params: Parameters<FChanFactoryImplementation[K]>): boolean {
+    public cached<K extends keyof FChanFactoryImplementation>(method: K, ...params: Parameters<FChanFactoryImplementation[K]>): boolean {
         const key = method + '=' + JSON.stringify(params);
         return this.cache.has(key);
     }

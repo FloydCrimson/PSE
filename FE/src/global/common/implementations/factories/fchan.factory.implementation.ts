@@ -6,15 +6,15 @@ export abstract class FChanFactoryImplementation {
 
     abstract getBoards(): Observable<{ success: boolean; response: GetBoardsJSON; }>;
 
-    abstract getThreads(params: { board: string; }): Observable<{ success: boolean; response: GetThreadsJSON; }>;
+    abstract getThreads(board: string): Observable<{ success: boolean; response: GetThreadsJSON; }>;
 
-    abstract getCatalog(params: { board: string; }): Observable<{ success: boolean; response: GetCatalogJSON; }>;
+    abstract getCatalog(board: string): Observable<{ success: boolean; response: GetCatalogJSON; }>;
 
-    abstract getArchive(params: { board: string; }): Observable<{ success: boolean; response: GetArchiveJSON; }>;
+    abstract getArchive(board: string): Observable<{ success: boolean; response: GetArchiveJSON; }>;
 
-    abstract getPage(params: { board: string; page: number; }): Observable<{ success: boolean; response: GetPageJSON; }>;
+    abstract getPage(board: string, page: number): Observable<{ success: boolean; response: GetPageJSON; }>;
 
-    abstract getPosts(params: { board: string; no: number; }): Observable<{ success: boolean; response: GetPostsJSON; }>;
+    abstract getPosts(board: string, no: number): Observable<{ success: boolean; response: GetPostsJSON; }>;
 
     // STATIC
 

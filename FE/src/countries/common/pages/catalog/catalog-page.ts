@@ -51,10 +51,10 @@ export class CatalogPage implements OnInit, AfterViewInit {
   }
 
   private initialize(cache: boolean, refresh: boolean): void {
-    this.fchanService.call('getBoards', [], true).subscribe((result) => {
+    this.fchanService.call(true)('getBoards').subscribe((result) => {
       if (result.success) {
         this.board = result.response.boards.find((board) => board.board === this.params.route.board);
-        this.fchanService.call('getCatalog', [{ board: this.params.route.board }], cache).subscribe((result) => {
+        this.fchanService.call(cache)('getCatalog', this.params.route.board).subscribe((result) => {
           if (result.success) {
             this.threads = result.response.reduce((ts, t) => ts.concat(t.threads), []);
             this.length = Math.min(this.threads.length, 10);

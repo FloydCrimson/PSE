@@ -51,10 +51,10 @@ export class ArchivePage implements OnInit, AfterViewInit {
   }
 
   private initialize(cache: boolean, refresh: boolean): void {
-    this.fchanService.call('getBoards', [], true).subscribe((result) => {
+    this.fchanService.call(true)('getBoards').subscribe((result) => {
       if (result.success) {
         this.board = result.response.boards.find((board) => board.board === this.params.route.board);
-        this.fchanService.call('getArchive', [{ board: this.params.route.board }], cache).subscribe((result) => {
+        this.fchanService.call(cache)('getArchive', this.params.route.board).subscribe((result) => {
           if (result.success) {
             this.posts = result.response.map((no) => {
               return { no, downloaded: false } as (PostPost & { downloaded: boolean; });
@@ -86,7 +86,7 @@ export class ArchivePage implements OnInit, AfterViewInit {
       params.route = { board: this.params.route.board, no: post.no };
       this.routingService.navigate('NavigateForward', RoutesIndex.ThreadPageRoute, params, { animationDirection: 'forward' });
     } else {
-      this.fchanService.call('getPosts', [{ board: this.params.route.board, no: post.no }], true).subscribe((result) => {
+      this.fchanService.call(true)('getPosts', this.params.route.board, post.no).subscribe((result) => {
         if (result.success) {
           const index = this.posts.findIndex((t) => t.no === post.no);
           this.posts[index] = { ...result.response.posts[0], downloaded: true };
@@ -99,7 +99,7 @@ export class ArchivePage implements OnInit, AfterViewInit {
 
   public async onPostVisibilityChange(post: (PostPost & { downloaded: boolean; }), event: { visible: boolean; }): Promise<void> {
     if (event.visible) {
-      if (this.fchanService.cached('getPosts', [{ board: this.params.route.board, no: post.no }])) {
+      if (this.fchanService.cached('getPosts', this.params.route.board, post.no)) {
         this.onPostClick(post);
       };
     }
