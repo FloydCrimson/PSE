@@ -1,8 +1,7 @@
 import { LoadChildren } from '@angular/router';
 
-export interface RouteImplementation<I = any | undefined, R = { [key: string]: any; } | undefined, Q = { [key: string]: any; } | undefined, F = string | undefined> {
+export type RouteImplementation<I = undefined, R extends { [key: string]: any; } = undefined, Q extends { [key: string]: any; } = undefined> = {
     path: string;
-    default?: I;
-    route?: (keyof R)[];
     loadChildren: LoadChildren;
+    defaultInput?: I;
 }

@@ -1,26 +1,26 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, UrlTree, Navigation, NavigationExtras } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { AnimationOptions, NavigationOptions } from '@ionic/angular/providers/nav-controller';
 
 import { RouteImplementation } from 'global/common/implementations/route.implementation';
+import { LoggingService } from './logging.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class RoutingService {
 
-    private map = new Map<string, { input?: any; route?: any; query?: any; fragment?: any; }>();
-
     constructor(
         private readonly navController: NavController,
-        private readonly router: Router
+        private readonly router: Router,
+        private readonly loggingService: LoggingService
     ) { }
 
     public navigate(type: 'Back', options?: AnimationOptions): Promise<boolean>;
     public navigate(type: 'Pop'): Promise<boolean>;
-    public navigate<I, R, Q, F>(type: 'NavigateBack' | 'NavigateForward' | 'NavigateRoot', route: RouteImplementation<I, R, Q, F>, params?: { input?: I; route?: R; query?: Q; fragment?: F; }, options?: Omit<NavigationOptions, 'queryParams' | 'preserveQueryParams' | 'queryParamsHandling' | 'fragment' | 'preserveFragment' | 'state'>): Promise<boolean>;
-    public navigate<I, R, Q, F>(type: 'Back' | 'Pop' | 'NavigateBack' | 'NavigateForward' | 'NavigateRoot', ...args: any[]): Promise<boolean> {
+    public navigate<I, R, Q>(type: 'NavigateBack' | 'NavigateForward' | 'NavigateRoot', route: RouteImplementation<I, R, Q>, params?: { input?: I; route?: R; query?: Q; fragment?: string; }, options?: Omit<NavigationOptionsG<I, R, Q>, 'queryParams' | 'preserveQueryParams' | 'queryParamsHandling' | 'fragment' | 'preserveFragment' | 'state'>): Promise<boolean>;
+    public navigate(type: 'Back' | 'Pop' | 'NavigateBack' | 'NavigateForward' | 'NavigateRoot', ...args: any[]): Promise<boolean> {
         switch (type) {
             case 'Back':
                 return this.navigateBack(type, ...args);
@@ -29,65 +29,53 @@ export class RoutingService {
             case 'NavigateBack':
             case 'NavigateForward':
             case 'NavigateRoot':
-                return this.navigateRoute<I, R, Q, F>(type, ...args);
+                return this.navigateRoute(type, ...args);
             default:
                 return Promise.reject(new Error('Unrecognized navigation type.'));
         }
     }
-    private navigateBack(type: 'Back', options?: AnimationOptions): Promise<boolean> {
-        options = { ...options };
+    private navigateBack<I, R, Q>(type: 'Back', options?: AnimationOptions): Promise<boolean> {
         const config: AnimationOptions = { animated: true, ...options };
-        this.navController.back(config);
+        (this.navController as NavControllerG<I, R, Q>).back(config);
         return Promise.resolve(true);
     }
-    private navigatePop(type: 'Pop'): Promise<boolean> {
-        return this.navController.pop().then(_ => true, _ => false).catch(_ => false);
+    private navigatePop<I, R, Q>(type: 'Pop'): Promise<boolean> {
+        return (this.navController as NavControllerG<I, R, Q>).pop().then(_ => true, _ => false).catch(_ => false);
     }
-    private navigateRoute<I, R, Q, F>(type: 'NavigateBack' | 'NavigateForward' | 'NavigateRoot', route?: RouteImplementation<I, R, Q, F>, params?: { input?: I; route?: R; query?: Q; fragment?: F; }, options?: Omit<NavigationOptions, 'queryParams' | 'preserveQueryParams' | 'queryParamsHandling' | 'fragment' | 'preserveFragment' | 'state'>): Promise<boolean> {
+    private navigateRoute<I, R, Q>(type: 'NavigateBack' | 'NavigateForward' | 'NavigateRoot', route?: RouteImplementation<I, R, Q>, params?: { input?: I; route?: R; query?: Q; fragment?: string; }, options?: Omit<NavigationOptionsG<I, R, Q>, 'state' | 'queryParams' | 'preserveQueryParams' | 'queryParamsHandling' | 'fragment' | 'preserveFragment'>): Promise<boolean> {
         params = { ...params };
-        const config: NavigationOptions = { animated: true, ...options, queryParams: params.query, queryParamsHandling: 'preserve', fragment: params.fragment as any, preserveFragment: false };
+        const config: NavigationOptionsG<I, R, Q> = { animated: true, ...options, state: { input: params.input }, queryParams: params.query, queryParamsHandling: 'preserve', fragment: params.fragment, preserveFragment: false };
         const url = this.getURL(route.path, params.route);
-        this.map.set(url, params);
         switch (type) {
             case 'NavigateBack':
-                return this.navController.navigateBack(url, config);
+                return (this.navController as NavControllerG<I, R, Q>).navigateBack(url, config);
             case 'NavigateForward':
-                return this.navController.navigateForward(url, config);
+                return (this.navController as NavControllerG<I, R, Q>).navigateForward(url, config);
             case 'NavigateRoot':
-                return this.navController.navigateRoot(url, config);
+                return (this.navController as NavControllerG<I, R, Q>).navigateRoot(url, config);
         }
     }
 
-    public getNavigationParams<I, R, Q, F>(route: RouteImplementation<I, R, Q, F>): { input?: I; route?: R; query?: Q; fragment?: F; } {
-        try {
-            const formatted = new URL('mock://localhost' + this.router.getCurrentNavigation().finalUrl.toString());
-            const url = formatted.pathname.replace(/^\/?/, '');
-            if (this.map.has(url)) { // from this.navigate
-                const params = this.map.get(url);
-                this.map.delete(url);
-                return params;
-            } else { // from url
-                let params: { input?: I; route?: R; query?: Q; fragment?: F; } = {};
-                params.input = route.default;
-                params.route = this.getRoute(route.path, url);
-                params.query = this.getQuery(formatted.search);
-                params.fragment = this.getFragment(formatted.hash);
-                return params;
-            }
-        } catch (error) {
-            return null;
-        }
+    public getNavigationParams<I, R, Q>(route: RouteImplementation<I, R, Q>): { input?: I; route?: R; query?: Q; fragment?: string; } {
+        const navigation = this.router.getCurrentNavigation() as NavigationG<I, R, Q>;
+        const params: { input?: I; route?: R; query?: Q; fragment?: string; } = {
+            input: this.getInput<I>(route.defaultInput, navigation.extras.state),
+            route: this.getRoute<R>(route.path, new URL(window.location.origin + navigation.finalUrl.toString()).pathname.replace(/^\/?/, '')),
+            query: this.getQuery<Q>(navigation.finalUrl.queryParams),
+            fragment: this.getFragment(navigation.finalUrl.fragment)
+        };
+        return params;
     }
 
     //
 
-    public static getParams<I, R, Q, F>(route: RouteImplementation<I, R, Q, F>): { input?: I; route?: R; query?: Q; fragment?: F; } {
-        return { input: route.default } as { input?: I; route?: R; query?: Q; fragment?: F; };
+    public static getParams<I, R, Q>(route: RouteImplementation<I, R, Q>): { input?: I; route?: R; query?: Q; fragment?: string; } {
+        return { input: route.defaultInput } as { input?: I; route?: R; query?: Q; fragment?: string; };
     }
 
     //
 
-    private getURL<R = undefined>(path: string, route?: R): string {
+    private getURL<R>(path: string, route?: R): string {
         const url = route ? path.split('/').map((p) => {
             if (p.match(/^:/)) {
                 const key = p.replace(/^:/, '');
@@ -100,31 +88,62 @@ export class RoutingService {
         return url;
     }
 
-    private getRoute<R = undefined>(path: string, url: string): R {
+    private getInput<I>(defaultInput?: I, state?: { input: I; }): I {
+        return state ? state.input : defaultInput;
+    }
+
+    private getRoute<R>(path: string, url: string): R {
         const pathS = path.split('/');
         const urlS = url.split('/');
-        const route = pathS.length === urlS.length ? pathS.reduce((r, p, i) => {
+        let mismatch = pathS.length !== urlS.length;
+        const route = !mismatch ? pathS.reduce((r, p, i) => {
             if (p.match(/^:/)) {
                 const key = p.replace(/^:/, '');
                 r[key] = urlS[i];
+            } else {
+                mismatch = mismatch || p !== urlS[i];
             }
             return r;
         }, {} as R) : undefined;
-        return route;
+        if (mismatch) {
+            this.loggingService.LOG('WARN', { class: RoutingService.name, function: this.getRoute.name, text: 'Mismatch between "path" and "url".' }, path, url);
+            return undefined;
+        } else {
+            return (Object.keys(route).length > 0) ? route : undefined;
+        }
     }
 
-    private getQuery<Q = undefined>(search: string): Q {
-        search = search.replace(/^\??/, '');
-        return search ? search.split('&').reduce((q, s) => {
-            const sS = s.split('=');
-            q[sS[0]] = decodeURIComponent(sS[1] || '');
-            return q;
-        }, {} as Q) : undefined;
+    private getQuery<Q>(queryParams: Q): Q {
+        return (Object.keys(queryParams || {}).length > 0) ? queryParams : undefined;
     }
 
-    private getFragment<F = undefined>(hash: string): F {
-        hash = hash.replace(/^#?/, '');
-        return (hash as any as F) || undefined;
+    private getFragment(fragment: string | null): string {
+        return fragment || undefined;
     }
 
+}
+
+interface NavigationExtrasG<I, R, Q> extends NavigationExtras {
+    queryParams?: Q | null;
+    state: { input: I; };
+}
+
+interface UrlTreeG<I, R, Q> extends UrlTree {
+    queryParams: Q;
+}
+
+interface NavigationOptionsG<I, R, Q> extends Omit<NavigationOptions, keyof NavigationExtras>, NavigationExtrasG<I, R, Q> { }
+
+interface NavigationG<I, R, Q> extends Navigation {
+    initialUrl: string | UrlTreeG<any, any, any>;
+    extractedUrl: UrlTreeG<any, any, any>;
+    finalUrl?: UrlTreeG<I, R, Q>;
+    extras: NavigationExtrasG<I, R, Q>;
+    previousNavigation: NavigationG<any, any, any> | null;
+}
+
+interface NavControllerG<I, R, Q> extends NavController {
+    navigateForward(url: string | UrlTreeG<I, R, Q> | any[], options?: NavigationOptionsG<I, R, Q>): Promise<boolean>;
+    navigateBack(url: string | UrlTreeG<I, R, Q> | any[], options?: NavigationOptionsG<I, R, Q>): Promise<boolean>;
+    navigateRoot(url: string | UrlTreeG<I, R, Q> | any[], options?: NavigationOptionsG<I, R, Q>): Promise<boolean>;
 }

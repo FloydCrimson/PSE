@@ -1,3 +1,5 @@
-export interface ModalImplementation<I = any | undefined, O = any | undefined> {
-    loadChildren: () => Promise<Function | HTMLElement | string | null>;
+import { ComponentRef } from '@ionic/core';
+
+export type ModalImplementation<I = undefined, O = undefined> = {
+    component: ComponentRef;
 }
