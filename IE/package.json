@@ -1,0 +1,14 @@
+{
+  "name": "pse-ie",
+  "version": "1.0.0",
+  "description": "",
+  "devDependencies": {
+    "typescript": "^4.0.2"
+  },
+  "dependencies": {
+    "@types/node": "^14.10.1"
+  },
+  "scripts": {
+    "start": "ts-node src/main.ts"
+  }
+}

@@ -2,9 +2,21 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build-tsc",
+            "label": "build-tsc-be",
             "type": "typescript",
             "tsconfig": "BE/tsconfig.json",
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "build-tsc-ie",
+            "type": "typescript",
+            "tsconfig": "IE/tsconfig.json",
             "problemMatcher": [
                 "$tsc"
             ],

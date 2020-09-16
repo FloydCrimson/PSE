@@ -6,11 +6,23 @@
             "request": "launch",
             "name": "Launch PSE-BE",
             "program": "${workspaceRoot}/BE/src/main.ts",
-            "preLaunchTask": "build-tsc",
+            "preLaunchTask": "build-tsc-be",
             "console": "internalConsole",
             "stopOnEntry": false,
             "outFiles": [
                 "${workspaceRoot}/BE/build/**/*.js"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch PSE-IE",
+            "program": "${workspaceRoot}/IE/src/main.ts",
+            "preLaunchTask": "build-tsc-ie",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "outFiles": [
+                "${workspaceRoot}/IE/build/**/*.js"
             ]
         }
     ]
