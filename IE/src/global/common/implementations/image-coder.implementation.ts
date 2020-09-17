@@ -4,7 +4,9 @@ export interface ImageCoderImplementation<I extends ImageCoderInfoImplementation
 }
 
 export interface ImageCoderInfoImplementation {
+    name: string;
+    extension: string;
+    size: number;
     width: number;
     height: number;
-    size: number;
 }

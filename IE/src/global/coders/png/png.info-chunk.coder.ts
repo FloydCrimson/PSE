@@ -30,27 +30,23 @@ export class PNGCoderInfoChunk {
     };
 
     public get ancillary_bit(): boolean {
-        const position = 0;
-        const check = 1 << 5;
-        return (this.TYPE[position] & check) === check;
+        const bit = 1 << 5;
+        return (this.TYPE[0] & bit) === bit;
     };
 
     public get private_bit(): boolean {
-        const position = 1;
-        const check = 1 << 5;
-        return (this.TYPE[position] & check) === check;
+        const bit = 1 << 5;
+        return (this.TYPE[1] & bit) === bit;
     };
 
     public get reserved_bit(): boolean {
-        const position = 2;
-        const check = 1 << 5;
-        return (this.TYPE[position] & check) === check;
+        const bit = 1 << 5;
+        return (this.TYPE[2] & bit) === bit;
     };
 
     public get safe_to_copy_bit(): boolean {
-        const position = 3;
-        const check = 1 << 5;
-        return (this.TYPE[position] & check) === check;
+        const bit = 1 << 5;
+        return (this.TYPE[3] & bit) === bit;
     };
 
     constructor(
