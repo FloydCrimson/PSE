@@ -1,5 +1,7 @@
 import { PNGCoderInfoChunk } from "./png.info-chunk.coder";
 
+import { PNGCoderInfoChunkPLTEType } from "./png.info-chunk-PLTE.coder";
+
 export const PNGCoderInfoChunkIHDRType = Buffer.from([73, 72, 68, 82]);
 
 export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
@@ -93,10 +95,10 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
         // BIT DEPTH and COLOR TYPE
         const bit_depth_and_color_type_map = {
             [PNGCoderInfoChunkIHDRColorType.GRAYSCALE]: [1, 2, 4, 8, 16],
-            [PNGCoderInfoChunkIHDRColorType.RGB_TRIPLE]: [8, 16],
+            [PNGCoderInfoChunkIHDRColorType.TRUECOLOR]: [8, 16],
             [PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX]: [1, 2, 4, 8],
             [PNGCoderInfoChunkIHDRColorType.GRAYSCALE_ALPHA]: [8, 16],
-            [PNGCoderInfoChunkIHDRColorType.RGB_TRIPLE_ALPHA]: [8, 16]
+            [PNGCoderInfoChunkIHDRColorType.TRUECOLOR_ALPHA]: [8, 16]
         };
         if (this.color_type in bit_depth_and_color_type_map) {
             if (bit_depth_and_color_type_map[this.color_type].indexOf(this.bit_depth) < 0) {
@@ -126,6 +128,12 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
         if (chunks.indexOf(this) !== 0) {
             throw new Error("Chunk IHDR is not the first.");
         }
+        // PRESENCE
+        if (this.color_type === PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX) {
+            if (chunks.find((chunk) => chunk.TYPE.compare(PNGCoderInfoChunkPLTEType) === 0) === undefined) {
+                throw new Error("Chunk IHDR with color type 3 needs chunk PLTE.");
+            }
+        }
     }
 
 }
@@ -136,10 +144,10 @@ export enum PNGCoderInfoChunkIHDRColorType {
     ALPHA_USED = 1 << 2,
     //
     GRAYSCALE = 0,
-    RGB_TRIPLE = RGB_TRIPLE_USED,
+    TRUECOLOR = RGB_TRIPLE_USED,
     PALETTE_INDEX = RGB_TRIPLE_USED | PALETTE_USED,
     GRAYSCALE_ALPHA = ALPHA_USED,
-    RGB_TRIPLE_ALPHA = RGB_TRIPLE_USED | ALPHA_USED
+    TRUECOLOR_ALPHA = RGB_TRIPLE_USED | ALPHA_USED
 }
 
 export enum PNGCoderInfoChunkIHDRCompressionMethod {

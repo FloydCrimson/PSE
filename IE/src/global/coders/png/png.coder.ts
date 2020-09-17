@@ -6,8 +6,10 @@ import { ImageCoderImplementation } from "../../common/implementations/image-cod
 
 import { PNGCoderInfo } from './png.info.coder';
 import { PNGCoderInfoChunk } from './png.info-chunk.coder';
-import { PNGCoderInfoChunkIEND, PNGCoderInfoChunkIENDType } from './png.info-chunk-IEND.coder';
+import { PNGCoderInfoChunkIDAT, PNGCoderInfoChunkIDATType } from './png.info-chunk-IDAT.coder';
 import { PNGCoderInfoChunkIHDR, PNGCoderInfoChunkIHDRType } from './png.info-chunk-IHDR.coder';
+import { PNGCoderInfoChunkIEND, PNGCoderInfoChunkIENDType } from './png.info-chunk-IEND.coder';
+import { PNGCoderInfoChunkPLTE, PNGCoderInfoChunkPLTEType } from './png.info-chunk-PLTE.coder';
 
 export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
 
@@ -63,8 +65,10 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
 
     private getChunk(buffer: Buffer): PNGCoderInfoChunk {
         const TYPE = buffer.slice(4, 8);
-        if (TYPE.compare(PNGCoderInfoChunkIENDType) === 0) return new PNGCoderInfoChunkIEND(buffer);
+        if (TYPE.compare(PNGCoderInfoChunkIDATType) === 0) return new PNGCoderInfoChunkIDAT(buffer);
         if (TYPE.compare(PNGCoderInfoChunkIHDRType) === 0) return new PNGCoderInfoChunkIHDR(buffer);
+        if (TYPE.compare(PNGCoderInfoChunkIENDType) === 0) return new PNGCoderInfoChunkIEND(buffer);
+        if (TYPE.compare(PNGCoderInfoChunkPLTEType) === 0) return new PNGCoderInfoChunkPLTE(buffer);
         return new PNGCoderInfoChunk(buffer);
     }
 
