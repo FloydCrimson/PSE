@@ -4,6 +4,7 @@ import * as fs from 'fs';
 
 import { ImageCoderImplementation } from "../../common/implementations/image-coder.implementation";
 
+import { PNGCoderService } from './png.coder.service';
 import { PNGCoderInfo } from './png.info.coder';
 import { PNGCoderInfoChunk } from './png.info-chunk.coder';
 import { PNGCoderInfoChunkIDAT, PNGCoderInfoChunkIDATType } from './png.info-chunk-IDAT.coder';
@@ -12,6 +13,8 @@ import { PNGCoderInfoChunkIEND, PNGCoderInfoChunkIENDType } from './png.info-chu
 import { PNGCoderInfoChunkPLTE, PNGCoderInfoChunkPLTEType } from './png.info-chunk-PLTE.coder';
 
 export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
+
+    private service = new PNGCoderService();
 
     // DECODER
 
@@ -63,11 +66,11 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
 
     private getChunk(buffer: Buffer): PNGCoderInfoChunk {
         const TYPE = buffer.slice(4, 8);
-        if (TYPE.compare(PNGCoderInfoChunkIDATType) === 0) return new PNGCoderInfoChunkIDAT(buffer);
-        if (TYPE.compare(PNGCoderInfoChunkIHDRType) === 0) return new PNGCoderInfoChunkIHDR(buffer);
-        if (TYPE.compare(PNGCoderInfoChunkIENDType) === 0) return new PNGCoderInfoChunkIEND(buffer);
-        if (TYPE.compare(PNGCoderInfoChunkPLTEType) === 0) return new PNGCoderInfoChunkPLTE(buffer);
-        return new PNGCoderInfoChunk(buffer);
+        if (TYPE.compare(PNGCoderInfoChunkIDATType) === 0) return new PNGCoderInfoChunkIDAT(this.service, buffer);
+        if (TYPE.compare(PNGCoderInfoChunkIHDRType) === 0) return new PNGCoderInfoChunkIHDR(this.service, buffer);
+        if (TYPE.compare(PNGCoderInfoChunkIENDType) === 0) return new PNGCoderInfoChunkIEND(this.service, buffer);
+        if (TYPE.compare(PNGCoderInfoChunkPLTEType) === 0) return new PNGCoderInfoChunkPLTE(this.service, buffer);
+        return new PNGCoderInfoChunk(this.service, buffer);
     }
 
     private checkAll(position: number, buffer: Buffer, data: { info: PNGCoderInfo; binary: Uint8Array; }): number {

@@ -1,3 +1,4 @@
+import { PNGCoderService } from './png.coder.service';
 import { PNGCoderInfoChunk } from "./png.info-chunk.coder";
 
 export const PNGCoderInfoChunkIENDType = Buffer.from([73, 69, 78, 68]);
@@ -5,9 +6,10 @@ export const PNGCoderInfoChunkIENDType = Buffer.from([73, 69, 78, 68]);
 export class PNGCoderInfoChunkIEND extends PNGCoderInfoChunk {
 
     constructor(
+        protected readonly service: PNGCoderService,
         protected readonly buffer: Buffer
     ) {
-        super(buffer);
+        super(service, buffer);
     }
 
     public checkSelf(): void {

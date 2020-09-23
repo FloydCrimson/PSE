@@ -1,3 +1,4 @@
+import { PNGCoderService } from './png.coder.service';
 import { PNGCoderInfoChunk } from "./png.info-chunk.coder";
 
 import { PNGCoderInfoChunkIDATType } from "./png.info-chunk-IDAT.coder";
@@ -20,9 +21,10 @@ export class PNGCoderInfoChunkPLTE extends PNGCoderInfoChunk {
     };
 
     constructor(
+        protected readonly service: PNGCoderService,
         protected readonly buffer: Buffer
     ) {
-        super(buffer);
+        super(service, buffer);
     }
 
     public checkSelf(): void {

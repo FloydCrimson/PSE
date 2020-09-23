@@ -1,4 +1,4 @@
-import { CRC32 } from "../../helpers/crc32";
+import { PNGCoderService } from './png.coder.service';
 
 export class PNGCoderInfoChunk {
 
@@ -51,13 +51,13 @@ export class PNGCoderInfoChunk {
     };
 
     constructor(
+        protected readonly service: PNGCoderService,
         protected readonly buffer: Buffer
     ) { }
 
     public checkSelf(): void {
         // CRC
-        const crc32 = new CRC32(0xedb88320); // TODO: move this to support service
-        const crc_generated = (crc32.crc(Buffer.concat([this.TYPE, this.DATA]), 0xffffffff) ^ 0xffffffff) >>> 0;
+        const crc_generated = (this.service.crc32.crc(Buffer.concat([this.TYPE, this.DATA]), 0xffffffff) ^ 0xffffffff) >>> 0;
         const crc_read = this.CRC.readUInt32BE(0);
         if (crc_generated !== crc_read) {
             throw new Error("Chunk CRC check failed.");
