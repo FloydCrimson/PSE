@@ -51,7 +51,7 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
     };
 
     public get sample_depth(): number {
-        return this.color_type === 3 ? 8 : this.bit_depth;
+        return this.color_type === PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX ? 8 : this.bit_depth;
     };
 
     public get color_type(): PNGCoderInfoChunkIHDRColorType {
@@ -84,6 +84,10 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
     public checkSelf(): void {
         // SUPER
         super.checkSelf();
+        // LENGTH
+        if (this.length !== 13) {
+            throw new Error("Chunk IHDR must be of length 13.");
+        }
         // WIDTH
         if (this.width === 0) {
             throw new Error("Chunk IHDR width must be greater than 0.");

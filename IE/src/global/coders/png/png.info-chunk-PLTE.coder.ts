@@ -54,7 +54,7 @@ export class PNGCoderInfoChunkPLTE extends PNGCoderInfoChunk {
         }
         // COUNT
         if (chunks.reduce((count, chunk) => chunk.TYPE.readUInt32BE(0) === PNGCoderInfoChunkPLTE.Type ? (count + 1) : count, 0) > 1) {
-            throw new Error("Chunk PLTE must not appear more than one time.");
+            throw new Error("Chunk PLTE must not appear more than once.");
         }
     }
 
@@ -65,5 +65,3 @@ export type PNGCoderInfoChunkPLTEEntry = {
     Green: number;
     Blue: number;
 }
-
-// TODO: TO TEST
