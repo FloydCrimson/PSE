@@ -38,7 +38,7 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
     private getChunks(position: number, buffer: Buffer, data: { info: PNGCoderInfo; binary: Uint8Array; }): number {
         data.info.chunks = [];
         while (true) {
-            const length = buffer[position] * 256 * 256 * 256 + buffer[position + 1] * 256 * 256 + buffer[position + 2] * 256 + buffer[position + 3];
+            const length = buffer.readUInt32BE(position);
             const chunk = this.getChunk(buffer.slice(position, position + 12 + length));
             chunk.checkSelf();
             position += 12 + length;

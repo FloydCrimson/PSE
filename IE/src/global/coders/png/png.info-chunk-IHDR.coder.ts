@@ -37,13 +37,11 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
     //
 
     public get width(): number {
-        const buffer = this.WIDTH;
-        return buffer[0] * 256 * 256 * 256 + buffer[1] * 256 * 256 + buffer[2] * 256 + buffer[3];
+        return this.WIDTH.readUInt32BE(0);
     };
 
     public get height(): number {
-        const buffer = this.HEIGHT;
-        return buffer[0] * 256 * 256 * 256 + buffer[1] * 256 * 256 + buffer[2] * 256 + buffer[3];
+        return this.HEIGHT.readUInt32BE(0);
     };
 
     public get bit_depth(): number {
