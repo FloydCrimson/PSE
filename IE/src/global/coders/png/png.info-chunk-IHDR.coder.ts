@@ -1,11 +1,11 @@
 import { PNGCoderService } from './png.coder.service';
 import { PNGCoderInfoChunk } from "./png.info-chunk.coder";
 
-import { PNGCoderInfoChunkPLTEType } from "./png.info-chunk-PLTE.coder";
-
-export const PNGCoderInfoChunkIHDRType = Buffer.from([73, 72, 68, 82]);
+import { PNGCoderInfoChunkPLTE } from "./png.info-chunk-PLTE.coder";
 
 export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
+
+    public static Type: number = 0x49484452; // Buffer.from([73, 72, 68, 82])
 
     public get WIDTH(): Buffer {
         return this.DATA.slice(0, 4);
@@ -130,7 +130,7 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
         }
         // PRESENCE
         if (this.color_type === PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX) {
-            if (chunks.find((chunk) => chunk.TYPE.compare(PNGCoderInfoChunkPLTEType) === 0) === undefined) {
+            if (chunks.find((chunk) => chunk.type === PNGCoderInfoChunkPLTE.Type) === undefined) {
                 throw new Error("Chunk IHDR with color type 3 needs chunk PLTE.");
             }
         }

@@ -7,10 +7,11 @@ import { ImageCoderImplementation } from "../../common/implementations/image-cod
 import { PNGCoderService } from './png.coder.service';
 import { PNGCoderInfo } from './png.info.coder';
 import { PNGCoderInfoChunk } from './png.info-chunk.coder';
-import { PNGCoderInfoChunkIDAT, PNGCoderInfoChunkIDATType } from './png.info-chunk-IDAT.coder';
-import { PNGCoderInfoChunkIHDR, PNGCoderInfoChunkIHDRType } from './png.info-chunk-IHDR.coder';
-import { PNGCoderInfoChunkIEND, PNGCoderInfoChunkIENDType } from './png.info-chunk-IEND.coder';
-import { PNGCoderInfoChunkPLTE, PNGCoderInfoChunkPLTEType } from './png.info-chunk-PLTE.coder';
+import { PNGCoderInfoChunkbKGD } from './png.info-chunk-bKGD.coder';
+import { PNGCoderInfoChunkIDAT } from './png.info-chunk-IDAT.coder';
+import { PNGCoderInfoChunkIHDR } from './png.info-chunk-IHDR.coder';
+import { PNGCoderInfoChunkIEND } from './png.info-chunk-IEND.coder';
+import { PNGCoderInfoChunkPLTE } from './png.info-chunk-PLTE.coder';
 
 export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
 
@@ -47,12 +48,12 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
             position += 12 + length;
             data.info.chunks.push(chunk);
             if (data.info.chunks.length === 1) {
-                if (data.info.chunks[0].TYPE.compare(PNGCoderInfoChunkIHDRType) !== 0) {
+                if (data.info.chunks[0].type !== PNGCoderInfoChunkIHDR.Type) {
                     throw new Error("Chunk start-of-file marker IHDR not first.");
                 }
             }
             if (data.info.chunks.length > 1) {
-                if (data.info.chunks[data.info.chunks.length - 1].TYPE.compare(PNGCoderInfoChunkIENDType) === 0) {
+                if (data.info.chunks[data.info.chunks.length - 1].type === PNGCoderInfoChunkIEND.Type) {
                     break;
                 }
             }
@@ -65,11 +66,14 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
     }
 
     private getChunk(buffer: Buffer): PNGCoderInfoChunk {
-        const TYPE = buffer.slice(4, 8);
-        if (TYPE.compare(PNGCoderInfoChunkIDATType) === 0) return new PNGCoderInfoChunkIDAT(this.service, buffer);
-        if (TYPE.compare(PNGCoderInfoChunkIHDRType) === 0) return new PNGCoderInfoChunkIHDR(this.service, buffer);
-        if (TYPE.compare(PNGCoderInfoChunkIENDType) === 0) return new PNGCoderInfoChunkIEND(this.service, buffer);
-        if (TYPE.compare(PNGCoderInfoChunkPLTEType) === 0) return new PNGCoderInfoChunkPLTE(this.service, buffer);
+        const type = buffer.readUInt32BE(4);
+        switch (type) {
+            case PNGCoderInfoChunkbKGD.Type: return new PNGCoderInfoChunkbKGD(this.service, buffer);
+            case PNGCoderInfoChunkIDAT.Type: return new PNGCoderInfoChunkIDAT(this.service, buffer);
+            case PNGCoderInfoChunkIHDR.Type: return new PNGCoderInfoChunkIHDR(this.service, buffer);
+            case PNGCoderInfoChunkIEND.Type: return new PNGCoderInfoChunkIEND(this.service, buffer);
+            case PNGCoderInfoChunkPLTE.Type: return new PNGCoderInfoChunkPLTE(this.service, buffer);
+        }
         return new PNGCoderInfoChunk(this.service, buffer);
     }
 
@@ -78,13 +82,13 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
         if (data.info.chunks.length === 0) {
             throw new Error("Chunks not found.");
         }
-        if (data.info.chunks[0].TYPE.compare(PNGCoderInfoChunkIHDRType) !== 0) {
+        if (data.info.chunks[0].type !== PNGCoderInfoChunkIHDR.Type) {
             throw new Error("Chunk IHDR mandatory not found.");
         }
-        if (data.info.chunks[data.info.chunks.length - 1].TYPE.compare(PNGCoderInfoChunkIENDType) !== 0) {
+        if (data.info.chunks[data.info.chunks.length - 1].type !== PNGCoderInfoChunkIEND.Type) {
             throw new Error("Chunk IEND mandatory not found.");
         }
-        if (data.info.chunks.find((chunk) => chunk.TYPE.compare(PNGCoderInfoChunkIDATType) === 0) === undefined) {
+        if (data.info.chunks.find((chunk) => chunk.type === PNGCoderInfoChunkIDAT.Type) === undefined) {
             throw new Error("Chunk IDAT mandatory not found.");
         }
         // BIT

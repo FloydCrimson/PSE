@@ -1,12 +1,12 @@
 import { PNGCoderService } from './png.coder.service';
 import { PNGCoderInfoChunk } from "./png.info-chunk.coder";
 
-import { PNGCoderInfoChunkIDATType } from "./png.info-chunk-IDAT.coder";
-import { PNGCoderInfoChunkIHDR, PNGCoderInfoChunkIHDRType, PNGCoderInfoChunkIHDRColorType } from "./png.info-chunk-IHDR.coder";
-
-export const PNGCoderInfoChunkPLTEType = Buffer.from([80, 76, 84, 69]);
+import { PNGCoderInfoChunkIDAT } from "./png.info-chunk-IDAT.coder";
+import { PNGCoderInfoChunkIHDR, PNGCoderInfoChunkIHDRColorType } from "./png.info-chunk-IHDR.coder";
 
 export class PNGCoderInfoChunkPLTE extends PNGCoderInfoChunk {
+
+    public static Type: number = 0x504c5445; // Buffer.from([80, 76, 84, 69])
 
     public get entries(): PNGCoderInfoChunkPLTEEntry[] {
         const entries: PNGCoderInfoChunkPLTEEntry[] = [];
@@ -40,7 +40,7 @@ export class PNGCoderInfoChunkPLTE extends PNGCoderInfoChunk {
             throw new Error("Chunk PLTE length must be divisible by 3.");
         }
         // PRESENCE
-        const ChunkIHDR = chunks.find((chunk) => chunk.TYPE.compare(PNGCoderInfoChunkIHDRType) === 0) as PNGCoderInfoChunkIHDR;
+        const ChunkIHDR = chunks.find((chunk) => chunk.type === PNGCoderInfoChunkIHDR.Type) as PNGCoderInfoChunkIHDR;
         if (ChunkIHDR.color_type === PNGCoderInfoChunkIHDRColorType.GRAYSCALE || ChunkIHDR.color_type === PNGCoderInfoChunkIHDRColorType.GRAYSCALE_ALPHA) {
             throw new Error("Chunk PLTE must not appear for chunk IHDR color type 0 and 4.");
         }
@@ -49,11 +49,11 @@ export class PNGCoderInfoChunkPLTE extends PNGCoderInfoChunk {
             throw new Error("Chunk PLTE entries length must not exceed the range that can be represented with chunk IHDR bit depth.");
         }
         // POSITION
-        if (chunks.indexOf(this) > chunks.findIndex((chunk) => chunk.TYPE.compare(PNGCoderInfoChunkIDATType) === 0)) {
+        if (chunks.indexOf(this) > chunks.findIndex((chunk) => chunk.type === PNGCoderInfoChunkIDAT.Type)) {
             throw new Error("Chunk PLTE must precede the first chunk IDAT.");
         }
         // COUNT
-        if (chunks.reduce((count, chunk) => chunk.TYPE.compare(PNGCoderInfoChunkPLTEType) === 0 ? (count + 1) : count, 0) > 1) {
+        if (chunks.reduce((count, chunk) => chunk.TYPE.readUInt32BE(0) === PNGCoderInfoChunkPLTE.Type ? (count + 1) : count, 0) > 1) {
             throw new Error("Chunk PLTE must not appear more than one time.");
         }
     }

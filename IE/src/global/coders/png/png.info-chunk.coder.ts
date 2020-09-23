@@ -2,6 +2,8 @@ import { PNGCoderService } from './png.coder.service';
 
 export class PNGCoderInfoChunk {
 
+    public static Type: number = 0x0;
+
     public get LENGTH(): Buffer {
         return this.buffer.slice(0, 4);
     };
@@ -26,8 +28,16 @@ export class PNGCoderInfoChunk {
         return this.LENGTH.readUInt32BE(0);
     };
 
+    public get type(): number {
+        return this.TYPE.readUInt32BE(0);
+    };
+
     public get name(): string {
         return this.TYPE.toString();
+    };
+
+    public get crc(): number {
+        return this.CRC.readUInt32BE(0);
     };
 
     public get ancillary_bit(): boolean {
@@ -57,9 +67,8 @@ export class PNGCoderInfoChunk {
 
     public checkSelf(): void {
         // CRC
-        const crc_generated = (this.service.crc32.crc(Buffer.concat([this.TYPE, this.DATA]), 0xffffffff) ^ 0xffffffff) >>> 0;
-        const crc_read = this.CRC.readUInt32BE(0);
-        if (crc_generated !== crc_read) {
+        const crc = (this.service.crc32.crc(Buffer.concat([this.TYPE, this.DATA]), 0xffffffff) ^ 0xffffffff) >>> 0;
+        if (crc !== this.crc) {
             throw new Error("Chunk CRC check failed.");
         }
     }
