@@ -25,7 +25,7 @@ export class PNGCoderInfoChunkIEND extends PNGCoderInfoChunk {
             throw new Error("Chunk IEND is not the last.");
         }
         // LENGTH
-        if (this.length > 0) {
+        if (this.getLength() > 0) {
             throw new Error("Chunk IEND data must be empty.");
         }
     }

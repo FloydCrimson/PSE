@@ -35,45 +35,6 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
         return this.DATA.slice(12, 13);
     };
 
-    //
-
-    public get width(): number {
-        return this.WIDTH.readUInt32BE(0);
-    };
-
-    public get height(): number {
-        return this.HEIGHT.readUInt32BE(0);
-    };
-
-    public get bit_depth(): number {
-        const buffer = this.BIT_DEPTH;
-        return buffer[0];
-    };
-
-    public get sample_depth(): number {
-        return this.color_type === PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX ? 8 : this.bit_depth;
-    };
-
-    public get color_type(): PNGCoderInfoChunkIHDRColorType {
-        const buffer = this.COLOR_TYPE;
-        return buffer[0] as PNGCoderInfoChunkIHDRColorType;
-    };
-
-    public get compression_method(): PNGCoderInfoChunkIHDRCompressionMethod {
-        const buffer = this.COMPRESSION_METHOD;
-        return buffer[0] as PNGCoderInfoChunkIHDRCompressionMethod;
-    };
-
-    public get filter_method(): PNGCoderInfoChunkIHDRFilterMethod {
-        const buffer = this.FILTER_METHOD;
-        return buffer[0] as PNGCoderInfoChunkIHDRFilterMethod;
-    };
-
-    public get interlace_method(): PNGCoderInfoChunkIHDRInterlaceMethod {
-        const buffer = this.INTERLACE_METHOD;
-        return buffer[0] as PNGCoderInfoChunkIHDRInterlaceMethod;
-    };
-
     constructor(
         protected readonly service: PNGCoderService,
         protected readonly buffer: Buffer
@@ -85,15 +46,15 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
         // SUPER
         super.checkSelf();
         // LENGTH
-        if (this.length !== 13) {
+        if (this.getLength() !== 13) {
             throw new Error("Chunk IHDR must be of length 13.");
         }
         // WIDTH
-        if (this.width === 0) {
+        if (this.getWidth() === 0) {
             throw new Error("Chunk IHDR width must be greater than 0.");
         }
         // HEIGHT
-        if (this.height === 0) {
+        if (this.getHeight() === 0) {
             throw new Error("Chunk IHDR height must be greater than 0.");
         }
         // BIT DEPTH and COLOR TYPE
@@ -104,23 +65,23 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
             [PNGCoderInfoChunkIHDRColorType.GRAYSCALE_ALPHA]: [8, 16],
             [PNGCoderInfoChunkIHDRColorType.TRUECOLOR_ALPHA]: [8, 16]
         };
-        if (this.color_type in bit_depth_and_color_type_map) {
-            if (bit_depth_and_color_type_map[this.color_type].indexOf(this.bit_depth) < 0) {
+        if (this.getColorType() in bit_depth_and_color_type_map) {
+            if (bit_depth_and_color_type_map[this.getColorType()].indexOf(this.getBitDepth()) < 0) {
                 throw new Error("Chunk IHDR bit depth must be equal to 1, 2, 4, 8, or 16.");
             }
         } else {
             throw new Error("Chunk IHDR color type must be equal to 0, 2, 3, 4, or 6.");
         }
         // COMPRESSION METHOD
-        if (this.compression_method !== PNGCoderInfoChunkIHDRCompressionMethod.FLATE_32KSW) {
+        if (this.getCompressionMethod() !== PNGCoderInfoChunkIHDRCompressionMethod.FLATE_32KSW) {
             throw new Error("Chunk IHDR compression method not recognized.");
         }
         // FILTER METHOD
-        if (this.filter_method !== PNGCoderInfoChunkIHDRFilterMethod.ADAPTIVE_FILTERING_5BFT) {
+        if (this.getFilterMethod() !== PNGCoderInfoChunkIHDRFilterMethod.ADAPTIVE_FILTERING_5BFT) {
             throw new Error("Chunk IHDR filter method not recognized.");
         }
         // INTERLACE METHOD
-        if (this.interlace_method !== PNGCoderInfoChunkIHDRInterlaceMethod.NO_INTERLACE && this.interlace_method !== PNGCoderInfoChunkIHDRInterlaceMethod.ADAM7_INTERLACE) {
+        if (this.getInterlaceMethod() !== PNGCoderInfoChunkIHDRInterlaceMethod.NO_INTERLACE && this.getInterlaceMethod() !== PNGCoderInfoChunkIHDRInterlaceMethod.ADAM7_INTERLACE) {
             throw new Error("Chunk IHDR interlace method not recognized.");
         }
     }
@@ -133,12 +94,51 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
             throw new Error("Chunk IHDR is not the first.");
         }
         // PRESENCE
-        if (this.color_type === PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX) {
-            if (chunks.find((chunk) => chunk.type === PNGCoderInfoChunkPLTE.Type) === undefined) {
+        if (this.getColorType() === PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX) {
+            if (chunks.find((chunk) => chunk.getType() === PNGCoderInfoChunkPLTE.Type) === undefined) {
                 throw new Error("Chunk IHDR with color type 3 needs chunk PLTE.");
             }
         }
     }
+
+    //
+
+    public getWidth(): number {
+        return this.WIDTH.readUInt32BE(0);
+    };
+
+    public getHeight(): number {
+        return this.HEIGHT.readUInt32BE(0);
+    };
+
+    public getBitDepth(): number {
+        const buffer = this.BIT_DEPTH;
+        return buffer[0];
+    };
+
+    public getSampleDepth(): number {
+        return this.getColorType() === PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX ? 8 : this.getBitDepth();
+    };
+
+    public getColorType(): PNGCoderInfoChunkIHDRColorType {
+        const buffer = this.COLOR_TYPE;
+        return buffer[0] as PNGCoderInfoChunkIHDRColorType;
+    };
+
+    public getCompressionMethod(): PNGCoderInfoChunkIHDRCompressionMethod {
+        const buffer = this.COMPRESSION_METHOD;
+        return buffer[0] as PNGCoderInfoChunkIHDRCompressionMethod;
+    };
+
+    public getFilterMethod(): PNGCoderInfoChunkIHDRFilterMethod {
+        const buffer = this.FILTER_METHOD;
+        return buffer[0] as PNGCoderInfoChunkIHDRFilterMethod;
+    };
+
+    public getInterlaceMethod(): PNGCoderInfoChunkIHDRInterlaceMethod {
+        const buffer = this.INTERLACE_METHOD;
+        return buffer[0] as PNGCoderInfoChunkIHDRInterlaceMethod;
+    };
 
 }
 

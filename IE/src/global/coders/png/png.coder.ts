@@ -48,12 +48,12 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
             position += 12 + length;
             data.info.chunks.push(chunk);
             if (data.info.chunks.length === 1) {
-                if (data.info.chunks[0].type !== PNGCoderInfoChunkIHDR.Type) {
+                if (data.info.chunks[0].getType() !== PNGCoderInfoChunkIHDR.Type) {
                     throw new Error("Chunk start-of-file marker IHDR not first.");
                 }
             }
             if (data.info.chunks.length > 1) {
-                if (data.info.chunks[data.info.chunks.length - 1].type === PNGCoderInfoChunkIEND.Type) {
+                if (data.info.chunks[data.info.chunks.length - 1].getType() === PNGCoderInfoChunkIEND.Type) {
                     break;
                 }
             }
@@ -82,21 +82,21 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
         if (data.info.chunks.length === 0) {
             throw new Error("Chunks not found.");
         }
-        if (data.info.chunks[0].type !== PNGCoderInfoChunkIHDR.Type) {
+        if (data.info.chunks[0].getType() !== PNGCoderInfoChunkIHDR.Type) {
             throw new Error("Chunk IHDR mandatory not found.");
         }
-        if (data.info.chunks[data.info.chunks.length - 1].type !== PNGCoderInfoChunkIEND.Type) {
+        if (data.info.chunks[data.info.chunks.length - 1].getType() !== PNGCoderInfoChunkIEND.Type) {
             throw new Error("Chunk IEND mandatory not found.");
         }
-        if (data.info.chunks.find((chunk) => chunk.type === PNGCoderInfoChunkIDAT.Type) === undefined) {
+        if (data.info.chunks.find((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type) === undefined) {
             throw new Error("Chunk IDAT mandatory not found.");
         }
         // BIT
         data.info.chunks.forEach((chunk) => {
-            if (chunk.ancillary_bit === false && chunk.constructor === PNGCoderInfoChunk) {
+            if (chunk.getAncillaryBit() === false && chunk.constructor === PNGCoderInfoChunk) {
                 console.warn("Chunk critical and unknown found.", chunk);
             }
-            if (chunk.reserved_bit === true) {
+            if (chunk.getReservedBit() === true) {
                 console.warn("Chunk reserved found.", chunk);
             }
         });

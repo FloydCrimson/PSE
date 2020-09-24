@@ -8,18 +8,6 @@ export class PNGCoderInfoChunkPLTE extends PNGCoderInfoChunk {
 
     public static Type: number = 0x504c5445; // Buffer.from([80, 76, 84, 69])
 
-    public get entries(): PNGCoderInfoChunkPLTEEntry[] {
-        const entries: PNGCoderInfoChunkPLTEEntry[] = [];
-        for (let p = 0; p < this.DATA.length; p += 3) {
-            entries.push({
-                Red: this.DATA[p],
-                Green: this.DATA[p + 1],
-                Blue: this.DATA[p + 2]
-            });
-        }
-        return entries;
-    };
-
     constructor(
         protected readonly service: PNGCoderService,
         protected readonly buffer: Buffer
@@ -36,20 +24,20 @@ export class PNGCoderInfoChunkPLTE extends PNGCoderInfoChunk {
         // SUPER
         super.checkOthers(chunks);
         // LENGTH
-        if (this.length % 3 !== 0) {
+        if (this.getLength() % 3 !== 0) {
             throw new Error("Chunk PLTE length must be divisible by 3.");
         }
         // PRESENCE
-        const ChunkIHDR = chunks.find((chunk) => chunk.type === PNGCoderInfoChunkIHDR.Type) as PNGCoderInfoChunkIHDR;
-        if (ChunkIHDR.color_type === PNGCoderInfoChunkIHDRColorType.GRAYSCALE || ChunkIHDR.color_type === PNGCoderInfoChunkIHDRColorType.GRAYSCALE_ALPHA) {
+        const ChunkIHDR = chunks.find((chunk) => chunk.getType() === PNGCoderInfoChunkIHDR.Type) as PNGCoderInfoChunkIHDR;
+        if (ChunkIHDR.getColorType() === PNGCoderInfoChunkIHDRColorType.GRAYSCALE || ChunkIHDR.getColorType() === PNGCoderInfoChunkIHDRColorType.GRAYSCALE_ALPHA) {
             throw new Error("Chunk PLTE must not appear for chunk IHDR color type 0 and 4.");
         }
         // SIZE
-        if (this.length / 3 > 1 << ChunkIHDR.bit_depth) {
+        if (this.getLength() / 3 > 1 << ChunkIHDR.getBitDepth()) {
             throw new Error("Chunk PLTE entries length must not exceed the range that can be represented with chunk IHDR bit depth.");
         }
         // POSITION
-        if (chunks.indexOf(this) > chunks.findIndex((chunk) => chunk.type === PNGCoderInfoChunkIDAT.Type)) {
+        if (chunks.indexOf(this) > chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type)) {
             throw new Error("Chunk PLTE must precede the first chunk IDAT.");
         }
         // COUNT
@@ -57,6 +45,20 @@ export class PNGCoderInfoChunkPLTE extends PNGCoderInfoChunk {
             throw new Error("Chunk PLTE must not appear more than once.");
         }
     }
+
+    //
+
+    public getEntries(): PNGCoderInfoChunkPLTEEntry[] {
+        const entries: PNGCoderInfoChunkPLTEEntry[] = [];
+        for (let p = 0; p < this.DATA.length; p += 3) {
+            entries.push({
+                Red: this.DATA[p],
+                Green: this.DATA[p + 1],
+                Blue: this.DATA[p + 2]
+            });
+        }
+        return entries;
+    };
 
 }
 
