@@ -54,4 +54,30 @@ export class PNGCoderInfoChunkbKGD extends PNGCoderInfoChunk {
         }
     }
 
+    //
+
+    public getBackgroundColor(colorType: PNGCoderInfoChunkIHDRColorType): PNGCoderInfoChunkbKGDBackgroundColor[keyof PNGCoderInfoChunkbKGDBackgroundColor] {
+        switch (colorType) {
+            case PNGCoderInfoChunkIHDRColorType.GRAYSCALE:
+                return { Gray: this.DATA.readUInt16BE(0) } as PNGCoderInfoChunkbKGDBackgroundColor[0];
+            case PNGCoderInfoChunkIHDRColorType.TRUECOLOR:
+                return { Red: this.DATA.readUInt16BE(0), Green: this.DATA.readUInt16BE(2), Blue: this.DATA.readUInt16BE(4) } as PNGCoderInfoChunkbKGDBackgroundColor[2];
+            case PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX:
+                return { PaletteIndex: this.DATA[0] } as PNGCoderInfoChunkbKGDBackgroundColor[3];
+            case PNGCoderInfoChunkIHDRColorType.GRAYSCALE_ALPHA:
+                return { Gray: this.DATA.readUInt16BE(0) } as PNGCoderInfoChunkbKGDBackgroundColor[4];
+            case PNGCoderInfoChunkIHDRColorType.TRUECOLOR_ALPHA:
+                return { Red: this.DATA.readUInt16BE(0), Green: this.DATA.readUInt16BE(2), Blue: this.DATA.readUInt16BE(4) } as PNGCoderInfoChunkbKGDBackgroundColor[6];
+        }
+        throw new Error("Chunk kbKGD unrecognized color type.");
+    }
+
+}
+
+export interface PNGCoderInfoChunkbKGDBackgroundColor {
+    0: { Gray: number; }; // PNGCoderInfoChunkIHDRColorType.GRAYSCALE
+    2: { Red: number; Green: number; Blue: number; }; // PNGCoderInfoChunkIHDRColorType.TRUECOLOR
+    3: { PaletteIndex: number; }; // PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX
+    4: { Gray: number; }; // PNGCoderInfoChunkIHDRColorType.GRAYSCALE_ALPHA
+    6: { Red: number; Green: number; Blue: number; }; // PNGCoderInfoChunkIHDRColorType.TRUECOLOR_ALPHA
 }
