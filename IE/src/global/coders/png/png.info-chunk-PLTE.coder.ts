@@ -30,7 +30,7 @@ export class PNGCoderInfoChunkPLTE extends PNGCoderInfoChunk {
         // PRESENCE
         const ChunkIHDR = chunks.find((chunk) => chunk.getType() === PNGCoderInfoChunkIHDR.Type) as PNGCoderInfoChunkIHDR;
         if (ChunkIHDR.getColorType() === PNGCoderInfoChunkIHDRColorType.GRAYSCALE || ChunkIHDR.getColorType() === PNGCoderInfoChunkIHDRColorType.GRAYSCALE_ALPHA) {
-            throw new Error('Chunk PLTE must not appear for chunk IHDR color type 0 and 4.');
+            throw new Error('Chunk PLTE must not appear for chunk IHDR color type 0 and 4. Found: ' + ChunkIHDR.getColorType());
         }
         // SIZE
         if (this.getLength() / 3 > 1 << ChunkIHDR.getBitDepth()) {

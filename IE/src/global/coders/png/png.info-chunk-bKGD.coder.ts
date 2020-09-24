@@ -44,6 +44,8 @@ export class PNGCoderInfoChunkbKGD extends PNGCoderInfoChunk {
             if (this.DATA.readUInt16BE(0) >= 1 << ChunkIHDR.getBitDepth() || this.DATA.readUInt16BE(2) >= 1 << ChunkIHDR.getBitDepth() || this.DATA.readUInt16BE(4) >= 1 << ChunkIHDR.getBitDepth()) {
                 throw new Error('Chunk kbKGD with chunk IHDR color type 2 or 6 must not exceed the range that can be represented with chunk IHDR bit depth.');
             }
+        } else {
+            throw new Error('Chunk kbKGD unrecognized color type.');
         }
         // POSITION
         if (chunks.indexOf(this) < chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkPLTE.Type)) {

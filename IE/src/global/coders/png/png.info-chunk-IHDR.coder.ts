@@ -58,31 +58,31 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
             throw new Error('Chunk IHDR height must be greater than 0.');
         }
         // BIT DEPTH and COLOR TYPE
-        const bit_depth_and_color_type_map = {
+        const color_type_map = {
             [PNGCoderInfoChunkIHDRColorType.GRAYSCALE]: [1, 2, 4, 8, 16],
             [PNGCoderInfoChunkIHDRColorType.TRUECOLOR]: [8, 16],
             [PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX]: [1, 2, 4, 8],
             [PNGCoderInfoChunkIHDRColorType.GRAYSCALE_ALPHA]: [8, 16],
             [PNGCoderInfoChunkIHDRColorType.TRUECOLOR_ALPHA]: [8, 16]
         };
-        if (this.getColorType() in bit_depth_and_color_type_map) {
-            if (bit_depth_and_color_type_map[this.getColorType()].indexOf(this.getBitDepth()) < 0) {
-                throw new Error('Chunk IHDR bit depth must be equal to 1, 2, 4, 8, or 16.');
+        if (this.getColorType() in color_type_map) {
+            if (color_type_map[this.getColorType()].indexOf(this.getBitDepth()) < 0) {
+                throw new Error('Chunk IHDR bit depth with color type ' + this.getColorType() + ' must be equal to one of the following values: ' + color_type_map[this.getColorType()].join(', ') + ', Found: ' + this.getBitDepth());
             }
         } else {
-            throw new Error('Chunk IHDR color type must be equal to 0, 2, 3, 4, or 6.');
+            throw new Error('Chunk IHDR color type must be equal to one of the following values: ' + Object.keys(color_type_map).join(', ') + ', Found: ' + this.getColorType());
         }
         // COMPRESSION METHOD
         if (this.getCompressionMethod() !== PNGCoderInfoChunkIHDRCompressionMethod.FLATE_32KSW) {
-            throw new Error('Chunk IHDR compression method not recognized.');
+            throw new Error('Chunk IHDR compression method unknown. Found: ' + this.getCompressionMethod());
         }
         // FILTER METHOD
         if (this.getFilterMethod() !== PNGCoderInfoChunkIHDRFilterMethod.ADAPTIVE_FILTERING_5BFT) {
-            throw new Error('Chunk IHDR filter method not recognized.');
+            throw new Error('Chunk IHDR filter method unknown. Found: ' + this.getFilterMethod());
         }
         // INTERLACE METHOD
         if (this.getInterlaceMethod() !== PNGCoderInfoChunkIHDRInterlaceMethod.NO_INTERLACE && this.getInterlaceMethod() !== PNGCoderInfoChunkIHDRInterlaceMethod.ADAM7_INTERLACE) {
-            throw new Error('Chunk IHDR interlace method not recognized.');
+            throw new Error('Chunk IHDR interlace method unknown. Found: ' + this.getInterlaceMethod());
         }
     }
 
