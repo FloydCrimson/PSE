@@ -13,6 +13,7 @@ import { PNGCoderInfoChunkgAMA } from './png.info-chunk-gAMA.coder';
 import { PNGCoderInfoChunkhIST } from './png.info-chunk-hIST.coder';
 import { PNGCoderInfoChunkIDAT } from './png.info-chunk-IDAT.coder';
 import { PNGCoderInfoChunkIHDR } from './png.info-chunk-IHDR.coder';
+import { PNGCoderInfoChunkpHYs } from './png.info-chunk-pHYs.coder';
 import { PNGCoderInfoChunkIEND } from './png.info-chunk-IEND.coder';
 import { PNGCoderInfoChunkPLTE } from './png.info-chunk-PLTE.coder';
 
@@ -77,6 +78,7 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
             case PNGCoderInfoChunkhIST.Type: return new PNGCoderInfoChunkhIST(this.service, buffer);
             case PNGCoderInfoChunkIDAT.Type: return new PNGCoderInfoChunkIDAT(this.service, buffer);
             case PNGCoderInfoChunkIHDR.Type: return new PNGCoderInfoChunkIHDR(this.service, buffer);
+            case PNGCoderInfoChunkpHYs.Type: return new PNGCoderInfoChunkpHYs(this.service, buffer);
             case PNGCoderInfoChunkIEND.Type: return new PNGCoderInfoChunkIEND(this.service, buffer);
             case PNGCoderInfoChunkPLTE.Type: return new PNGCoderInfoChunkPLTE(this.service, buffer);
         }
