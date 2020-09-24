@@ -65,7 +65,7 @@ export class PNGCoderInfoChunkcHRM extends PNGCoderInfoChunk {
             throw new Error('Chunk cHRM must precede chunk PLTE.');
         }
         if (chunks.indexOf(this) > chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type)) {
-            throw new Error('Chunk cHRM must precede he first chunk IDAT.');
+            throw new Error('Chunk cHRM must precede the first chunk IDAT.');
         }
     }
 
