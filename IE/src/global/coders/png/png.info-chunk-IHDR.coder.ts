@@ -47,7 +47,7 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
         super.checkSelf();
         // LENGTH
         if (this.getLength() !== 13) {
-            throw new Error('Chunk IHDR must be of length 13.');
+            throw new Error('Chunk IHDR must be of length 13. Found: ' + this.getLength());
         }
         // WIDTH
         if (this.getWidth() === 0) {

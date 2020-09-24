@@ -48,7 +48,8 @@ export class PNGCoderInfoChunkbKGD extends PNGCoderInfoChunk {
             throw new Error('Chunk kbKGD unrecognized color type.');
         }
         // POSITION
-        if (chunks.indexOf(this) < chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkPLTE.Type)) {
+        const ChunkPLTEIndex = chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkPLTE.Type)
+        if (ChunkPLTEIndex >= 0 && chunks.indexOf(this) < ChunkPLTEIndex) {
             throw new Error('Chunk kbKGD must follow chunk PLTE.');
         }
         if (chunks.indexOf(this) > chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type)) {
