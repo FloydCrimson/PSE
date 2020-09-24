@@ -59,22 +59,22 @@ export class PNGCoderInfoChunk {
 
     public getAncillaryBit(): boolean {
         const bit = 1 << 5;
-        return (this.TYPE[0] & bit) === bit;
+        return (this.TYPE.readUInt8(0) & bit) === bit;
     };
 
     public getPrivateBit(): boolean {
         const bit = 1 << 5;
-        return (this.TYPE[1] & bit) === bit;
+        return (this.TYPE.readUInt8(1) & bit) === bit;
     };
 
     public getReservedBit(): boolean {
         const bit = 1 << 5;
-        return (this.TYPE[2] & bit) === bit;
+        return (this.TYPE.readUInt8(2) & bit) === bit;
     };
 
     public getSafeToCopyBit(): boolean {
         const bit = 1 << 5;
-        return (this.TYPE[3] & bit) === bit;
+        return (this.TYPE.readUInt8(3) & bit) === bit;
     };
 
 }

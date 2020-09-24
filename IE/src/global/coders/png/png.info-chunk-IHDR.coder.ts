@@ -112,8 +112,7 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
     };
 
     public getBitDepth(): number {
-        const buffer = this.BIT_DEPTH;
-        return buffer[0];
+        return this.BIT_DEPTH.readUInt8(0);
     };
 
     public getSampleDepth(): number {
@@ -121,23 +120,19 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
     };
 
     public getColorType(): PNGCoderInfoChunkIHDRColorType {
-        const buffer = this.COLOR_TYPE;
-        return buffer[0] as PNGCoderInfoChunkIHDRColorType;
+        return this.COLOR_TYPE.readUInt8(0);
     };
 
     public getCompressionMethod(): PNGCoderInfoChunkIHDRCompressionMethod {
-        const buffer = this.COMPRESSION_METHOD;
-        return buffer[0] as PNGCoderInfoChunkIHDRCompressionMethod;
+        return this.COMPRESSION_METHOD.readUInt8(0);
     };
 
     public getFilterMethod(): PNGCoderInfoChunkIHDRFilterMethod {
-        const buffer = this.FILTER_METHOD;
-        return buffer[0] as PNGCoderInfoChunkIHDRFilterMethod;
+        return this.FILTER_METHOD.readUInt8(0);
     };
 
     public getInterlaceMethod(): PNGCoderInfoChunkIHDRInterlaceMethod {
-        const buffer = this.INTERLACE_METHOD;
-        return buffer[0] as PNGCoderInfoChunkIHDRInterlaceMethod;
+        return this.INTERLACE_METHOD.readUInt8(0);
     };
 
 }

@@ -65,7 +65,7 @@ export class PNGCoderInfoChunkbKGD extends PNGCoderInfoChunk {
             case PNGCoderInfoChunkIHDRColorType.TRUECOLOR:
                 return { Red: this.DATA.readUInt16BE(0), Green: this.DATA.readUInt16BE(2), Blue: this.DATA.readUInt16BE(4) } as PNGCoderInfoChunkbKGDBackgroundColor[2];
             case PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX:
-                return { PaletteIndex: this.DATA[0] } as PNGCoderInfoChunkbKGDBackgroundColor[3];
+                return { PaletteIndex: this.DATA.readUInt8(0) } as PNGCoderInfoChunkbKGDBackgroundColor[3];
             case PNGCoderInfoChunkIHDRColorType.GRAYSCALE_ALPHA:
                 return { Gray: this.DATA.readUInt16BE(0) } as PNGCoderInfoChunkbKGDBackgroundColor[4];
             case PNGCoderInfoChunkIHDRColorType.TRUECOLOR_ALPHA:

@@ -52,9 +52,9 @@ export class PNGCoderInfoChunkPLTE extends PNGCoderInfoChunk {
         const entries: PNGCoderInfoChunkPLTEEntry[] = [];
         for (let p = 0; p < this.DATA.length; p += 3) {
             entries.push({
-                Red: this.DATA[p],
-                Green: this.DATA[p + 1],
-                Blue: this.DATA[p + 2]
+                Red: this.DATA.readUInt8(p),
+                Green: this.DATA.readUInt8(p + 1),
+                Blue: this.DATA.readUInt8(p + 2)
             });
         }
         return entries;
