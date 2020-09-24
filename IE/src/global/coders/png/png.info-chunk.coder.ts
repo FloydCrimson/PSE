@@ -31,7 +31,7 @@ export class PNGCoderInfoChunk {
         // CRC
         const crc = (this.service.crc32.crc(Buffer.concat([this.TYPE, this.DATA]), 0xffffffff) ^ 0xffffffff) >>> 0;
         if (crc !== this.getCRC()) {
-            throw new Error("Chunk CRC check failed.");
+            throw new Error('Chunk CRC check failed.');
         }
     }
 

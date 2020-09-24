@@ -1,4 +1,4 @@
-import { PNGCoder } from "./global/coders/png/png.coder";
+import { PNGCoder } from './global/coders/png/png.coder';
 
 const coder = new PNGCoder();
 coder.decoder('C:/Users/Floyd/Desktop/Immagine.png').then((result) => {

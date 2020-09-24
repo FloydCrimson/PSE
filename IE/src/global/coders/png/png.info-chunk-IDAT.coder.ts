@@ -1,5 +1,5 @@
 import { PNGCoderService } from './png.coder.service';
-import { PNGCoderInfoChunk } from "./png.info-chunk.coder";
+import { PNGCoderInfoChunk } from './png.info-chunk.coder';
 
 export class PNGCoderInfoChunkIDAT extends PNGCoderInfoChunk {
 
@@ -27,7 +27,7 @@ export class PNGCoderInfoChunkIDAT extends PNGCoderInfoChunk {
             for (let i = index + 1; i < chunks.length; i++) {
                 const equal = chunks[i].getType() === PNGCoderInfoChunkIDAT.Type;
                 if (!same && equal) {
-                    throw new Error("Chunk IHDR must be consecutive with other chunks IHDR.");
+                    throw new Error('Chunk IHDR must be consecutive with other chunks IHDR.');
                 }
                 same = same && equal;
             }

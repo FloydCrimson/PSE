@@ -2,7 +2,7 @@
 
 import * as fs from 'fs';
 
-import { ImageCoderImplementation } from "../../common/implementations/image-coder.implementation";
+import { ImageCoderImplementation } from '../../common/implementations/image-coder.implementation';
 
 import { PNGCoderService } from './png.coder.service';
 import { PNGCoderInfo } from './png.info.coder';
@@ -34,7 +34,7 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
     private checkSignature(position: number, buffer: Buffer, data: { info: PNGCoderInfo; binary: Uint8Array; }): number {
         const SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]); // (ASCII C notation)   \211 P N G \r \n \032 \n
         if (buffer.compare(SIGNATURE, 0, SIGNATURE.length, position, position + SIGNATURE.length) !== 0) {
-            throw new Error("Signature check failed.");
+            throw new Error('Signature check failed.');
         }
         return position + SIGNATURE.length;
     }
@@ -49,7 +49,7 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
             data.info.chunks.push(chunk);
             if (data.info.chunks.length === 1) {
                 if (data.info.chunks[0].getType() !== PNGCoderInfoChunkIHDR.Type) {
-                    throw new Error("Chunk start-of-file marker IHDR not first.");
+                    throw new Error('Chunk start-of-file marker IHDR not first.');
                 }
             }
             if (data.info.chunks.length > 1) {
@@ -58,7 +58,7 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
                 }
             }
             if (position >= buffer.length) {
-                throw new Error("Chunk end-of-file marker IEND not found.");
+                throw new Error('Chunk end-of-file marker IEND not found.');
             }
         }
         data.info.chunks.forEach((chunk) => chunk.checkOthers(data.info.chunks));
@@ -80,24 +80,24 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
     private checkAll(position: number, buffer: Buffer, data: { info: PNGCoderInfo; binary: Uint8Array; }): number {
         // INTEGRITY
         if (data.info.chunks.length === 0) {
-            throw new Error("Chunks not found.");
+            throw new Error('Chunks not found.');
         }
         if (data.info.chunks[0].getType() !== PNGCoderInfoChunkIHDR.Type) {
-            throw new Error("Chunk IHDR mandatory not found.");
+            throw new Error('Chunk IHDR mandatory not found.');
         }
         if (data.info.chunks[data.info.chunks.length - 1].getType() !== PNGCoderInfoChunkIEND.Type) {
-            throw new Error("Chunk IEND mandatory not found.");
+            throw new Error('Chunk IEND mandatory not found.');
         }
         if (data.info.chunks.find((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type) === undefined) {
-            throw new Error("Chunk IDAT mandatory not found.");
+            throw new Error('Chunk IDAT mandatory not found.');
         }
         // BIT
         data.info.chunks.forEach((chunk) => {
             if (chunk.getAncillaryBit() === false && chunk.constructor === PNGCoderInfoChunk) {
-                console.warn("Chunk critical and unknown found.", chunk);
+                console.warn('Chunk critical and unknown found.', chunk);
             }
             if (chunk.getReservedBit() === true) {
-                console.warn("Chunk reserved found.", chunk);
+                console.warn('Chunk reserved found.', chunk);
             }
         });
         //
@@ -107,7 +107,7 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
     // ENCODER
 
     public encoder(data: { info: PNGCoderInfo; binary: Uint8Array; }): Promise<string> {
-        throw new Error("Method not implemented.");
+        throw new Error('Method not implemented.');
     }
 
 }

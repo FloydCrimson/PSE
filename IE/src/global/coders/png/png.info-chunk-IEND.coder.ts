@@ -1,5 +1,5 @@
 import { PNGCoderService } from './png.coder.service';
-import { PNGCoderInfoChunk } from "./png.info-chunk.coder";
+import { PNGCoderInfoChunk } from './png.info-chunk.coder';
 
 export class PNGCoderInfoChunkIEND extends PNGCoderInfoChunk {
 
@@ -22,11 +22,11 @@ export class PNGCoderInfoChunkIEND extends PNGCoderInfoChunk {
         super.checkOthers(chunks);
         // POSITION
         if (chunks.indexOf(this) !== chunks.length - 1) {
-            throw new Error("Chunk IEND is not the last.");
+            throw new Error('Chunk IEND is not the last.');
         }
         // LENGTH
         if (this.getLength() > 0) {
-            throw new Error("Chunk IEND data must be empty.");
+            throw new Error('Chunk IEND data must be empty.');
         }
     }
 

@@ -1,7 +1,7 @@
 import { PNGCoderService } from './png.coder.service';
-import { PNGCoderInfoChunk } from "./png.info-chunk.coder";
+import { PNGCoderInfoChunk } from './png.info-chunk.coder';
 
-import { PNGCoderInfoChunkPLTE } from "./png.info-chunk-PLTE.coder";
+import { PNGCoderInfoChunkPLTE } from './png.info-chunk-PLTE.coder';
 
 export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
 
@@ -47,15 +47,15 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
         super.checkSelf();
         // LENGTH
         if (this.getLength() !== 13) {
-            throw new Error("Chunk IHDR must be of length 13.");
+            throw new Error('Chunk IHDR must be of length 13.');
         }
         // WIDTH
         if (this.getWidth() === 0) {
-            throw new Error("Chunk IHDR width must be greater than 0.");
+            throw new Error('Chunk IHDR width must be greater than 0.');
         }
         // HEIGHT
         if (this.getHeight() === 0) {
-            throw new Error("Chunk IHDR height must be greater than 0.");
+            throw new Error('Chunk IHDR height must be greater than 0.');
         }
         // BIT DEPTH and COLOR TYPE
         const bit_depth_and_color_type_map = {
@@ -67,22 +67,22 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
         };
         if (this.getColorType() in bit_depth_and_color_type_map) {
             if (bit_depth_and_color_type_map[this.getColorType()].indexOf(this.getBitDepth()) < 0) {
-                throw new Error("Chunk IHDR bit depth must be equal to 1, 2, 4, 8, or 16.");
+                throw new Error('Chunk IHDR bit depth must be equal to 1, 2, 4, 8, or 16.');
             }
         } else {
-            throw new Error("Chunk IHDR color type must be equal to 0, 2, 3, 4, or 6.");
+            throw new Error('Chunk IHDR color type must be equal to 0, 2, 3, 4, or 6.');
         }
         // COMPRESSION METHOD
         if (this.getCompressionMethod() !== PNGCoderInfoChunkIHDRCompressionMethod.FLATE_32KSW) {
-            throw new Error("Chunk IHDR compression method not recognized.");
+            throw new Error('Chunk IHDR compression method not recognized.');
         }
         // FILTER METHOD
         if (this.getFilterMethod() !== PNGCoderInfoChunkIHDRFilterMethod.ADAPTIVE_FILTERING_5BFT) {
-            throw new Error("Chunk IHDR filter method not recognized.");
+            throw new Error('Chunk IHDR filter method not recognized.');
         }
         // INTERLACE METHOD
         if (this.getInterlaceMethod() !== PNGCoderInfoChunkIHDRInterlaceMethod.NO_INTERLACE && this.getInterlaceMethod() !== PNGCoderInfoChunkIHDRInterlaceMethod.ADAM7_INTERLACE) {
-            throw new Error("Chunk IHDR interlace method not recognized.");
+            throw new Error('Chunk IHDR interlace method not recognized.');
         }
     }
 
@@ -91,12 +91,12 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
         super.checkOthers(chunks);
         // POSITION
         if (chunks.indexOf(this) !== 0) {
-            throw new Error("Chunk IHDR is not the first.");
+            throw new Error('Chunk IHDR is not the first.');
         }
         // PRESENCE
         if (this.getColorType() === PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX) {
             if (chunks.find((chunk) => chunk.getType() === PNGCoderInfoChunkPLTE.Type) === undefined) {
-                throw new Error("Chunk IHDR with color type 3 needs chunk PLTE.");
+                throw new Error('Chunk IHDR with color type 3 needs chunk PLTE.');
             }
         }
     }
