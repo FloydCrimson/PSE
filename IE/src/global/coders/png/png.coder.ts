@@ -20,6 +20,7 @@ import { PNGCoderInfoChunksBIT } from './png.info-chunk-sBIT.coder';
 import { PNGCoderInfoChunktEXt } from './png.info-chunk-tEXt.coder';
 import { PNGCoderInfoChunktIME } from './png.info-chunk-tIME.coder';
 import { PNGCoderInfoChunktRNS } from './png.info-chunk-tRNS.coder';
+import { PNGCoderInfoChunkzTXt } from './png.info-chunk-zTXt.coder';
 
 export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
 
@@ -89,6 +90,7 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
             case PNGCoderInfoChunktEXt.Type: return new PNGCoderInfoChunktEXt(this.service, buffer);
             case PNGCoderInfoChunktIME.Type: return new PNGCoderInfoChunktIME(this.service, buffer);
             case PNGCoderInfoChunktRNS.Type: return new PNGCoderInfoChunktRNS(this.service, buffer);
+            case PNGCoderInfoChunkzTXt.Type: return new PNGCoderInfoChunkzTXt(this.service, buffer);
         }
         return new PNGCoderInfoChunk(this.service, buffer);
     }

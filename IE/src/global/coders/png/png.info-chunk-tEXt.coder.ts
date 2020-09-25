@@ -26,21 +26,16 @@ export class PNGCoderInfoChunktEXt extends PNGCoderInfoChunk {
         // SUPER
         super.checkSelf();
         // LENGTH
-        this.DATA.reduce((s, b, i) => {
-            if (b === 0) {
-                s++;
-                if (s === 1) {
-                    if (i === 0) {
-                        throw new Error('Chunk tEXt keyword must be at least one character.');
-                    } else if (i >= 80) {
-                        throw new Error('Chunk tEXt keyword must be less than 80 characters long.');
-                    }
-                } else {
-                    throw new Error('Chunk tEXt can have at most one null character.');
-                }
-            }
-            return s;
-        }, 0);
+        const NullSeparatorIndex = this.DATA.indexOf(0);
+        if (NullSeparatorIndex < 0) {
+            throw new Error('Chunk tEXt must have a null separator byte.');
+        } else if (NullSeparatorIndex === 0) {
+            throw new Error('Chunk tEXt keyword must be at least one character.');
+        } else if (NullSeparatorIndex >= 80) {
+            throw new Error('Chunk tEXt keyword must be less than 80 characters long.');
+        } else if (this.DATA.indexOf(0, NullSeparatorIndex + 1) >= 0) {
+            throw new Error('Chunk tEXt can have at most one null character.');
+        }
     }
 
     public checkOthers(chunks: PNGCoderInfoChunk[]): void {
