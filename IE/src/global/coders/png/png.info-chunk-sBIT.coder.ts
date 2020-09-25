@@ -42,8 +42,6 @@ export class PNGCoderInfoChunksBIT extends PNGCoderInfoChunk {
             if (this.getLength() !== 4) {
                 throw new Error('Chunk sBIT with chunk IHDR color type 6 must be of length 4.');
             }
-        } else {
-            throw new Error('Chunk sBIT unrecognized color type.');
         }
         // DIMENSION
         const SignificantBits = this.getSignificantBits(ChunkIHDR.getColorType());

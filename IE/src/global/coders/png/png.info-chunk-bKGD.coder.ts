@@ -38,13 +38,11 @@ export class PNGCoderInfoChunkbKGD extends PNGCoderInfoChunk {
             if (this.getLength() !== 6) {
                 throw new Error('Chunk bKGD with chunk IHDR color type 2 or 6 must be of length 6.');
             }
-        } else {
-            throw new Error('Chunk bKGD unrecognized color type.');
         }
         // DIMENSION
         if (ChunkIHDR.getColorType() !== PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX) {
             const BackgroundColor = this.getBackgroundColor(ChunkIHDR.getColorType());
-            if (Object.keys(BackgroundColor).map((key) => BackgroundColor[key]).find((bc) => bc >= 1 << ChunkIHDR.getBitDepth()) !== undefined) {
+            if (Object.keys(BackgroundColor).map((k) => BackgroundColor[k]).find((v) => v >= (1 << ChunkIHDR.getBitDepth())) !== undefined) {
                 throw new Error('Chunk bKGD must not exceed the range that can be represented with chunk IHDR bit depth.');
             }
         }
