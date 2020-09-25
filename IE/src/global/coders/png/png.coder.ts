@@ -18,6 +18,7 @@ import { PNGCoderInfoChunkIEND } from './png.info-chunk-IEND.coder';
 import { PNGCoderInfoChunkPLTE } from './png.info-chunk-PLTE.coder';
 import { PNGCoderInfoChunksBIT } from './png.info-chunk-sBIT.coder';
 import { PNGCoderInfoChunktEXt } from './png.info-chunk-tEXt.coder';
+import { PNGCoderInfoChunktIME } from './png.info-chunk-tIME.coder';
 
 export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
 
@@ -85,6 +86,7 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
             case PNGCoderInfoChunkPLTE.Type: return new PNGCoderInfoChunkPLTE(this.service, buffer);
             case PNGCoderInfoChunksBIT.Type: return new PNGCoderInfoChunksBIT(this.service, buffer);
             case PNGCoderInfoChunktEXt.Type: return new PNGCoderInfoChunktEXt(this.service, buffer);
+            case PNGCoderInfoChunktIME.Type: return new PNGCoderInfoChunktIME(this.service, buffer);
         }
         return new PNGCoderInfoChunk(this.service, buffer);
     }
