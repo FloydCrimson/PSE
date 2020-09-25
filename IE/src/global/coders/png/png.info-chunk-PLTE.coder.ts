@@ -40,8 +40,7 @@ export class PNGCoderInfoChunkPLTE extends PNGCoderInfoChunk {
         if (chunks.indexOf(this) > chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type)) {
             throw new Error('Chunk PLTE must precede the first chunk IDAT.');
         }
-        // COUNT
-        if (chunks.reduce((count, chunk) => chunk.TYPE.readUInt32BE(0) === PNGCoderInfoChunkPLTE.Type ? (count + 1) : count, 0) > 1) {
+        if (chunks.filter((chunk) => chunk.getType() === PNGCoderInfoChunkPLTE.Type).length > 1) {
             throw new Error('Chunk PLTE must not appear more than once.');
         }
     }

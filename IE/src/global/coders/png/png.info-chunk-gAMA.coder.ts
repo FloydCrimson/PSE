@@ -39,6 +39,9 @@ export class PNGCoderInfoChunkgAMA extends PNGCoderInfoChunk {
         if (chunks.indexOf(this) > chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type)) {
             throw new Error('Chunk gAMA must precede the first chunk IDAT.');
         }
+        if (chunks.filter((chunk) => chunk.getType() === PNGCoderInfoChunkgAMA.Type).length > 1) {
+            throw new Error('Chunk gAMA must not appear more than once.');
+        }
     }
 
     //

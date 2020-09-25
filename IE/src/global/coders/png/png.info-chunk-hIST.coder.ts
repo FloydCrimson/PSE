@@ -38,6 +38,9 @@ export class PNGCoderInfoChunkhIST extends PNGCoderInfoChunk {
         if (chunks.indexOf(this) > chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type)) {
             throw new Error('Chunk hIST must precede the first chunk IDAT.');
         }
+        if (chunks.filter((chunk) => chunk.getType() === PNGCoderInfoChunkhIST.Type).length > 1) {
+            throw new Error('Chunk hIST must not appear more than once.');
+        }
         // WITH PLTE
         const ChunkPLTE = chunks[ChunkPLTEIndex];
         if (this.getLength() / 2 !== ChunkPLTE.getLength() / 3) {

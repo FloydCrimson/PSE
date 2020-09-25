@@ -54,6 +54,9 @@ export class PNGCoderInfoChunkbKGD extends PNGCoderInfoChunk {
         if (chunks.indexOf(this) > chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type)) {
             throw new Error('Chunk bKGD must precede the first chunk IDAT.');
         }
+        if (chunks.filter((chunk) => chunk.getType() === PNGCoderInfoChunkbKGD.Type).length > 1) {
+            throw new Error('Chunk bKGD must not appear more than once.');
+        }
     }
 
     //
