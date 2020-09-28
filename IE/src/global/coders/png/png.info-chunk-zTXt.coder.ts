@@ -58,6 +58,13 @@ export class PNGCoderInfoChunkzTXt extends PNGCoderInfoChunk {
 
     public toString(): string {
         const messages = [super.toString()];
+        // KEYWORD
+        messages.push('Keyword:\t\t\t' + this.getKeyword());
+        // COMPRESSION METHOD
+        messages.push('Compression Method:\t\t' + this.getCompressionMethod());
+        // TEXT
+        messages.push('Text:\t\t\t\t' + this.getText());
+        //
         return messages.join('\n');
     }
 
@@ -72,7 +79,7 @@ export class PNGCoderInfoChunkzTXt extends PNGCoderInfoChunk {
     };
 
     public getText(): string {
-        throw new Error('Method not implemented.'); // TODO: wait for deflate/inflate compression implementation
+        throw new Error('Method not implemented.'); // TODO: wait for deflate/inflate implementation
     }
 
 }

@@ -47,12 +47,15 @@ export class PNGCoderInfoChunkPLTE extends PNGCoderInfoChunk {
 
     public toString(): string {
         const messages = [super.toString()];
+        // ENTRIES
+        messages.push('Entries:\t\t\t' + Object.entries(this.getEntries()).map(([key, value]) => key + '=' + value).join('   '));
+        //
         return messages.join('\n');
     }
 
     //
 
-    public getEntries(): PNGCoderInfoChunkPLTEEntry[] {
+    public getEntries(): { Entries: PNGCoderInfoChunkPLTEEntry[]; } {
         const entries: PNGCoderInfoChunkPLTEEntry[] = [];
         for (let p = 0; p < this.DATA.length; p += 3) {
             entries.push({
@@ -61,7 +64,7 @@ export class PNGCoderInfoChunkPLTE extends PNGCoderInfoChunk {
                 Blue: this.DATA.readUInt8(p + 2)
             });
         }
-        return entries;
+        return { Entries: entries };
     };
 
 }

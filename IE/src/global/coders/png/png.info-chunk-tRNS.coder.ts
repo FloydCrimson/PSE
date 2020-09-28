@@ -48,7 +48,7 @@ export class PNGCoderInfoChunktRNS extends PNGCoderInfoChunk {
         // DIMENSION
         if (ChunkIHDR.getColorType() !== PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX) {
             const Transparency = this.getTransparency(ChunkIHDR.getColorType());
-            if (Object.keys(Transparency).map((k) => Transparency[k]).find((v) => v >= (1 << ChunkIHDR.getBitDepth())) !== undefined) {
+            if (Object.values(Transparency).find((value) => value >= (1 << ChunkIHDR.getBitDepth())) !== undefined) {
                 throw new Error('Chunk tRNS must not exceed the range that can be represented with chunk IHDR bit depth.');
             }
         }
@@ -66,6 +66,11 @@ export class PNGCoderInfoChunktRNS extends PNGCoderInfoChunk {
 
     public toString(): string {
         const messages = [super.toString()];
+        // TRANSPARENCY
+        const ChunkIHDR = this.chunks.find((chunk) => chunk.getType() === PNGCoderInfoChunkIHDR.Type) as PNGCoderInfoChunkIHDR;
+        const Transparency = this.getTransparency(ChunkIHDR.getColorType());
+        messages.push('Transparency:\t\t\t' + Object.entries(Transparency).map(([key, value]) => key + '=' + value).join('   '));
+        //
         return messages.join('\n');
     }
 

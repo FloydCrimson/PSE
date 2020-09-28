@@ -47,6 +47,11 @@ export class PNGCoderInfoChunktEXt extends PNGCoderInfoChunk {
 
     public toString(): string {
         const messages = [super.toString()];
+        // KEYWORD
+        messages.push('Keyword:\t\t\t' + this.getKeyword());
+        // TEXT
+        messages.push('Text:\t\t\t\t' + this.getText());
+        //
         return messages.join('\n');
     }
 

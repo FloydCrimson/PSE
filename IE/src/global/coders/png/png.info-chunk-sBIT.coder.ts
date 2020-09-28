@@ -45,7 +45,7 @@ export class PNGCoderInfoChunksBIT extends PNGCoderInfoChunk {
         }
         // DIMENSION
         const SignificantBits = this.getSignificantBits(ChunkIHDR.getColorType());
-        if (Object.keys(SignificantBits).map((key) => SignificantBits[key]).find((sb) => sb === 0 || sb > ChunkIHDR.getSampleDepth()) !== undefined) {
+        if (Object.values(SignificantBits).find((value) => value === 0 || value > ChunkIHDR.getSampleDepth()) !== undefined) {
             throw new Error('Chunk sBIT significant bits must be greater than zero and less than or equal to chunk IHDR sample depth.');
         }
         // POSITION
@@ -63,6 +63,11 @@ export class PNGCoderInfoChunksBIT extends PNGCoderInfoChunk {
 
     public toString(): string {
         const messages = [super.toString()];
+        // SIGNIFICANT BITS
+        const ChunkIHDR = this.chunks.find((chunk) => chunk.getType() === PNGCoderInfoChunkIHDR.Type) as PNGCoderInfoChunkIHDR;
+        const SignificantBits = this.getSignificantBits(ChunkIHDR.getColorType());
+        messages.push('Significant Bits:\t\t' + Object.entries(SignificantBits).map(([key, value]) => key + '=' + value).join('   '));
+        //
         return messages.join('\n');
     }
 

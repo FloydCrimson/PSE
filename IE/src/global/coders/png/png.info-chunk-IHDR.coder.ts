@@ -67,10 +67,10 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
         };
         if (this.getColorType() in color_type_map) {
             if (color_type_map[this.getColorType()].indexOf(this.getBitDepth()) < 0) {
-                throw new Error('Chunk IHDR bit depth with color type ' + this.getColorType() + ' must be equal to one of the following values: ' + color_type_map[this.getColorType()].join(', ') + ', Found: ' + this.getBitDepth());
+                throw new Error('Chunk IHDR bit depth with color type ' + this.getColorType() + ' must be equal to one of the following values: ' + color_type_map[this.getColorType()].join(', ') + '. Found: ' + this.getBitDepth());
             }
         } else {
-            throw new Error('Chunk IHDR color type must be equal to one of the following values: ' + Object.keys(color_type_map).join(', ') + ', Found: ' + this.getColorType());
+            throw new Error('Chunk IHDR color type must be equal to one of the following values: ' + Object.keys(color_type_map).join(', ') + '. Found: ' + this.getColorType());
         }
         // COMPRESSION METHOD
         if (this.getCompressionMethod() !== PNGCoderInfoChunkIHDRCompressionMethod.FLATE_32KSW) {
@@ -103,6 +103,23 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
 
     public toString(): string {
         const messages = [super.toString()];
+        // WIDTH
+        messages.push('Width:\t\t\t\t' + this.getWidth());
+        // HEIGHT
+        messages.push('Height:\t\t\t\t' + this.getHeight());
+        // BIT DEPTH
+        messages.push('Bit Depth:\t\t\t' + this.getBitDepth());
+        // SAMPLE DEPTH
+        messages.push('Sample Depth:\t\t\t' + this.getSampleDepth());
+        // COLOR TYPE
+        messages.push('Color Type:\t\t\t' + this.getColorType());
+        // COMPRESSION METHOD
+        messages.push('Compression Method:\t\t' + this.getCompressionMethod());
+        // FILTER METHOD
+        messages.push('Filter Method:\t\t\t' + this.getFilterMethod());
+        // INTERLACE METHOD
+        messages.push('Interlace Method:\t\t' + this.getInterlaceMethod());
+        //
         return messages.join('\n');
     }
 

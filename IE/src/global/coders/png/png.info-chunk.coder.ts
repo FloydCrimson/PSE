@@ -44,9 +44,13 @@ export class PNGCoderInfoChunk {
 
     public toString(): string {
         const messages = [];
-        messages.push('Name:\t\t' + this.getName());
-        messages.push('Length:\t\t' + this.getLength());
-        messages.push('Bit:\t\tCritical=' + !this.getAncillaryBit() + '   Public=' + !this.getPrivateBit() + '   Reserved=' + this.getReservedBit() + '   SafeToCopy=' + this.getSafeToCopyBit());
+        // NAME
+        messages.push('Name:\t\t\t\t' + this.getName());
+        // LENGTH
+        messages.push('Length:\t\t\t\t' + this.getLength());
+        // BIT
+        messages.push('Bit:\t\t\t\tCritical=' + !this.getAncillaryBit() + '   Public=' + !this.getPrivateBit() + '   Reserved=' + this.getReservedBit() + '   SafeToCopy=' + this.getSafeToCopyBit());
+        //
         return messages.join('\n');
     }
 
@@ -61,7 +65,7 @@ export class PNGCoderInfoChunk {
     };
 
     public getName(): string {
-        return this.TYPE.toString();
+        return this.TYPE.toString('latin1');
     };
 
     public getCRC(): number {

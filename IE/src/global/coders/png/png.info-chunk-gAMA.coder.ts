@@ -46,6 +46,9 @@ export class PNGCoderInfoChunkgAMA extends PNGCoderInfoChunk {
 
     public toString(): string {
         const messages = [super.toString()];
+        // IMAGE GAMMA
+        messages.push('Image Gamma:\t\t\t' + this.getImageGamma());
+        //
         return messages.join('\n');
     }
 

@@ -42,7 +42,7 @@ export class PNGCoderInfoChunkbKGD extends PNGCoderInfoChunk {
         // DIMENSION
         if (ChunkIHDR.getColorType() !== PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX) {
             const BackgroundColor = this.getBackgroundColor(ChunkIHDR.getColorType());
-            if (Object.keys(BackgroundColor).map((k) => BackgroundColor[k]).find((v) => v >= (1 << ChunkIHDR.getBitDepth())) !== undefined) {
+            if (Object.values(BackgroundColor).find((value) => value >= (1 << ChunkIHDR.getBitDepth())) !== undefined) {
                 throw new Error('Chunk bKGD must not exceed the range that can be represented with chunk IHDR bit depth.');
             }
         }
@@ -61,6 +61,11 @@ export class PNGCoderInfoChunkbKGD extends PNGCoderInfoChunk {
 
     public toString(): string {
         const messages = [super.toString()];
+        // BACKGROUND COLOR
+        const ChunkIHDR = this.chunks.find((chunk) => chunk.getType() === PNGCoderInfoChunkIHDR.Type) as PNGCoderInfoChunkIHDR;
+        const BackgroundColor = this.getBackgroundColor(ChunkIHDR.getColorType());
+        messages.push('Background Color:\t\t' + Object.entries(BackgroundColor).map(([key, value]) => key + '=' + value).join('   '));
+        //
         return messages.join('\n');
     }
 

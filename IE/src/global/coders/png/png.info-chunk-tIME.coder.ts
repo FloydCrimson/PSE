@@ -72,6 +72,9 @@ export class PNGCoderInfoChunktIME extends PNGCoderInfoChunk {
 
     public toString(): string {
         const messages = [super.toString()];
+        // TIME
+        messages.push('Time:\t\t' + this.getDate().toUTCString());
+        //
         return messages.join('\n');
     }
 

@@ -74,6 +74,23 @@ export class PNGCoderInfoChunkcHRM extends PNGCoderInfoChunk {
 
     public toString(): string {
         const messages = [super.toString()];
+        // WHITE POINT X
+        messages.push('White Point X:\t\t\t' + this.getWhitePointX());
+        // WHITE POINT Y
+        messages.push('White Point Y:\t\t\t' + this.getWhitePointY());
+        // RED X
+        messages.push('Red X:\t\t\t\t' + this.getRedX());
+        // RED Y
+        messages.push('Red Y:\t\t\t\t' + this.getRedY());
+        // GREEN X
+        messages.push('Green X:\t\t\t' + this.getGreenX());
+        // GREEN Y
+        messages.push('Green Y:\t\t\t' + this.getGreenY());
+        // BLUE X
+        messages.push('Blue X:\t\t\t\t' + this.getBlueX());
+        // BLUE Y
+        messages.push('Blue Y:\t\t\t\t' + this.getBlueY());
+        //
         return messages.join('\n');
     }
 

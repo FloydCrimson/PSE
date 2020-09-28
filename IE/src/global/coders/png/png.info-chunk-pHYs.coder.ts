@@ -49,6 +49,13 @@ export class PNGCoderInfoChunkpHYs extends PNGCoderInfoChunk {
 
     public toString(): string {
         const messages = [super.toString()];
+        // PIXELS PER UNIT X AXIS
+        messages.push('Pixels Per Unit X Axis:\t\t' + this.getPixelsPerUnitXAxis());
+        // PIXELS PER UNIT Y AXIS
+        messages.push('Pixels Per Unit Y Axis:\t\t' + this.getPixelsPerUnitYAxis());
+        // UNIT SPECIFIER
+        messages.push('Unit Specifier:\t\t\t' + this.getUnitSpecifier());
+        //
         return messages.join('\n');
     }
 
