@@ -4,3 +4,7 @@ node_modules/
 build/
 tmp/
 temp/
+
+# Customs
+
+src/assets/

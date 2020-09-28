@@ -8,11 +8,13 @@ export class PNGCoderInfoChunktEXt extends PNGCoderInfoChunk {
     public static PredefinedKeywords: string[] = ['Title', 'Author', 'Description', 'Copyright', 'Creation Time', 'Software', 'Disclaimer', 'Warning', 'Source', 'Comment'];
 
     public get KEYWORD(): Buffer {
-        return this.DATA.slice(0, this.DATA.indexOf(0));
+        const NullSeparatorIndex = this.DATA.indexOf(0);
+        return this.DATA.slice(0, NullSeparatorIndex);
     };
 
     public get TEXT(): Buffer {
-        return this.DATA.slice(this.DATA.indexOf(0) + 1);
+        const NullSeparatorIndex = this.DATA.indexOf(0);
+        return this.DATA.slice(NullSeparatorIndex + 1);
     };
 
     constructor(
