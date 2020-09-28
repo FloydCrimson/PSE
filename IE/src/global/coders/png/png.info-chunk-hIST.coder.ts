@@ -28,21 +28,21 @@ export class PNGCoderInfoChunkhIST extends PNGCoderInfoChunk {
         // SUPER
         super.checkOthers(chunks);
         // POSITION
-        const ChunkPLTEIndex = chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkPLTE.Type)
+        const ChunkPLTEIndex = this.chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkPLTE.Type)
         if (ChunkPLTEIndex < 0) {
             throw new Error('Chunk hIST needs chunk PLTE.');
         }
-        if (chunks.indexOf(this) < ChunkPLTEIndex) {
+        if (this.chunks.indexOf(this) < ChunkPLTEIndex) {
             throw new Error('Chunk hIST must follow chunk PLTE.');
         }
-        if (chunks.indexOf(this) > chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type)) {
+        if (this.chunks.indexOf(this) > this.chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type)) {
             throw new Error('Chunk hIST must precede the first chunk IDAT.');
         }
-        if (chunks.filter((chunk) => chunk.getType() === PNGCoderInfoChunkhIST.Type).length > 1) {
+        if (this.chunks.filter((chunk) => chunk.getType() === PNGCoderInfoChunkhIST.Type).length > 1) {
             throw new Error('Chunk hIST must not appear more than once.');
         }
         // WITH PLTE
-        const ChunkPLTE = chunks[ChunkPLTEIndex];
+        const ChunkPLTE = this.chunks[ChunkPLTEIndex];
         if (this.getLength() / 2 !== ChunkPLTE.getLength() / 3) {
             throw new Error('Chunk hIST must have exactly one entry for each entry in chunk PLTE.');
         }

@@ -39,10 +39,10 @@ export class PNGCoderInfoChunkpHYs extends PNGCoderInfoChunk {
         // SUPER
         super.checkOthers(chunks);
         // POSITION
-        if (chunks.indexOf(this) > chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type)) {
+        if (this.chunks.indexOf(this) > this.chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type)) {
             throw new Error('Chunk pHYs must precede the first chunk IDAT.');
         }
-        if (chunks.filter((chunk) => chunk.getType() === PNGCoderInfoChunkpHYs.Type).length > 1) {
+        if (this.chunks.filter((chunk) => chunk.getType() === PNGCoderInfoChunkpHYs.Type).length > 1) {
             throw new Error('Chunk pHYs must not appear more than once.');
         }
     }

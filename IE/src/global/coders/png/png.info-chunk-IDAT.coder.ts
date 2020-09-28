@@ -21,11 +21,11 @@ export class PNGCoderInfoChunkIDAT extends PNGCoderInfoChunk {
         // SUPER
         super.checkOthers(chunks);
         // CONSECUTIVE
-        const ChunkIDATIndex = chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type);
-        if (chunks[ChunkIDATIndex] === this) {
+        const ChunkIDATIndex = this.chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type);
+        if (this.chunks[ChunkIDATIndex] === this) {
             let same = true;
-            for (let i = ChunkIDATIndex + 1; i < chunks.length; i++) {
-                const equal = chunks[i].getType() === PNGCoderInfoChunkIDAT.Type;
+            for (let i = ChunkIDATIndex + 1; i < this.chunks.length; i++) {
+                const equal = this.chunks[i].getType() === PNGCoderInfoChunkIDAT.Type;
                 if (!same && equal) {
                     throw new Error('Chunk IHDR must be consecutive with other chunks IHDR.');
                 }

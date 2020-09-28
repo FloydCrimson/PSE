@@ -25,7 +25,7 @@ export class PNGCoderInfoChunkbKGD extends PNGCoderInfoChunk {
         // SUPER
         super.checkOthers(chunks);
         // SIZE
-        const ChunkIHDR = chunks.find((chunk) => chunk.getType() === PNGCoderInfoChunkIHDR.Type) as PNGCoderInfoChunkIHDR;
+        const ChunkIHDR = this.chunks.find((chunk) => chunk.getType() === PNGCoderInfoChunkIHDR.Type) as PNGCoderInfoChunkIHDR;
         if (ChunkIHDR.getColorType() === PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX) {
             if (this.getLength() !== 1) {
                 throw new Error('Chunk bKGD with chunk IHDR color type 3 must be of length 1.');
@@ -47,14 +47,14 @@ export class PNGCoderInfoChunkbKGD extends PNGCoderInfoChunk {
             }
         }
         // POSITION
-        const ChunkPLTEIndex = chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkPLTE.Type)
-        if (ChunkPLTEIndex >= 0 && chunks.indexOf(this) < ChunkPLTEIndex) {
+        const ChunkPLTEIndex = this.chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkPLTE.Type)
+        if (ChunkPLTEIndex >= 0 && this.chunks.indexOf(this) < ChunkPLTEIndex) {
             throw new Error('Chunk bKGD must follow chunk PLTE.');
         }
-        if (chunks.indexOf(this) > chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type)) {
+        if (this.chunks.indexOf(this) > this.chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type)) {
             throw new Error('Chunk bKGD must precede the first chunk IDAT.');
         }
-        if (chunks.filter((chunk) => chunk.getType() === PNGCoderInfoChunkbKGD.Type).length > 1) {
+        if (this.chunks.filter((chunk) => chunk.getType() === PNGCoderInfoChunkbKGD.Type).length > 1) {
             throw new Error('Chunk bKGD must not appear more than once.');
         }
     }

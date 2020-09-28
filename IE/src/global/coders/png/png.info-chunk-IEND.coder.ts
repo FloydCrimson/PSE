@@ -21,7 +21,7 @@ export class PNGCoderInfoChunkIEND extends PNGCoderInfoChunk {
         // SUPER
         super.checkOthers(chunks);
         // POSITION
-        if (chunks.indexOf(this) !== chunks.length - 1) {
+        if (this.chunks.indexOf(this) !== this.chunks.length - 1) {
             throw new Error('Chunk IEND is not the last.');
         }
         // LENGTH

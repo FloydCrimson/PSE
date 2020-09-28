@@ -25,12 +25,12 @@ export class PNGCoderInfoChunktRNS extends PNGCoderInfoChunk {
         // SUPER
         super.checkOthers(chunks);
         // PROHIBITED
-        const ChunkIHDR = chunks.find((chunk) => chunk.getType() === PNGCoderInfoChunkIHDR.Type) as PNGCoderInfoChunkIHDR;
+        const ChunkIHDR = this.chunks.find((chunk) => chunk.getType() === PNGCoderInfoChunkIHDR.Type) as PNGCoderInfoChunkIHDR;
         if (ChunkIHDR.getColorType() === PNGCoderInfoChunkIHDRColorType.GRAYSCALE_ALPHA || ChunkIHDR.getColorType() === PNGCoderInfoChunkIHDRColorType.TRUECOLOR_ALPHA) {
             throw new Error('Chunk tRNS is prohibited for color types 4 and 6.');
         }
         // SIZE
-        const ChunkPLTEIndex = chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkPLTE.Type);
+        const ChunkPLTEIndex = this.chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkPLTE.Type);
         if (ChunkIHDR.getColorType() === PNGCoderInfoChunkIHDRColorType.GRAYSCALE) {
             if (this.getLength() !== 2) {
                 throw new Error('Chunk tRNS with chunk IHDR color type 0 must be of length 2.');
@@ -40,7 +40,7 @@ export class PNGCoderInfoChunktRNS extends PNGCoderInfoChunk {
                 throw new Error('Chunk tRNS with chunk IHDR color type 2 must be of length 6.');
             }
         } else if (ChunkIHDR.getColorType() === PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX) {
-            const ChunkPLTE = chunks[ChunkPLTEIndex];
+            const ChunkPLTE = this.chunks[ChunkPLTEIndex];
             if (this.getLength() > ChunkPLTE.getLength() / 3) {
                 throw new Error('Chunk tRNS must not contain more entries than chunk PLTE.');
             }
@@ -53,13 +53,13 @@ export class PNGCoderInfoChunktRNS extends PNGCoderInfoChunk {
             }
         }
         // POSITION
-        if (ChunkPLTEIndex >= 0 && chunks.indexOf(this) < ChunkPLTEIndex) {
+        if (ChunkPLTEIndex >= 0 && this.chunks.indexOf(this) < ChunkPLTEIndex) {
             throw new Error('Chunk tRNS must follow chunk PLTE.');
         }
-        if (chunks.indexOf(this) > chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type)) {
+        if (this.chunks.indexOf(this) > this.chunks.findIndex((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type)) {
             throw new Error('Chunk tRNS must precede the first chunk IDAT.');
         }
-        if (chunks.filter((chunk) => chunk.getType() === PNGCoderInfoChunktRNS.Type).length > 1) {
+        if (this.chunks.filter((chunk) => chunk.getType() === PNGCoderInfoChunktRNS.Type).length > 1) {
             throw new Error('Chunk tRNS must not appear more than once.');
         }
     }

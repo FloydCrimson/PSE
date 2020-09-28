@@ -65,7 +65,7 @@ export class PNGCoderInfoChunktIME extends PNGCoderInfoChunk {
         // SUPER
         super.checkOthers(chunks);
         // POSITION
-        if (chunks.filter((chunk) => chunk.getType() === PNGCoderInfoChunktIME.Type).length > 1) {
+        if (this.chunks.filter((chunk) => chunk.getType() === PNGCoderInfoChunktIME.Type).length > 1) {
             throw new Error('Chunk tIME must not appear more than once.');
         }
     }

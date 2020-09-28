@@ -90,12 +90,12 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
         // SUPER
         super.checkOthers(chunks);
         // POSITION
-        if (chunks.indexOf(this) !== 0) {
+        if (this.chunks.indexOf(this) !== 0) {
             throw new Error('Chunk IHDR is not the first.');
         }
         // PRESENCE
         if (this.getColorType() === PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX) {
-            if (chunks.find((chunk) => chunk.getType() === PNGCoderInfoChunkPLTE.Type) === undefined) {
+            if (this.chunks.find((chunk) => chunk.getType() === PNGCoderInfoChunkPLTE.Type) === undefined) {
                 throw new Error('Chunk IHDR with color type 3 needs chunk PLTE.');
             }
         }

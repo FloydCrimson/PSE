@@ -22,6 +22,8 @@ export class PNGCoderInfoChunk {
         return this.buffer.slice(8 + size, 12 + size);
     };
 
+    protected chunks: PNGCoderInfoChunk[];
+
     constructor(
         protected readonly service: PNGCoderService,
         protected readonly buffer: Buffer
@@ -36,7 +38,8 @@ export class PNGCoderInfoChunk {
     }
 
     public checkOthers(chunks: PNGCoderInfoChunk[]): void {
-
+        // CHUNKS
+        this.chunks = chunks;
     }
 
     public toString(): string {
