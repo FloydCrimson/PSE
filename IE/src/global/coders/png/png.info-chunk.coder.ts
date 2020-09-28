@@ -39,6 +39,14 @@ export class PNGCoderInfoChunk {
 
     }
 
+    public toString(): string {
+        const messages = [];
+        messages.push('Name:\t\t' + this.getName());
+        messages.push('Length:\t\t' + this.getLength());
+        messages.push('Bit:\t\tCritical=' + !this.getAncillaryBit() + '   Public=' + !this.getPrivateBit() + '   Reserved=' + this.getReservedBit() + '   SafeToCopy=' + this.getSafeToCopyBit());
+        return messages.join('\n');
+    }
+
     //
 
     public getLength(): number {

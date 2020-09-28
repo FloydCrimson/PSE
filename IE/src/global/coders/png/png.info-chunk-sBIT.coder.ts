@@ -61,6 +61,11 @@ export class PNGCoderInfoChunksBIT extends PNGCoderInfoChunk {
         }
     }
 
+    public toString(): string {
+        const messages = [super.toString()];
+        return messages.join('\n');
+    }
+
     //
 
     public getSignificantBits(colorType: PNGCoderInfoChunkIHDRColorType): PNGCoderInfoChunksBITSignificantBits[keyof PNGCoderInfoChunksBITSignificantBits] {

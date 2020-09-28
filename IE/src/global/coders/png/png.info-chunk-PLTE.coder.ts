@@ -45,6 +45,11 @@ export class PNGCoderInfoChunkPLTE extends PNGCoderInfoChunk {
         }
     }
 
+    public toString(): string {
+        const messages = [super.toString()];
+        return messages.join('\n');
+    }
+
     //
 
     public getEntries(): PNGCoderInfoChunkPLTEEntry[] {

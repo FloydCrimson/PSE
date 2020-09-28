@@ -72,6 +72,11 @@ export class PNGCoderInfoChunkcHRM extends PNGCoderInfoChunk {
         }
     }
 
+    public toString(): string {
+        const messages = [super.toString()];
+        return messages.join('\n');
+    }
+
     //
 
     public getWhitePointX(): number {

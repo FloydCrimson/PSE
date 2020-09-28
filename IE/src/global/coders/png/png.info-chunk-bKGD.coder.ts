@@ -59,6 +59,11 @@ export class PNGCoderInfoChunkbKGD extends PNGCoderInfoChunk {
         }
     }
 
+    public toString(): string {
+        const messages = [super.toString()];
+        return messages.join('\n');
+    }
+
     //
 
     public getBackgroundColor(colorType: PNGCoderInfoChunkIHDRColorType): PNGCoderInfoChunkbKGDBackgroundColor[keyof PNGCoderInfoChunkbKGDBackgroundColor] {

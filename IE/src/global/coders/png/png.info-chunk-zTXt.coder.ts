@@ -56,6 +56,11 @@ export class PNGCoderInfoChunkzTXt extends PNGCoderInfoChunk {
         super.checkOthers(chunks);
     }
 
+    public toString(): string {
+        const messages = [super.toString()];
+        return messages.join('\n');
+    }
+
     //
 
     public getKeyword(): string {
