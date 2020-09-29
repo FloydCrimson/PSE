@@ -3,6 +3,8 @@ import { PNGCoderInfoChunk } from './png.info-chunk.coder';
 
 import { PNGCoderInfoChunkPLTE } from './png.info-chunk-PLTE.coder';
 
+import { Support } from '../../helpers/support';
+
 export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
 
     public static Type: number = 0x49484452; // Buffer.from([73, 72, 68, 82])
@@ -112,13 +114,13 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
         // SAMPLE DEPTH
         messages.push('Sample Depth:\t\t\t' + this.getSampleDepth());
         // COLOR TYPE
-        messages.push('Color Type:\t\t\t' + this.getColorType());
+        messages.push('Color Type:\t\t\t' + Support.enumToString(PNGCoderInfoChunkIHDRColorType, this.getColorType()));
         // COMPRESSION METHOD
-        messages.push('Compression Method:\t\t' + this.getCompressionMethod());
+        messages.push('Compression Method:\t\t' + Support.enumToString(PNGCoderInfoChunkIHDRCompressionMethod, this.getCompressionMethod()));
         // FILTER METHOD
-        messages.push('Filter Method:\t\t\t' + this.getFilterMethod());
+        messages.push('Filter Method:\t\t\t' + Support.enumToString(PNGCoderInfoChunkIHDRFilterMethod, this.getFilterMethod()));
         // INTERLACE METHOD
-        messages.push('Interlace Method:\t\t' + this.getInterlaceMethod());
+        messages.push('Interlace Method:\t\t' + Support.enumToString(PNGCoderInfoChunkIHDRInterlaceMethod, this.getInterlaceMethod()));
         //
         return messages.join('\n');
     }

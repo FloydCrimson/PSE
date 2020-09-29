@@ -48,7 +48,7 @@ export class PNGCoderInfoChunktRNS extends PNGCoderInfoChunk {
         // DIMENSION
         if (ChunkIHDR.getColorType() !== PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX) {
             const Transparency = this.getTransparency(ChunkIHDR.getColorType());
-            if (Object.values(Transparency).find((value) => value >= (1 << ChunkIHDR.getBitDepth())) !== undefined) {
+            if (Object.values(Transparency).find((v) => v >= (1 << ChunkIHDR.getBitDepth())) !== undefined) {
                 throw new Error('Chunk tRNS must not exceed the range that can be represented with chunk IHDR bit depth.');
             }
         }
@@ -69,7 +69,7 @@ export class PNGCoderInfoChunktRNS extends PNGCoderInfoChunk {
         // TRANSPARENCY
         const ChunkIHDR = this.chunks.find((chunk) => chunk.getType() === PNGCoderInfoChunkIHDR.Type) as PNGCoderInfoChunkIHDR;
         const Transparency = this.getTransparency(ChunkIHDR.getColorType());
-        messages.push('Transparency:\t\t\t' + Object.entries(Transparency).map(([key, value]) => key + '=' + value).join('   '));
+        messages.push('Transparency:\t\t\t' + Object.entries(Transparency).map(([k, v]) => k + '=' + v).join('   '));
         //
         return messages.join('\n');
     }
@@ -83,9 +83,11 @@ export class PNGCoderInfoChunktRNS extends PNGCoderInfoChunk {
             case PNGCoderInfoChunkIHDRColorType.TRUECOLOR:
                 return { Red: this.DATA.readUInt16BE(0), Green: this.DATA.readUInt16BE(2), Blue: this.DATA.readUInt16BE(4) } as PNGCoderInfoChunktRNSTransparency[2];
             case PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX:
-                const entries: number[] = [];
+                const entries: PNGCoderInfoChunktRNSEntry[] = [];
                 for (let p = 0; p < this.DATA.length; p++) {
-                    entries.push(this.DATA.readUInt8(p));
+                    entries.push(new PNGCoderInfoChunktRNSEntry(
+                        this.DATA.readUInt8(p)
+                    ));
                 }
                 return { Entries: entries } as PNGCoderInfoChunktRNSTransparency[3];
         }
@@ -97,5 +99,19 @@ export class PNGCoderInfoChunktRNS extends PNGCoderInfoChunk {
 export interface PNGCoderInfoChunktRNSTransparency {
     0: { Gray: number; }; // PNGCoderInfoChunkIHDRColorType.GRAYSCALE
     2: { Red: number; Green: number; Blue: number; }; // PNGCoderInfoChunkIHDRColorType.TRUECOLOR
-    3: { Entries: number[]; }; // PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX
+    3: { Entries: PNGCoderInfoChunktRNSEntry[]; }; // PNGCoderInfoChunkIHDRColorType.PALETTE_INDEX
+}
+
+export class PNGCoderInfoChunktRNSEntry {
+
+    constructor(
+        public readonly Transparency: number
+    ) { }
+
+    public toString(): string {
+        return JSON.stringify({
+            Transparency: this.Transparency
+        });
+    }
+
 }

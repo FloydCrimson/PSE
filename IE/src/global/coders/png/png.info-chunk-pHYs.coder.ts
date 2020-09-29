@@ -3,6 +3,8 @@ import { PNGCoderInfoChunk } from './png.info-chunk.coder';
 
 import { PNGCoderInfoChunkIDAT } from './png.info-chunk-IDAT.coder';
 
+import { Support } from '../../helpers/support';
+
 export class PNGCoderInfoChunkpHYs extends PNGCoderInfoChunk {
 
     public static Type: number = 0x70485973; // Buffer.from([112, 72, 89, 115])
@@ -54,7 +56,7 @@ export class PNGCoderInfoChunkpHYs extends PNGCoderInfoChunk {
         // PIXELS PER UNIT Y AXIS
         messages.push('Pixels Per Unit Y Axis:\t\t' + this.getPixelsPerUnitYAxis());
         // UNIT SPECIFIER
-        messages.push('Unit Specifier:\t\t\t' + this.getUnitSpecifier());
+        messages.push('Unit Specifier:\t\t\t' + Support.enumToString(PNGCoderInfoChunkpHYsUnitSpecifier, this.getUnitSpecifier()));
         //
         return messages.join('\n');
     }

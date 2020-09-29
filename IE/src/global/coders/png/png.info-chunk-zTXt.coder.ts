@@ -1,6 +1,8 @@
 import { PNGCoderService } from './png.coder.service';
 import { PNGCoderInfoChunk } from './png.info-chunk.coder';
 
+import { Support } from '../../helpers/support';
+
 export class PNGCoderInfoChunkzTXt extends PNGCoderInfoChunk {
 
     public static Type: number = 0x74455874; // Buffer.from([116, 69, 88, 116])
@@ -61,7 +63,7 @@ export class PNGCoderInfoChunkzTXt extends PNGCoderInfoChunk {
         // KEYWORD
         messages.push('Keyword:\t\t\t' + this.getKeyword());
         // COMPRESSION METHOD
-        messages.push('Compression Method:\t\t' + this.getCompressionMethod());
+        messages.push('Compression Method:\t\t' + Support.enumToString(PNGCoderInfoChunkzTXtCompressionMethod, this.getCompressionMethod()));
         // TEXT
         messages.push('Text:\t\t\t\t' + this.getText());
         //

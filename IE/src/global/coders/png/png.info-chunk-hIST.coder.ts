@@ -51,19 +51,35 @@ export class PNGCoderInfoChunkhIST extends PNGCoderInfoChunk {
     public toString(): string {
         const messages = [super.toString()];
         // ENTRIES
-        messages.push('Entries:\t\t\t' + Object.entries(this.getEntries()).map(([key, value]) => key + '=' + value).join('   '));
+        messages.push('Entries:\t\t\t' + Object.entries(this.getEntries()).map(([k, v]) => k + '=' + v).join('   '));
         //
         return messages.join('\n');
     }
 
     //
 
-    public getEntries(): { Entries: number[]; } {
-        const entries: number[] = [];
+    public getEntries(): { Entries: PNGCoderInfoChunkhISTEntry[]; } {
+        const entries: PNGCoderInfoChunkhISTEntry[] = [];
         for (let p = 0; p < this.DATA.length; p += 2) {
-            entries.push(this.DATA.readUInt16BE(0));
+            entries.push(new PNGCoderInfoChunkhISTEntry(
+                this.DATA.readUInt16BE(0)
+            ));
         }
         return { Entries: entries };
     };
+
+}
+
+export class PNGCoderInfoChunkhISTEntry {
+
+    constructor(
+        public readonly Frequency: number
+    ) { }
+
+    public toString(): string {
+        return JSON.stringify({
+            Frequency: this.Frequency
+        });
+    }
 
 }

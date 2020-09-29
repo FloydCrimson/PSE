@@ -48,7 +48,7 @@ export class PNGCoderInfoChunkPLTE extends PNGCoderInfoChunk {
     public toString(): string {
         const messages = [super.toString()];
         // ENTRIES
-        messages.push('Entries:\t\t\t' + Object.entries(this.getEntries()).map(([key, value]) => key + '=' + value).join('   '));
+        messages.push('Entries:\t\t\t' + Object.entries(this.getEntries()).map(([k, v]) => k + '=' + v).join('   '));
         //
         return messages.join('\n');
     }
@@ -58,19 +58,31 @@ export class PNGCoderInfoChunkPLTE extends PNGCoderInfoChunk {
     public getEntries(): { Entries: PNGCoderInfoChunkPLTEEntry[]; } {
         const entries: PNGCoderInfoChunkPLTEEntry[] = [];
         for (let p = 0; p < this.DATA.length; p += 3) {
-            entries.push({
-                Red: this.DATA.readUInt8(p),
-                Green: this.DATA.readUInt8(p + 1),
-                Blue: this.DATA.readUInt8(p + 2)
-            });
+            entries.push(new PNGCoderInfoChunkPLTEEntry(
+                this.DATA.readUInt8(p),
+                this.DATA.readUInt8(p + 1),
+                this.DATA.readUInt8(p + 2)
+            ));
         }
         return { Entries: entries };
     };
 
 }
 
-export type PNGCoderInfoChunkPLTEEntry = {
-    Red: number;
-    Green: number;
-    Blue: number;
+export class PNGCoderInfoChunkPLTEEntry {
+
+    constructor(
+        public readonly Red: number,
+        public readonly Green: number,
+        public readonly Blue: number
+    ) { }
+
+    public toString(): string {
+        return JSON.stringify({
+            Red: this.Red,
+            Green: this.Green,
+            Blue: this.Blue
+        });
+    }
+
 }

@@ -6,3 +6,7 @@ const coder = new PNGCoder();
 coder.decoder(path.resolve(__dirname, '../src/assets/PNG/Immagine1.png')).then((result) => {
     console.log('Chunks\n\n' + result.info.chunks.map((chunk) => chunk.toString()).join('\n\n'));
 }, (error) => console.error(error)).catch((error) => console.error(error));
+
+// Immagine1    IHDR gAMA cHRM pHYs IDAT IEND
+// Immagine2    IHDR IDAT tEXt IEND
+// Immagine3    IHDR gAMA sRGB PLTE tRNS IDAT IEND
