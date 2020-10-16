@@ -48,7 +48,7 @@ export class PNGCoderInfoChunkzTXt extends PNGCoderInfoChunk {
             throw new Error('Chunk zTXt can have at most one null character.');
         }
         // COMPRESSION METHOD
-        if (this.getCompressionMethod() !== PNGCoderInfoChunkzTXtCompressionMethod.FLATE_32KSW) {
+        if (this.getCompressionMethod() !== PNGCoderInfoChunkzTXtCompressionMethod.DEFLATEWS32K) {
             throw new Error('Chunk zTXt compression method unknown. Found: ' + this.getCompressionMethod());
         }
     }
@@ -87,5 +87,5 @@ export class PNGCoderInfoChunkzTXt extends PNGCoderInfoChunk {
 }
 
 export enum PNGCoderInfoChunkzTXtCompressionMethod {
-    FLATE_32KSW = 0
+    DEFLATEWS32K = 0
 }

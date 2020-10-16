@@ -75,7 +75,7 @@ export class PNGCoderInfoChunkIHDR extends PNGCoderInfoChunk {
             throw new Error('Chunk IHDR color type must be equal to one of the following values: ' + Object.keys(color_type_map).join(', ') + '. Found: ' + this.getColorType());
         }
         // COMPRESSION METHOD
-        if (this.getCompressionMethod() !== PNGCoderInfoChunkIHDRCompressionMethod.FLATE_32KSW) {
+        if (this.getCompressionMethod() !== PNGCoderInfoChunkIHDRCompressionMethod.DEFLATEWS32K) {
             throw new Error('Chunk IHDR compression method unknown. Found: ' + this.getCompressionMethod());
         }
         // FILTER METHOD
@@ -174,7 +174,7 @@ export enum PNGCoderInfoChunkIHDRColorType {
 }
 
 export enum PNGCoderInfoChunkIHDRCompressionMethod {
-    FLATE_32KSW = 0
+    DEFLATEWS32K = 0
 }
 
 export enum PNGCoderInfoChunkIHDRFilterMethod {

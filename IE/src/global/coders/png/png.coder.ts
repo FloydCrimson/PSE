@@ -22,6 +22,8 @@ import { PNGCoderInfoChunktIME } from './png.info-chunk-tIME.coder';
 import { PNGCoderInfoChunktRNS } from './png.info-chunk-tRNS.coder';
 import { PNGCoderInfoChunkzTXt } from './png.info-chunk-zTXt.coder';
 
+import { ZLib } from '../../helpers/zlib';
+
 export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
 
     private service = new PNGCoderService();
@@ -35,6 +37,7 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
         position = this.checkSignature(position, buffer, data);
         position = this.getChunks(position, buffer, data);
         position = this.checkAll(position, buffer, data);
+        this.decompressData(buffer, data);
         return data;
     }
 
@@ -120,6 +123,13 @@ export class PNGCoder implements ImageCoderImplementation<PNGCoderInfo> {
         });
         //
         return position;
+    }
+
+    private decompressData(buffer: Buffer, data: { info: PNGCoderInfo; binary: Uint8Array; }): Buffer {
+        const chunks = data.info.chunks.filter((chunk) => chunk.getType() === PNGCoderInfoChunkIDAT.Type);
+        const zlib = new ZLib(Buffer.concat(chunks.map((chunk) => chunk.DATA)), 0);
+        zlib.start();
+        return null;
     }
 
     // ENCODER
