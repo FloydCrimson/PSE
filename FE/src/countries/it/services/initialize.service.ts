@@ -77,7 +77,7 @@ export class InitializeService implements InitializeImplementation {
     private initializeRests(): Promise<boolean>[] {
         this.restFactory.clear();
         const rests: [keyof RestFT.RestFactoryTypes, RestFactoryImplementation][] = [];
-        rests.push(['Backend', this.platformService.isPlatform(PlatformEnum.Browser) ? new AngularRest(this.httpBrowser, this.storageFactory) : new NativeRest(this.httpNative, this.storageFactory)]);
+        rests.push(['Backend', this.platformService.isPlatform(PlatformEnum.Browser) ? new AngularRest(this.httpBrowser) : new NativeRest(this.httpNative)]);
         const check = rests.reduce((r, s) => this.restFactory.set(s[0], s[1]) && r, true);
         return [Promise.resolve(check)];
     }
