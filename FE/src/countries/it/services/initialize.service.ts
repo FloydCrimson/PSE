@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { HttpClient } from '@angular/common/http';
 import { HTTP } from '@ionic-native/http/ngx';
+import { Observable } from 'rxjs';
 
 import { InitializeImplementation } from 'global/common/implementations/initialize.implementation';
 import { PlatformEnum } from 'global/common/enum/platform.enum';
@@ -10,7 +11,6 @@ import { PlatformService } from 'global/services/platform.service';
 import { LoggingService } from 'global/services/logging.service';
 
 import { StorageFactory } from 'global/factories/storage.factory';
-import { StorageFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
 import * as StorageFT from 'global/factories/storage.factory.type';
 import { IonicStorage } from 'global/factories/storages/ionic.storage';
 import { CapacitorStorage } from 'global/factories/storages/capacitor.storage';
@@ -62,13 +62,24 @@ export class InitializeService implements InitializeImplementation {
 
     private initializeStorages(): Promise<boolean>[] {
         this.storageFactory.clear();
-        const storages: [keyof StorageFT.StorageFactoryTypes, StorageFactoryImplementation<StorageFT.StorageFactoryTypes[keyof StorageFT.StorageFactoryTypes]>][] = [];
+        const storages: [keyof StorageFT.StorageFactoryTypes, StorageFT.StorageFactoryTypes[keyof StorageFT.StorageFactoryTypes]][] = [];
         storages.push(['PersOutData', this.platformService.isPlatform(PlatformEnum.Browser) ? new IonicStorage<StorageFT.StorageFactoryTypePersOutData>(this.storage) : new CapacitorStorage<StorageFT.StorageFactoryTypePersOutData>(this.pluginService.get('Storage'))]);
         storages.push(['TempOutData', new JSStorage<StorageFT.StorageFactoryTypesTempOutData>()]);
         storages.push(['TempInData', new JSStorage<StorageFT.StorageFactoryTypesTempInData>()]);
         const check = storages.reduce((r, s) => this.storageFactory.set(s[0], s[1]) && r, true);
         if (check) {
-            return storages.map((s) => this.storageFactory.get(s[0]).ready());
+            return storages.map((s) => {
+                const call: Promise<boolean> | boolean = this.storageFactory.get(s[0]).ready(); // | Observable<boolean>
+                if (call.constructor === Promise) {
+                    return call as Promise<boolean>;
+                // } else if (call.constructor === Observable) {
+                //     return (call as Observable<boolean>).toPromise();
+                } else if (call.constructor === Boolean) {
+                    return Promise.resolve(call as boolean);
+                } else {
+                    return Promise.resolve(false);
+                }
+            });
         } else {
             return [Promise.resolve(false)];
         }

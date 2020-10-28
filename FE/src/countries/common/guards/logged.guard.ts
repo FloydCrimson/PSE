@@ -16,7 +16,7 @@ export class LoggedGuard implements CanActivate {
     ) { }
 
     public async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
-        const logged: boolean = await this.storageFactory.get('TempOutData').get('logged');
+        const logged: boolean = this.storageFactory.get('TempOutData').get('logged');
         return logged ? true : this.router.parseUrl(RoutesIndex.AuthPageRoute.path);
     }
 

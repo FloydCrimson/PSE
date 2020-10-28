@@ -2,7 +2,7 @@ import { StoragePlugin } from '@capacitor/core';
 
 import { StorageFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
 
-export class CapacitorStorage<T> implements StorageFactoryImplementation<T> {
+export class CapacitorStorage<T> implements StorageFactoryImplementation<T, Promise<any>> {
 
     constructor(
         private readonly storagePlugin: StoragePlugin
@@ -13,59 +13,19 @@ export class CapacitorStorage<T> implements StorageFactoryImplementation<T> {
     }
 
     public set<K extends keyof T>(key: K, data: T[K]): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            try {
-                this.storagePlugin.set({ key: key as string, value: JSON.stringify(data) }).then((resolved) => {
-                    resolve();
-                }, (rejected) => {
-                    reject(rejected);
-                }).catch((caught) => {
-                    reject(caught);
-                });
-            } catch (error) {
-                reject(error);
-            }
-        });
+        return this.storagePlugin.set({ key: key as string, value: JSON.stringify(data) });
     }
 
     public get<K extends keyof T>(key: K): Promise<T[K]> {
-        return new Promise<T[K]>((resolve, reject) => {
-            this.storagePlugin.get({ key: key as string }).then((resolved) => {
-                try {
-                    resolve(JSON.parse(resolved.value) as T[K]);
-                } catch (error) {
-                    reject(error);
-                }
-            }, (rejected) => {
-                reject(rejected);
-            }).catch((caught) => {
-                reject(caught);
-            });
-        });
+        return this.storagePlugin.get({ key: key as string }).then((resolved) => <T[K]>JSON.parse(resolved.value));
     }
 
     public remove<K extends keyof T>(key: K): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            this.storagePlugin.remove({ key: key as string }).then((resolved) => {
-                resolve();
-            }, (rejected) => {
-                reject(rejected);
-            }).catch((caught) => {
-                reject(caught);
-            });
-        });
+        return this.storagePlugin.remove({ key: key as string });
     }
 
     public clear(): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            this.storagePlugin.clear().then((resolved) => {
-                resolve();
-            }, (rejected) => {
-                reject(rejected);
-            }).catch((caught) => {
-                reject(caught);
-            });
-        });
+        return this.storagePlugin.clear();
     }
 
 }

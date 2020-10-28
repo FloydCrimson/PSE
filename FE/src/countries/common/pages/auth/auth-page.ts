@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Observable, of, from, forkJoin } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { RoutingService } from 'global/services/routing.service';
 import { StorageFactory } from 'global/factories/storage.factory';
 import { SessionService } from 'global/services/session.service';
 
 import * as RoutesIndex from '@countries/routes.index';
-import { exhaustMap } from 'rxjs/operators';
 
 @Component({
   selector: 'auth-page',
@@ -46,18 +45,15 @@ export class AuthPage {
     if (password.length === 0) {
       return of({ message: 'Password too short.', show: password.length > 0 });
     }
-    return of(null)
+    return of(null);
   }
 
   // Events
 
-  public onLoginClicked(): void {
-    forkJoin(
-      from(this.storageFactory.get('PersOutData').get('auth')),
-      of(this.loginForm.get('password').value)
-    ).pipe(
-      exhaustMap(([{ type, value }, key]) => this.sessionService.login({ type, value, key, algorithm: 'sha256' }))
-    ).subscribe((result) => {
+  public async onLoginClicked(): Promise<void> {
+    const key = this.loginForm.get('password').value;
+    const { type, value } = await this.storageFactory.get('PersOutData').get('auth');
+    this.sessionService.login({ type, value, key, algorithm: 'sha256' }).subscribe((result) => {
       if (result) {
         this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, { input: { title: 'AuthPage' } }, { animationDirection: 'forward' });
       }

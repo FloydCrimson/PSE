@@ -1,8 +1,7 @@
 import { NativeStoragePluginImplementation } from 'global/common/implementations/plugins/native-storage.plugin.implementation';
-
 import { StorageFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
 
-export class KeyValueStorage<T> implements StorageFactoryImplementation<T> {
+export class KeyValueStorage<T> implements StorageFactoryImplementation<T, Promise<any>> {
 
     constructor(
         private readonly nativeStoragePlugin: NativeStoragePluginImplementation
@@ -14,7 +13,7 @@ export class KeyValueStorage<T> implements StorageFactoryImplementation<T> {
 
     public set<K extends keyof T>(key: K, data: T[K]): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            this.nativeStoragePlugin.setItem(key as string, data, (success) => {
+            this.nativeStoragePlugin.setItem(key as string, data, _ => {
                 resolve();
             }, (error) => {
                 reject(error);
@@ -25,7 +24,7 @@ export class KeyValueStorage<T> implements StorageFactoryImplementation<T> {
     public get<K extends keyof T>(key: K): Promise<T[K]> {
         return new Promise<T[K]>((resolve, reject) => {
             this.nativeStoragePlugin.getItem(key as string, (success) => {
-                resolve(success as T[K]);
+                resolve(<T[K]>success);
             }, (error) => {
                 reject(error);
             });
@@ -34,7 +33,7 @@ export class KeyValueStorage<T> implements StorageFactoryImplementation<T> {
 
     public remove<K extends keyof T>(key: K): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            this.nativeStoragePlugin.remove(key as string, (success) => {
+            this.nativeStoragePlugin.remove(key as string, _ => {
                 resolve();
             }, (error) => {
                 reject(error);
@@ -44,7 +43,7 @@ export class KeyValueStorage<T> implements StorageFactoryImplementation<T> {
 
     public clear(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            this.nativeStoragePlugin.clear((success) => {
+            this.nativeStoragePlugin.clear(_ => {
                 resolve();
             }, (error) => {
                 reject(error);

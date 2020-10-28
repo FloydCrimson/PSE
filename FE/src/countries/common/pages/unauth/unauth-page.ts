@@ -96,7 +96,7 @@ export class UnauthPage {
     if (password.length === 0) {
       return of({ message: 'Password too short.', show: password.length > 0 });
     }
-    return of(null)
+    return of(null);
   }
 
   // Events
@@ -111,12 +111,9 @@ export class UnauthPage {
   }
 
   public onLoginClicked(): void {
-    forkJoin(
-      of(this.loginForm.get('nickname').value),
-      of(this.loginForm.get('password').value)
-    ).pipe(
-      exhaustMap(([value, key]) => this.sessionService.login({ type: 'nickname', value, key, algorithm: 'sha256' }))
-    ).subscribe((result) => {
+    const value = this.loginForm.get('nickname').value;
+    const key = this.loginForm.get('password').value;
+    this.sessionService.login({ type: 'nickname', value, key, algorithm: 'sha256' }).subscribe((result) => {
       if (result) {
         this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, { input: { title: 'UnauthPage' } }, { animationDirection: 'forward' });
       }

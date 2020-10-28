@@ -121,40 +121,37 @@ export class RestService {
     }
 
     private callMethod<K extends keyof RestFactoryTypes, B, P, O>(type: K, endpoint: EndpointRestImplementation<B, P, O>, request: RequestRestImplementation<B, P>): Observable<ResponseRestImplementation<O>> {
-        return from(endpoint.auth ? this.storageFactory.get('TempInData').get('auth') : of(undefined)).pipe(
-            exhaustMap((auth) => {
-                request.input = request.input || { body: undefined, params: undefined };
-                request.input.body = request.input.body || {} as B;
-                request.input.params = request.input.params || {} as P;
-                const protocol = domain.protocols['rest'];
-                const url: string = `${protocol.secure ? 'https' : 'http'}://${protocol.url}:${protocol.port}${endpoint.url}`;
-                const credentials = auth ? { id: CoderProvider.encode(JSON.stringify({ [auth.type]: auth.value })), key: auth.key, algorithm: auth.algorithm } : undefined;
-                let headers: { [key: string]: string } = {};
-                let artifacts;
+        const auth = endpoint.auth ? this.storageFactory.get('TempInData').get('auth') : undefined;
+        request.input = request.input || { body: undefined, params: undefined };
+        request.input.body = request.input.body || {} as B;
+        request.input.params = request.input.params || {} as P;
+        const protocol = domain.protocols['rest'];
+        const url: string = `${protocol.secure ? 'https' : 'http'}://${protocol.url}:${protocol.port}${endpoint.url}`;
+        const credentials = auth ? { id: CoderProvider.encode(JSON.stringify({ [auth.type]: auth.value })), key: auth.key, algorithm: auth.algorithm } : undefined;
+        let headers: { [key: string]: string } = {};
+        let artifacts;
+        if (endpoint.auth && credentials) {
+            const timestamp: number = Math.floor(Date.now() / 1000);
+            const nonce: string = NonceProvider.generate(credentials.key, timestamp);
+            const options = { credentials, timestamp, nonce, payload: JSON.stringify(request.input), contentType: 'application/json' };
+            const output = hawk.client.header(url, endpoint.method, options);
+            artifacts = output.artifacts;
+            headers['Authorization'] = output.header;
+        }
+        return this.getMethod(type, endpoint, url, headers, request.input).pipe(
+            map((result) => {
                 if (endpoint.auth && credentials) {
-                    const timestamp: number = Math.floor(Date.now() / 1000);
-                    const nonce: string = NonceProvider.generate(credentials.key, timestamp);
-                    const options = { credentials, timestamp, nonce, payload: JSON.stringify(request.input), contentType: 'application/json' };
-                    const output = hawk.client.header(url, endpoint.method, options);
-                    artifacts = output.artifacts;
-                    headers['Authorization'] = output.header;
+                    const options = { payload: JSON.stringify(result.output.data), required: true };
+                    const output = hawk.client.authenticate(result, credentials, artifacts, options);
+                    if (!output) {
+                        throw 'Server not recognized.';
+                    }
                 }
-                return this.getMethod(type, endpoint, url, headers, request.input).pipe(
-                    map((result) => {
-                        if (endpoint.auth && credentials) {
-                            const options = { payload: JSON.stringify(result.output.data), required: true };
-                            const output = hawk.client.authenticate(result, credentials, artifacts, options);
-                            if (!output) {
-                                throw 'Server not recognized.';
-                            }
-                        }
-                        const response: ResponseRestImplementation<O> = { output: result.output.data, status: result.status };
-                        return response;
-                    }),
-                    catchError(error => {
-                        return throwError({ error: error, status: error.status } as ErrorRestImplementation);
-                    })
-                );
+                const response: ResponseRestImplementation<O> = { output: result.output.data, status: result.status };
+                return response;
+            }),
+            catchError(error => {
+                return throwError({ error: error, status: error.status } as ErrorRestImplementation);
             })
         );
     }

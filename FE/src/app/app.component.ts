@@ -38,23 +38,19 @@ export class AppComponent {
         throw 'The app was unable to initialize properly.';
       }
       this.loggingService.LOG('INFO', { class: AppComponent.name, function: this.start.name, text: source + ' is ready!' });
-      await this.initialize();
-      await this.storageFactory.get('TempOutData').set('initialized', true);
+      this.storageFactory.get('TempOutData').set('initialized', true);
     } catch (error) {
       this.loggingService.LOG('FATAL', { class: AppComponent.name, function: this.start.name }, error);
-      await this.storageFactory.get('TempOutData').set('initialized', false);
+      this.storageFactory.get('TempOutData').set('initialized', false);
     } finally {
+      this.storageFactory.get('TempOutData').set('logged', false);
+      if (this.platformService.isPlatform(PlatformEnum.Mobile)) {
+        await this.pluginService.get('StatusBar').setStyle({ style: StatusBarStyle.Light });
+        await this.pluginService.get('SplashScreen').hide();
+        this.deeplinksService.subscribe();
+      }
       this.router.initialNavigation();
     }
-  }
-
-  private async initialize(): Promise<void> {
-    if (this.platformService.isPlatform(PlatformEnum.Mobile)) {
-      this.pluginService.get('StatusBar').setStyle({ style: StatusBarStyle.Light });
-      this.pluginService.get('SplashScreen').hide();
-      this.deeplinksService.subscribe();
-    }
-    await this.storageFactory.get('TempOutData').set('logged', false);
   }
 
 }

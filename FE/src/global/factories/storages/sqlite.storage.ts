@@ -2,7 +2,7 @@ import { StorageFactoryImplementation } from 'global/common/implementations/fact
 import { SQLitePluginImplementation, IDatabase, IResponse } from 'global/common/implementations/plugins/sqlite.plugin.implementation';
 import { LoggingService } from 'global/services/logging.service';
 
-export class SQLiteStorage<T> implements StorageFactoryImplementation<T> {
+export class SQLiteStorage<T> implements StorageFactoryImplementation<T, Promise<any>> {
 
     private storage: IDatabase;
 

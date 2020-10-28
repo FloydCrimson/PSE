@@ -1,7 +1,11 @@
-export interface StorageFactoryImplementation<T> {
-    ready(): Promise<boolean>;
-    set<K extends keyof T>(key: K, data: T[K]): Promise<void>;
-    get<K extends keyof T>(key: K): Promise<T[K]>;
-    remove<K extends keyof T>(key: K): Promise<void>;
-    clear(): Promise<void>;
+import { Observable } from 'rxjs';
+
+export interface StorageFactoryImplementation<T, R = unknown> {
+    ready(): Asynchify<R, boolean>;
+    set<K extends keyof T>(key: K, data: T[K]): Asynchify<R, void>;
+    get<K extends keyof T>(key: K): Asynchify<R, T[K]>;
+    remove<K extends keyof T>(key: K): Asynchify<R, void>;
+    clear(): Asynchify<R, void>;
 }
+
+type Asynchify<R, T> = R extends Promise<any> ? Promise<T> : (R extends Observable<any> ? Observable<T> : T);

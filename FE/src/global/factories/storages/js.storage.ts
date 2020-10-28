@@ -2,40 +2,29 @@ import { StorageFactoryImplementation } from 'global/common/implementations/fact
 
 export class JSStorage<T> implements StorageFactoryImplementation<T> {
 
-    private storage: Map<keyof T, T[keyof T]> = new Map<keyof T, T[keyof T]>();
+    private storage: Map<keyof T, any>;
 
     constructor() { }
 
-    public ready(): Promise<boolean> {
-        return Promise.resolve(true);
+    public ready(): boolean {
+        this.storage = new Map<keyof T, any>();
+        return true;
     }
 
-    public set<K extends keyof T>(key: K, data: T[K]): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            this.storage.set(key, data);
-            resolve();
-        });
+    public set<K extends keyof T>(key: K, data: T[K]): void {
+        this.storage.set(key, data);
     }
 
-    public get<K extends keyof T>(key: K): Promise<T[K]> {
-        return new Promise<T[K]>((resolve, reject) => {
-            const data = this.storage.get(key);
-            resolve(<T[K]>data);
-        });
+    public get<K extends keyof T>(key: K): T[K] {
+        return <T[K]>this.storage.get(key);
     }
 
-    public remove<K extends keyof T>(key: K): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            this.storage.delete(key);
-            resolve();
-        });
+    public remove<K extends keyof T>(key: K): void {
+        this.storage.delete(key);
     }
 
-    public clear(): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            this.storage.clear();
-            resolve();
-        });
+    public clear(): void {
+        this.storage.clear();
     }
 
 }

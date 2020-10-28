@@ -113,24 +113,21 @@ export class AngularSocket implements SocketFactoryImplementation {
                     merge(this.subjectOpen.asObservable(), timeout$, error$).pipe(take(1), map(_ => true)) :
                     of(true);
                 return opening$.pipe(
-                    exhaustMap(_ => {
-                        return from(endpoint.auth ? this.storageFactory.get('TempInData').get('auth') : of(undefined)).pipe(
-                            map((auth) => {
-                                const message: MessageSocketImplementation<P> = { operation: endpoint.operation, params };
-                                const protocol = domain.protocols['socket'];
-                                const url: string = `${protocol.secure ? 'https' : 'http'}://${protocol.url}:${protocol.port}${endpoint.operation}`;
-                                const credentials = auth ? { id: CoderProvider.encode(JSON.stringify({ [auth.type]: auth.value })), key: auth.key, algorithm: auth.algorithm } : undefined;
-                                if (endpoint.auth && credentials) {
-                                    const timestamp: number = Math.floor(Date.now() / 1000);
-                                    const nonce: string = NonceProvider.generate(credentials.key, timestamp);
-                                    const options = { credentials, timestamp, nonce, payload: JSON.stringify(params), contentType: 'application/json' };
-                                    const output = hawk.client.header(url, 'GET', options);
-                                    message.auth = output.header;
-                                }
-                                this.socket.send(JSON.stringify(message));
-                                return true;
-                            })
-                        );
+                    map(_ => {
+                        const auth = endpoint.auth ? this.storageFactory.get('TempInData').get('auth') : undefined;
+                        const message: MessageSocketImplementation<P> = { operation: endpoint.operation, params };
+                        const protocol = domain.protocols['socket'];
+                        const url: string = `${protocol.secure ? 'https' : 'http'}://${protocol.url}:${protocol.port}${endpoint.operation}`;
+                        const credentials = auth ? { id: CoderProvider.encode(JSON.stringify({ [auth.type]: auth.value })), key: auth.key, algorithm: auth.algorithm } : undefined;
+                        if (endpoint.auth && credentials) {
+                            const timestamp: number = Math.floor(Date.now() / 1000);
+                            const nonce: string = NonceProvider.generate(credentials.key, timestamp);
+                            const options = { credentials, timestamp, nonce, payload: JSON.stringify(params), contentType: 'application/json' };
+                            const output = hawk.client.header(url, 'GET', options);
+                            message.auth = output.header;
+                        }
+                        this.socket.send(JSON.stringify(message));
+                        return true;
                     }),
                     catchError((error: { type: 'timeout' | 'error', value?: any }) => {
                         if (error.type === 'timeout') {
