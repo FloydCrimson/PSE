@@ -28,6 +28,9 @@ export class AuthEntity {
     @Column({ type: SQLiteType.TEXT })
     role: RoleType;
 
+    @Column({ type: SQLiteType.BOOLEAN, default: false })
+    authenticated: boolean;
+
     @Column({ type: SQLiteType.INT, default: 0 })
     attempts: number;
 

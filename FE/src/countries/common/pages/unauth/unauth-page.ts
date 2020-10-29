@@ -19,8 +19,7 @@ export class UnauthPage {
 
   signInForm = new FormGroup({
     email: new FormControl('', [], [this.getEmailValidator.bind(this)]),
-    nickname: new FormControl('', [], [this.getNicknameValidator.bind(this)]),
-    password: new FormControl('', [], [this.getPasswordValidator.bind(this)])
+    nickname: new FormControl('', [], [this.getNicknameValidator.bind(this)])
   });
 
   loginForm = new FormGroup({
@@ -104,8 +103,7 @@ export class UnauthPage {
   public onSignInClicked(): void {
     const email = this.signInForm.get('email').value;
     const nickname = this.signInForm.get('nickname').value;
-    const password = this.signInForm.get('password').value;
-    this.backendAuthRest.SignInPOST({ email, nickname, password }).subscribe((result) => {
+    this.backendAuthRest.SignInPOST({ email, nickname }).subscribe((result) => {
       console.log(result);
     });
   }

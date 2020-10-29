@@ -14,8 +14,13 @@ export class CommunicationService implements CommunicationServiceImplementation 
         return await this.repositoryService.get('AuthEntity').findOne(conditions, options);
     }
 
+    public async AuthEntitySave(authEntity: EI.AuthEntity): Promise<EI.AuthEntity> {
+        return await this.repositoryService.get('AuthEntity').save(authEntity);
+    }
+
 }
 
 export interface CommunicationServiceImplementation {
     AuthEntityFindOne: CommunicationMethodImplementation<(conditions?: FindConditions<EI.AuthEntity>, options?: FindOneOptions<EI.AuthEntity>) => Promise<EI.AuthEntity>>;
+    AuthEntitySave: CommunicationMethodImplementation<(authEntity: EI.AuthEntity) => Promise<EI.AuthEntity>>;
 }

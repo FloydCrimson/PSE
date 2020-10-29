@@ -27,7 +27,7 @@ export class BackendAuthRest {
         return this.restService.makeCall('Backend', endpoint, request);
     }
 
-    public SignInPOST(body: { email: string; nickname: string; password: string; }, params?: undefined) {
+    public SignInPOST(body: { email: string; nickname: string; }, params?: undefined) {
         const endpoint = RestFactoryEndpoint.Backend.Auth.SignInPOST;
         const request = this.restService.getRequest('Backend', endpoint);
         request.input = { body, params };
