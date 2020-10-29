@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { HttpClient } from '@angular/common/http';
 import { HTTP } from '@ionic-native/http/ngx';
-import { Observable } from 'rxjs';
+// import { Observable } from 'rxjs';
 
 import { InitializeImplementation } from 'global/common/implementations/initialize.implementation';
 import { PlatformEnum } from 'global/common/enum/platform.enum';
@@ -96,7 +96,7 @@ export class InitializeService implements InitializeImplementation {
     private initializeSockets(): Promise<boolean>[] {
         this.socketFactory.clear();
         const sockets: [keyof SocketFT.SocketFactoryTypes, SocketFactoryImplementation][] = [];
-        sockets.push(['Backend', new AngularSocket(this.storageFactory, this.loggingService)]);
+        sockets.push(['Backend', new AngularSocket(this.loggingService)]);
         const check = sockets.reduce((r, s) => this.socketFactory.set(s[0], s[1]) && r, true);
         return [Promise.resolve(check)];
     }
