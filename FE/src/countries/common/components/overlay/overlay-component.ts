@@ -5,11 +5,11 @@ import { ModalService } from 'global/services/modal.service';
 import * as ModalsIndex from '@countries/modals.index';
 
 @Component({
-  selector: 'overlay-page',
-  templateUrl: 'overlay-page.html',
-  styleUrls: ['overlay-page.scss'],
+  selector: 'overlay-component',
+  templateUrl: 'overlay-component.html',
+  styleUrls: ['overlay-component.scss'],
 })
-export class OverlayPage implements OnInit {
+export class OverlayComponent implements OnInit {
 
   @Input('text') text: string;
 
@@ -18,11 +18,11 @@ export class OverlayPage implements OnInit {
   ) { }
 
   public ngOnInit(): void {
-    console.log('OverlayPage', this.text);
+    console.log('OverlayComponent', this.text);
   }
 
   public dismiss(): void {
-    this.modalService.dismiss(ModalsIndex.OverlayPageModal, { result: true });
+    this.modalService.dismiss(ModalsIndex.OverlayComponentModal, { result: true });
   }
 
 }

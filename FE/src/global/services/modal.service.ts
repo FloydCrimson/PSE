@@ -14,8 +14,10 @@ export class ModalService {
     ) { }
 
     public create<I, O>(modal: ModalImplementation<I, O>, input?: I, options?: Omit<ModalOptionsG<I, O>, 'component' | 'componentProps'>): Promise<HTMLIonModalElementG<I, O>> {
-        const config: ModalOptionsG<I, O> = { animated: true, ...options, component: modal.component, componentProps: input };
-        return (this.modalController as ModalControllerG<I, O>).create(config);
+        return modal.component().then((component) => {
+            const config: ModalOptionsG<I, O> = { animated: true, ...options, component, componentProps: input };
+            return (this.modalController as ModalControllerG<I, O>).create(config);
+        });
     }
 
     public dismiss<I, O>(modal: ModalImplementation<I, O>, output?: O, role?: string, id?: string): Promise<boolean> {

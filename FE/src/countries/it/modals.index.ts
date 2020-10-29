@@ -1,1 +1,1 @@
-export { OverlayPageModal } from 'countries/common/pages/overlay/overlay-page.modal';
+export { OverlayComponentModal } from 'countries/common/components/overlay/overlay-component.modal';

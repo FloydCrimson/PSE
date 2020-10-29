@@ -18,6 +18,8 @@ import { TestPage } from './test-page';
       }
     ])
   ],
-  declarations: [TestPage]
+  declarations: [
+    TestPage
+  ]
 })
 export class TestPageModule { }

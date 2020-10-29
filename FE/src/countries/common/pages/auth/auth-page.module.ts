@@ -19,6 +19,8 @@ import { AuthPage } from './auth-page';
       }
     ])
   ],
-  declarations: [AuthPage]
+  declarations: [
+    AuthPage
+  ]
 })
 export class AuthPageModule { }

@@ -34,7 +34,7 @@ export class HomePage {
   }
 
   public async present(): Promise<void> {
-    const modal = await this.modalService.create(ModalsIndex.OverlayPageModal, { text: 'ciaone' });
+    const modal = await this.modalService.create(ModalsIndex.OverlayComponentModal, { text: 'ciaone' });
     modal.onDidDismiss().then((result) => {
       console.log('HomePage', result);
     });
