@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { DispatcherService } from '../services/dispatcher.service';
-import { MethodType } from '../types/method.type';
 import { ControllerServiceImplementation } from '../services/controller.service';
-import { Masks } from '../extensions/controller.extension';
+import { MethodType } from '../types/method.type';
+import { Masks } from '../providers/controller-method-wrapper.provider';
 
 export interface RouteImplementation<B = undefined, P = undefined, O = undefined> {
     endpoint: { method: MethodType; route: string; };

@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 
 import * as express from 'express';
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 
 import { InitializeImplementation } from '../../../global/common/implementations/initialize.implementation';
 import { ProtocolConfigurationsType } from '../../../global/common/types/protocol-options.type';
@@ -12,6 +12,7 @@ import { RouteImplementation } from '../implementations/route.implementation';
 import { DispatcherService } from './dispatcher.service';
 import { ControllerService } from './controller.service';
 import { CommunicationService } from './communication.service';
+import { ControllerMethodWrapperProvider } from '../providers/controller-method-wrapper.provider';
 import { SendProvider } from '../providers/send.provider';
 import * as MI from '../middlewares.index';
 import * as RI from '../routes.index';
@@ -34,13 +35,16 @@ export class InitializeService implements InitializeImplementation {
             for (const group in RI) {
                 for (const item in RI[group]) {
                     const route: RouteImplementation<any, any, any> = RI[group][item];
-                    app[route.endpoint.method](route.endpoint.route, (route.middlewares || []).map((middleware) => middleware(this.dispatcherService)), (request: Request, response: Response, next: NextFunction) => {
+                    app[route.endpoint.method](route.endpoint.route, (route.middlewares || []).map((middleware) => middleware(this.dispatcherService)), async (request: Request, response: Response) => {
                         if (route.handler) {
-                            const result: Promise<any> = this.dispatcherService.get('ControllerService').get(route.handler.controller)[route.handler.action](request, response, next);
-                            result.then(
-                                (resolved) => SendProvider.sendResponse(request, response, 200, resolved),
-                                (rejected) => SendProvider.sendError(request, response, 500, rejected)
-                            ).catch((caught) => SendProvider.sendError(request, response, 500, caught));
+                            try {
+                                const controller = this.dispatcherService.get('ControllerService').get(route.handler.controller);
+                                const action = controller[route.handler.action];
+                                const result = await ControllerMethodWrapperProvider.wrap(route, request, response, (body, params, output) => action.apply(controller, [body, params, output]));
+                                SendProvider.sendResponse(request, response, 200, result)
+                            } catch (error) {
+                                SendProvider.sendError(request, response, 500, error);
+                            }
                         } else {
                             SendProvider.sendResponse(request, response);
                         }

@@ -1,5 +1,3 @@
-import { Request, Response } from 'express';
-
 import { EmailProvider } from '../../../global/providers/email.provider';
 import { RandomProvider } from '../../../global/providers/random.provider';
 
@@ -8,60 +6,51 @@ import { CustomErrorProvider } from '../../common/providers/error.provider';
 import { RoleType } from '../../database/types/role.type';
 import * as EI from '../../database/entities.index';
 
-import { ControllerExtension } from '../extensions/controller.extension';
 import { DispatcherService } from '../services/dispatcher.service';
-import { AuthRoute, AuthRouteImplementation } from '../routes/auth.route';
+import { AuthRouteImplementation } from '../routes/auth.route';
 import { ControllerMethodType } from '../types/controller-method.type';
 
-export class AuthController extends ControllerExtension implements AuthControllerImplementation {
+export class AuthController implements AuthControllerImplementation {
 
     constructor(
         private readonly dispatcherService: DispatcherService
-    ) {
-        super();
+    ) { }
+
+    public async EmailAvailablePOST(body: { email: string; }, params: undefined, output: { available: boolean; }): Promise<{ available: boolean; }> {
+        const { email } = body;
+        const available = await this.checkAuthEntityEmailAvailability(email, false);
+        output = { available };
+        return output;
     }
 
-    public async EmailAvailablePOST(request: Request, response: Response) {
-        return super.wrapper(AuthRoute.EmailAvailablePOST, request, response, async (body, params, output) => {
-            const { email } = body;
-            const available = await this.checkAuthEntityEmailAvailability(email, false);
-            output = { available };
-            return output;
-        });
+    public async NicknameAvailablePOST(body: { nickname: string; }, params: undefined, output: { available: boolean; }): Promise<{ available: boolean; }> {
+        const { nickname } = body;
+        const available = await this.checkAuthEntityNicknameAvailability(nickname, false);
+        output = { available };
+        return output;
     }
 
-    public async NicknameAvailablePOST(request: Request, response: Response) {
-        return super.wrapper(AuthRoute.NicknameAvailablePOST, request, response, async (body, params, output) => {
-            const { nickname } = body;
-            const available = await this.checkAuthEntityNicknameAvailability(nickname, false);
-            output = { available };
-            return output;
-        });
+    public async SignInPOST(body: { email: string; nickname: string; }, params: undefined, output: { success: boolean; }): Promise<{ success: boolean; }> {
+        const { email, nickname } = body;
+        await this.checkAuthEntityEmailAvailability(email, true);
+        await this.checkAuthEntityNicknameAvailability(nickname, true);
+        const authEntity = await this.getNewAuthEntity(email, nickname);
+        await this.saveAuthEntity(authEntity);
+        await this.sendTemporaryPasswordViaEmail(authEntity);
+        output = { success: true };
+        return output;
     }
 
-    public async SignInPOST(request: Request, response: Response) {
-        return super.wrapper(AuthRoute.SignInPOST, request, response, async (body, params, output) => {
-            const { email, nickname } = body;
-            await this.checkAuthEntityEmailAvailability(email, true);
-            await this.checkAuthEntityNicknameAvailability(nickname, true);
-            const authEntity = await this.getNewAuthEntity(email, nickname);
-            await this.saveAuthEntity(authEntity);
-            await this.sendTemporaryPasswordViaEmail(authEntity);
-            output = { success: true };
-            return output;
-        });
+    public async SignOutPOST(body: undefined, params: undefined, output: undefined): Promise<undefined> {
+        return output;
     }
 
-    public async SignOutPOST(request: Request, response: Response) {
-        return super.wrapper(AuthRoute.SignOutPOST, request, response, async (body, params, output) => output);
+    public async LogInPOST(body: undefined, params: undefined, output: undefined): Promise<undefined> {
+        return output;
     }
 
-    public async LogInPOST(request: Request, response: Response) {
-        return super.wrapper(AuthRoute.LogInPOST, request, response, async (body, params, output) => output);
-    }
-
-    public async LogOutPOST(request: Request, response: Response) {
-        return super.wrapper(AuthRoute.LogOutPOST, request, response, async (body, params, output) => output);
+    public async LogOutPOST(body: undefined, params: undefined, output: undefined): Promise<undefined> {
+        return output;
     }
 
     //
