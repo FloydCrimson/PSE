@@ -1,0 +1,55 @@
+{
+    "$schema": "../../common/schemas/error.schema.json",
+    "GATEGORIES": {
+        "AUTH": {
+            "CODE": "10",
+            "ERRORS": {
+                "EMAIL_NOT_RECOVERED": {
+                    "CODE": "0011",
+                    "DESCRIPTION": "Failed to recover email from database. Unable to check if taken."
+                },
+                "EMAIL_NOT_AVAILABLE": {
+                    "CODE": "0012",
+                    "DESCRIPTION": "Email for sign in already taken."
+                },
+                "NICKNAME_NOT_RECOVERED": {
+                    "CODE": "0013",
+                    "DESCRIPTION": "Failed to recover nickname from database. Unable to check if taken."
+                },
+                "NICKNAME_NOT_AVAILABLE": {
+                    "CODE": "0014",
+                    "DESCRIPTION": "Nickname for sign in already taken."
+                },
+                "ID_NOT_RECOVERED": {
+                    "CODE": "0015",
+                    "DESCRIPTION": "Failed to recover id from database. Unable to check if taken."
+                },
+                "AUTH_ENTITY_NOT_SAVED": {
+                    "CODE": "0016",
+                    "DESCRIPTION": "Failed to save auth entity in database."
+                },
+                "EMAIL_NOT_SENT": {
+                    "CODE": "0017",
+                    "DESCRIPTION": "Failed to send email with temporary password."
+                }
+            }
+        },
+        "GENERIC": {
+            "CODE": "99",
+            "ERRORS": {
+                "REQUEST_MALFORMED": {
+                    "CODE": "0011",
+                    "DESCRIPTION": "Arguments in request malformed."
+                },
+                "RESPONSE_MALFORMED": {
+                    "CODE": "0012",
+                    "DESCRIPTION": "Arguments in response malformed."
+                },
+                "UNCAUGHT": {
+                    "CODE": "9999",
+                    "DESCRIPTION": "Uncaught error."
+                }
+            }
+        }
+    }
+}

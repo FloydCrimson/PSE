@@ -58,7 +58,7 @@ export class UnauthPage {
       switchMap(_ => this.backendAuthRest.EmailAvailablePOST({ email })),
       map(result => {
         if (result.success) {
-          return result.response.output.email ? null : { message: 'Email not available.', show: true };
+          return result.response.output.available ? null : { message: 'Email not available.', show: true };
         } else {
           return { message: 'An error occurred while checking the Email.', show: true };
         }
@@ -79,7 +79,7 @@ export class UnauthPage {
       switchMap(_ => this.backendAuthRest.NicknameAvailablePOST({ nickname })),
       map(result => {
         if (result.success) {
-          return result.response.output.nickname ? null : { message: 'Nickname not available.', show: true };
+          return result.response.output.available ? null : { message: 'Nickname not available.', show: true };
         } else {
           return { message: 'An error occurred while checking the Nickname.', show: true };
         }

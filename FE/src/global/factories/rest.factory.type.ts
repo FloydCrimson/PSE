@@ -10,12 +10,12 @@ export interface RestFactoryTypeBackend {
 }
 
 export interface RestFactoryTypeBackendAuth {
-    EmailAvailablePOST: EndpointRestImplementation<{ email: string; }, undefined, { email: boolean; }>;
-    NicknameAvailablePOST: EndpointRestImplementation<{ nickname: string; }, undefined, { nickname: boolean; }>;
-    SignInPOST: EndpointRestImplementation<{ email: string; nickname: string; }, undefined, { email: boolean; nickname: boolean; success: boolean; }>;
-    SignOutPOST: EndpointRestImplementation<undefined, undefined, undefined>;
-    LogInPOST: EndpointRestImplementation<undefined, undefined, undefined>;
-    LogOutPOST: EndpointRestImplementation<undefined, undefined, undefined>;
+    EmailAvailablePOST: EndpointRestImplementation<{ email: string; }, undefined, { available: boolean; }>;
+    NicknameAvailablePOST: EndpointRestImplementation<{ nickname: string; }, undefined, { available: boolean; }>;
+    SignInPOST: EndpointRestImplementation<{ email: string; nickname: string; }, undefined, { success: boolean; }>;
+    SignOutPOST: EndpointRestImplementation;
+    LogInPOST: EndpointRestImplementation;
+    LogOutPOST: EndpointRestImplementation;
 }
 
 export interface RestFactoryTypeBackendEcho {

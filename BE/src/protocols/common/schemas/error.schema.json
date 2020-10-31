@@ -1,0 +1,77 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Error Schema",
+    "description": "A schema helper that defines errors.json files.",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "description": "The reference to the schema.",
+            "type": "string"
+        },
+        "GATEGORIES": {
+            "description": "The GATEGORIES of the error.",
+            "type": "object",
+            "propertyNames": {
+                "pattern": "^([A-Z]+)((_[A-Z]+)*)$"
+            },
+            "patternProperties": {
+                "^([A-Z]+)((_[A-Z]+)*)$": {
+                    "$ref": "#/definitions/category"
+                }
+            }
+        }
+    },
+    "required": [
+        "$schema",
+        "GATEGORIES"
+    ],
+    "additionalProperties": false,
+    "definitions": {
+        "category": {
+            "description": "The NAME of the category.",
+            "type": "object",
+            "properties": {
+                "CODE": {
+                    "description": "The CODE of the category.",
+                    "type": "string"
+                },
+                "ERRORS": {
+                    "description": "The ERRORS of the category.",
+                    "type": "object",
+                    "propertyNames": {
+                        "pattern": "^([A-Z]+)((_[A-Z]+)*)$"
+                    },
+                    "patternProperties": {
+                        "^([A-Z]+)((_[A-Z]+)*)$": {
+                            "$ref": "#/definitions/error"
+                        }
+                    }
+                }
+            },
+            "required": [
+                "CODE",
+                "ERRORS"
+            ],
+            "additionalProperties": false
+        },
+        "error": {
+            "description": "The NAME of the error.",
+            "type": "object",
+            "properties": {
+                "CODE": {
+                    "description": "The CODE of the error.",
+                    "type": "string"
+                },
+                "DESCRIPTION": {
+                    "description": "The DESCRIPTION of the error.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "CODE",
+                "DESCRIPTION"
+            ],
+            "additionalProperties": false
+        }
+    }
+}

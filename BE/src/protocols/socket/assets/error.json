@@ -1,0 +1,14 @@
+{
+    "$schema": "../../common/schemas/error.schema.json",
+    "GATEGORIES": {
+        "GENERIC": {
+            "CODE": "99",
+            "ERRORS": {
+                "UNCAUGHT": {
+                    "CODE": "9999",
+                    "DESCRIPTION": "Uncaught error."
+                }
+            }
+        }
+    }
+}

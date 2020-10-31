@@ -3,10 +3,10 @@ import { MethodType } from '../types/method.type';
 import * as MI from '../middlewares.index';
 
 export interface EchoRouteImplementation {
-    EchoOPTIONS: RouteImplementation<undefined, undefined, undefined>;
+    EchoOPTIONS: RouteImplementation;
     EchoGET: RouteImplementation<undefined, any, any>;
     EchoPOST: RouteImplementation<any, undefined, any>;
-    EchoAuthOPTIONS: RouteImplementation<undefined, undefined, undefined>;
+    EchoAuthOPTIONS: RouteImplementation;
     EchoAuthGET: RouteImplementation<undefined, any, any>;
     EchoAuthPOST: RouteImplementation<any, undefined, any>;
 }

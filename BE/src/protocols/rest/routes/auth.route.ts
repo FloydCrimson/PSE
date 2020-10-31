@@ -3,18 +3,18 @@ import { MethodType } from '../types/method.type';
 import * as MI from '../middlewares.index';
 
 export interface AuthRouteImplementation {
-    EmailAvailableOPTIONS: RouteImplementation<undefined, undefined, undefined>;
-    EmailAvailablePOST: RouteImplementation<{ email: string; }, undefined, { email: boolean; }>;
-    NicknameAvailableOPTIONS: RouteImplementation<undefined, undefined, undefined>;
-    NicknameAvailablePOST: RouteImplementation<{ nickname: string; }, undefined, { nickname: boolean; }>;
-    SignInOPTIONS: RouteImplementation<undefined, undefined, undefined>;
-    SignInPOST: RouteImplementation<{ email: string; nickname: string; password: string; }, undefined, { email: boolean; nickname: boolean; success: boolean; }>;
-    SignOutOPTIONS: RouteImplementation<undefined, undefined, undefined>;
-    SignOutPOST: RouteImplementation<undefined, undefined, undefined>;
-    LogInOPTIONS: RouteImplementation<undefined, undefined, undefined>;
-    LogInPOST: RouteImplementation<undefined, undefined, undefined>;
-    LogOutOPTIONS: RouteImplementation<undefined, undefined, undefined>;
-    LogOutPOST: RouteImplementation<undefined, undefined, undefined>;
+    EmailAvailableOPTIONS: RouteImplementation;
+    EmailAvailablePOST: RouteImplementation<{ email: string; }, undefined, { available: boolean; }>;
+    NicknameAvailableOPTIONS: RouteImplementation;
+    NicknameAvailablePOST: RouteImplementation<{ nickname: string; }, undefined, { available: boolean; }>;
+    SignInOPTIONS: RouteImplementation;
+    SignInPOST: RouteImplementation<{ email: string; nickname: string; }, undefined, { success: boolean; }>;
+    SignOutOPTIONS: RouteImplementation;
+    SignOutPOST: RouteImplementation;
+    LogInOPTIONS: RouteImplementation;
+    LogInPOST: RouteImplementation;
+    LogOutOPTIONS: RouteImplementation;
+    LogOutPOST: RouteImplementation;
 }
 
 export const AuthRoute: AuthRouteImplementation = {
@@ -26,7 +26,9 @@ export const AuthRoute: AuthRouteImplementation = {
     EmailAvailablePOST: {
         endpoint: { method: MethodType.POST, route: '/auth/email-available' },
         middlewares: [MI.CORSMiddleware()],
-        handler: { controller: 'AuthController', action: 'EmailAvailablePOST' }
+        handler: { controller: 'AuthController', action: 'EmailAvailablePOST' },
+        maskB: { email: 'string' },
+        maskO: { available: 'boolean' }
     },
     // /auth/nickname-available
     NicknameAvailableOPTIONS: {
@@ -36,7 +38,9 @@ export const AuthRoute: AuthRouteImplementation = {
     NicknameAvailablePOST: {
         endpoint: { method: MethodType.POST, route: '/auth/nickname-available' },
         middlewares: [MI.CORSMiddleware()],
-        handler: { controller: 'AuthController', action: 'NicknameAvailablePOST' }
+        handler: { controller: 'AuthController', action: 'NicknameAvailablePOST' },
+        maskB: { nickname: 'string' },
+        maskO: { available: 'boolean' }
     },
     // /auth/sign-in
     SignInOPTIONS: {
@@ -46,7 +50,9 @@ export const AuthRoute: AuthRouteImplementation = {
     SignInPOST: {
         endpoint: { method: MethodType.POST, route: '/auth/sign-in' },
         middlewares: [MI.CORSMiddleware()],
-        handler: { controller: 'AuthController', action: 'SignInPOST' }
+        handler: { controller: 'AuthController', action: 'SignInPOST' },
+        maskB: { email: 'string', nickname: 'string' },
+        maskO: { success: 'boolean' }
     },
     // /auth/sign-out
     SignOutOPTIONS: {
