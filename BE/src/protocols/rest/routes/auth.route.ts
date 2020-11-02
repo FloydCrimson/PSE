@@ -25,7 +25,7 @@ export const AuthRoute: AuthRouteImplementation = {
     },
     EmailAvailablePOST: {
         endpoint: { method: MethodType.POST, route: '/auth/email-available' },
-        middlewares: [MI.CORSMiddleware()],
+        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],
         handler: { controller: 'AuthController', action: 'EmailAvailablePOST' },
         maskB: { email: 'string' },
         maskO: { available: 'boolean' }
@@ -37,7 +37,7 @@ export const AuthRoute: AuthRouteImplementation = {
     },
     NicknameAvailablePOST: {
         endpoint: { method: MethodType.POST, route: '/auth/nickname-available' },
-        middlewares: [MI.CORSMiddleware()],
+        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],
         handler: { controller: 'AuthController', action: 'NicknameAvailablePOST' },
         maskB: { nickname: 'string' },
         maskO: { available: 'boolean' }
@@ -49,7 +49,7 @@ export const AuthRoute: AuthRouteImplementation = {
     },
     SignInPOST: {
         endpoint: { method: MethodType.POST, route: '/auth/sign-in' },
-        middlewares: [MI.CORSMiddleware()],
+        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],
         handler: { controller: 'AuthController', action: 'SignInPOST' },
         maskB: { email: 'string', nickname: 'string' },
         maskO: { success: 'boolean' }
@@ -61,7 +61,7 @@ export const AuthRoute: AuthRouteImplementation = {
     },
     SignOutPOST: {
         endpoint: { method: MethodType.POST, route: '/auth/sign-out' },
-        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],
+        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware({ auth: 'full' })],
         handler: { controller: 'AuthController', action: 'SignOutPOST' }
     },
     // /auth/log-in
@@ -71,7 +71,7 @@ export const AuthRoute: AuthRouteImplementation = {
     },
     LogInPOST: {
         endpoint: { method: MethodType.POST, route: '/auth/log-in' },
-        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],
+        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware({ auth: 'full' })],
         handler: { controller: 'AuthController', action: 'LogInPOST' }
     },
     // /auth/log-out
@@ -81,7 +81,7 @@ export const AuthRoute: AuthRouteImplementation = {
     },
     LogOutPOST: {
         endpoint: { method: MethodType.POST, route: '/auth/log-out' },
-        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],
+        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware({ auth: 'full' })],
         handler: { controller: 'AuthController', action: 'LogOutPOST' }
     }
 };

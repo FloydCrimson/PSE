@@ -1,10 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
-
+import { Request, Response, NextFunction } from '../implementations/express.implementation';
 import { MiddlewareImplementation } from '../implementations/middleware.implementation';
 import { DispatcherService } from '../services/dispatcher.service';
 import { MethodType } from '../types/method.type';
 
-export const CORSMiddleware: MiddlewareImplementation<{ allowedOrigin: '*' | string[]; allowedMethods: '*' | MethodType[]; allowedHeaders: '*' | string[]; }> = (params = { allowedOrigin: '*', allowedMethods: '*', allowedHeaders: '*' }) => {
+export const CORSMiddleware: MiddlewareImplementation<{ allowedOrigin: '*' | string[]; allowedMethods: '*' | MethodType[]; allowedHeaders: '*' | string[]; }> = (params) => {
+    params = { allowedOrigin: '*', allowedMethods: '*', allowedHeaders: '*', ...params };
     return (dispatcherService: DispatcherService) => {
         return async (request: Request, response: Response, next: NextFunction) => {
             if (params.allowedOrigin === '*') {

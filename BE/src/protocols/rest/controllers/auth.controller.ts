@@ -6,6 +6,7 @@ import { CustomErrorProvider } from '../../common/providers/error.provider';
 import { RoleType } from '../../database/types/role.type';
 import * as EI from '../../database/entities.index';
 
+import { Locals } from '../implementations/express.implementation';
 import { DispatcherService } from '../services/dispatcher.service';
 import { AuthRouteImplementation } from '../routes/auth.route';
 import { ControllerMethodType } from '../types/controller-method.type';
@@ -16,21 +17,21 @@ export class AuthController implements AuthControllerImplementation {
         private readonly dispatcherService: DispatcherService
     ) { }
 
-    public async EmailAvailablePOST(body: { email: string; }, params: undefined, output: { available: boolean; }): Promise<{ available: boolean; }> {
+    public async EmailAvailablePOST(locals: Locals, body: { email: string; }, params: undefined, output: { available: boolean; }): Promise<{ available: boolean; }> {
         const { email } = body;
         const available = await this.checkAuthEntityEmailAvailability(email, false);
         output = { available };
         return output;
     }
 
-    public async NicknameAvailablePOST(body: { nickname: string; }, params: undefined, output: { available: boolean; }): Promise<{ available: boolean; }> {
+    public async NicknameAvailablePOST(locals: Locals, body: { nickname: string; }, params: undefined, output: { available: boolean; }): Promise<{ available: boolean; }> {
         const { nickname } = body;
         const available = await this.checkAuthEntityNicknameAvailability(nickname, false);
         output = { available };
         return output;
     }
 
-    public async SignInPOST(body: { email: string; nickname: string; }, params: undefined, output: { success: boolean; }): Promise<{ success: boolean; }> {
+    public async SignInPOST(locals: Locals, body: { email: string; nickname: string; }, params: undefined, output: { success: boolean; }): Promise<{ success: boolean; }> {
         const { email, nickname } = body;
         await this.checkAuthEntityEmailAvailability(email, true);
         await this.checkAuthEntityNicknameAvailability(nickname, true);
@@ -41,15 +42,15 @@ export class AuthController implements AuthControllerImplementation {
         return output;
     }
 
-    public async SignOutPOST(body: undefined, params: undefined, output: undefined): Promise<undefined> {
+    public async SignOutPOST(locals: Locals, body: undefined, params: undefined, output: undefined): Promise<undefined> {
         return output;
     }
 
-    public async LogInPOST(body: undefined, params: undefined, output: undefined): Promise<undefined> {
+    public async LogInPOST(locals: Locals, body: undefined, params: undefined, output: undefined): Promise<undefined> {
         return output;
     }
 
-    public async LogOutPOST(body: undefined, params: undefined, output: undefined): Promise<undefined> {
+    public async LogOutPOST(locals: Locals, body: undefined, params: undefined, output: undefined): Promise<undefined> {
         return output;
     }
 

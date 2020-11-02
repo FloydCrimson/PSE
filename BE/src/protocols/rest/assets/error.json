@@ -4,6 +4,26 @@
         "AUTH": {
             "CODE": "10",
             "ERRORS": {
+                "CREDENTIALS_INVALID": {
+                    "CODE": "0001",
+                    "DESCRIPTION": "Failed to recover auth entity with received credentials."
+                },
+                "KEY_INVALID": {
+                    "CODE": "0002",
+                    "DESCRIPTION": "Failed to check auth entity with received key."
+                },
+                "KEY_INVALID_LAST": {
+                    "CODE": "0003",
+                    "DESCRIPTION": "Failed to check auth entity with received key. One attempt remaining."
+                },
+                "MESSAGE_INVALID": {
+                    "CODE": "0004",
+                    "DESCRIPTION": "Failed to check the validity of the message."
+                },
+                "AUTH_ENTITY_BLOCKED": {
+                    "CODE": "0005",
+                    "DESCRIPTION": "Failed to check auth entity with received key too many times. Auth entity is blocked."
+                },
                 "EMAIL_NOT_RECOVERED": {
                     "CODE": "0011",
                     "DESCRIPTION": "Failed to recover email from database. Unable to check if taken."
@@ -44,6 +64,10 @@
                 "RESPONSE_MALFORMED": {
                     "CODE": "0012",
                     "DESCRIPTION": "Arguments in response malformed."
+                },
+                "UNRECOGNIZED": {
+                    "CODE": "9998",
+                    "DESCRIPTION": "Unrecognized error."
                 },
                 "UNCAUGHT": {
                     "CODE": "9999",

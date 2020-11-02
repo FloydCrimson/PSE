@@ -4,6 +4,10 @@
         "GENERIC": {
             "CODE": "99",
             "ERRORS": {
+                "UNRECOGNIZED": {
+                    "CODE": "9998",
+                    "DESCRIPTION": "Unrecognized error."
+                },
                 "UNCAUGHT": {
                     "CODE": "9999",
                     "DESCRIPTION": "Uncaught error."

@@ -1,8 +1,6 @@
-import { Request, Response } from 'express';
-
-import { CustomError, CustomErrorProvider } from '../../common/providers/error.provider';
-
+import { Request, Response } from '../implementations/express.implementation';
 import { RouteImplementation } from '../implementations/route.implementation';
+import { CustomError, CustomErrorProvider } from '../../common/providers/error.provider';
 
 export class ControllerMethodWrapperProvider {
 

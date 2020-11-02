@@ -19,12 +19,12 @@ export const EchoRoute: EchoRouteImplementation = {
     },
     EchoGET: {
         endpoint: { method: MethodType.GET, route: '/echo/echo' },
-        middlewares: [MI.CORSMiddleware()],
+        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],
         handler: { controller: 'EchoController', action: 'EchoGET' }
     },
     EchoPOST: {
         endpoint: { method: MethodType.POST, route: '/echo/echo' },
-        middlewares: [MI.CORSMiddleware()],
+        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],
         handler: { controller: 'EchoController', action: 'EchoPOST' }
     },
     // /echo/echo-auth
@@ -34,12 +34,12 @@ export const EchoRoute: EchoRouteImplementation = {
     },
     EchoAuthGET: {
         endpoint: { method: MethodType.GET, route: '/echo/echo-auth' },
-        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],
+        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware({ auth: 'full' })],
         handler: { controller: 'EchoController', action: 'EchoAuthGET' }
     },
     EchoAuthPOST: {
         endpoint: { method: MethodType.POST, route: '/echo/echo-auth' },
-        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],
+        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware({ auth: 'full' })],
         handler: { controller: 'EchoController', action: 'EchoAuthPOST' }
     }
 };

@@ -1,11 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
-
+import { Request, Response, NextFunction } from '../implementations/express.implementation';
 import { MiddlewareImplementation } from '../implementations/middleware.implementation';
 import { DispatcherService } from '../services/dispatcher.service';
 import { CoderProvider } from '../../../global/providers/coder.provider';
 import { SendProvider } from '../providers/send.provider';
 
-export const ParamsMiddleware: MiddlewareImplementation<undefined> = () => {
+export const ParamsMiddleware: MiddlewareImplementation = () => {
     return (dispatcherService: DispatcherService) => {
         return async (request: Request, response: Response, next: NextFunction) => {
             try {
@@ -20,7 +19,7 @@ export const ParamsMiddleware: MiddlewareImplementation<undefined> = () => {
                 }
                 next();
             } catch (error) {
-                return SendProvider.sendError(request, response, 500, error);
+                SendProvider.sendError(request, response, 500, error);
             }
         };
     };

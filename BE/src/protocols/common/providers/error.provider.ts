@@ -2,10 +2,10 @@ import { ErrorImplementation as ErrorDatabaseImplementation } from '../../databa
 import * as ErrorDatabaseJSON from '../../database/assets/error.json';
 
 import { ErrorImplementation as ErrorRestImplementation } from '../../rest/implementations/error.implementation';
-import * as ErrorRestJSON from '../../database/assets/error.json';
+import * as ErrorRestJSON from '../../rest/assets/error.json';
 
 import { ErrorImplementation as ErrorSocketImplementation } from '../../socket/implementations/error.implementation';
-import * as ErrorSocketJSON from '../../database/assets/error.json';
+import * as ErrorSocketJSON from '../../socket/assets/error.json';
 
 export class CustomErrorProvider {
 
