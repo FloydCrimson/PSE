@@ -31,14 +31,18 @@ export class NativeRest implements RestFactoryImplementation {
     private manage<B, P, O>(method: Observable<HTTPResponse>): Observable<{ status: number; headers: { [key: string]: string; }; output: { data: O; }; }> {
         return method.pipe(
             map((response: HTTPResponse) => {
-                return {
-                    status: response.status,
-                    headers: response.headers,
-                    output: { data: JSON.parse(response.data) }
-                };
+                try {
+                    return { status: response.status, headers: response.headers, output: { data: JSON.parse(response.data) } };
+                } catch (error) {
+                    return { status: response.status, headers: response.headers, output: { data: response.data } };
+                }
             }),
-            catchError(error => {
-                return throwError({ error: error, status: error.status } as ErrorRestImplementation);
+            catchError((error) => {
+                try {
+                    return throwError({ error: { ...error, error: JSON.parse(error.error) }, status: error.status } as ErrorRestImplementation);
+                } catch (error) {
+                    return throwError({ error, status: error.status } as ErrorRestImplementation);
+                }
             })
         );
     }

@@ -106,8 +106,6 @@ export class AuthController implements AuthControllerImplementation {
         authEntity.key = RandomProvider.base64(4).toLocaleUpperCase();
         authEntity.algorithm = 'sha256';
         authEntity.role = RoleType.USER;
-        authEntity.authenticated = false;
-        authEntity.attempts = 0;
         return authEntity;
     }
 

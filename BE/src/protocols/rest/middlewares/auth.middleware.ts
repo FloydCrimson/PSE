@@ -47,7 +47,7 @@ export const AuthMiddleware: MiddlewareImplementation<{ auth: 'full' | 'partial'
                             throw Object.assign(hawk.utils.unauthorized('Max attemps reached'), { artifacts: output.artifacts, credentials });
                         }
                         credentials.attempts = 0;
-                        await dispatcherService.get('CommunicationClientService').send('database', 'AuthEntitySave', credentials);
+                        await dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityUpdate', { eid: credentials.eid }, { attempts: credentials.attempts });
                         response.locals.hawk = { artifacts: output.artifacts, credentials };
                         response.locals.authenticated = true;
                     }
@@ -70,7 +70,7 @@ export const AuthMiddleware: MiddlewareImplementation<{ auth: 'full' | 'partial'
                     SendProvider.sendError(request, response, error.output.statusCode, CustomErrorProvider.getError('Rest', 'AUTH', 'AUTH_ENTITY_BLOCKED'));
                 } else if (error.message === 'Bad mac' || error.message === 'Invalid nonce') {
                     credentials.attempts = Math.min(credentials.attempts + 1, ATTEMPS_MAX);
-                    await dispatcherService.get('CommunicationClientService').send('database', 'AuthEntitySave', credentials);
+                    await dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityUpdate', { eid: credentials.eid }, { attempts: credentials.attempts });
                     if (credentials.attempts === ATTEMPS_MAX) {
                         SendProvider.sendError(request, response, error.output.statusCode, CustomErrorProvider.getError('Rest', 'AUTH', 'AUTH_ENTITY_BLOCKED'));
                     } else if (credentials.attempts + 1 === ATTEMPS_MAX) {
