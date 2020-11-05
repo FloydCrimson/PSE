@@ -14,6 +14,8 @@ export interface ErrorCategoryAuthImplementation {
     NICKNAME_NOT_RECOVERED: { code: string; description: string; };
     NICKNAME_NOT_AVAILABLE: { code: string; description: string; };
     ID_NOT_RECOVERED: { code: string; description: string; };
+    AUTH_ENTITY_NOT_RECOVERED: { code: string; description: string; };
+    AUTH_ENTITY_NOT_FOUND: { code: string; description: string; };
     AUTH_ENTITY_NOT_SAVED: { code: string; description: string; };
     EMAIL_NOT_SENT: { code: string; description: string; };
 }

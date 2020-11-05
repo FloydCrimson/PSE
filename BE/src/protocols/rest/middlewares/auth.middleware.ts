@@ -19,7 +19,6 @@ export const AuthMiddleware: MiddlewareImplementation<{ auth: 'full' | 'partial'
             try {
                 if (params.auth === 'none') {
                     response.locals.hawk = { artifacts: undefined, credentials: undefined };
-                    response.locals.authenticated = true;
                 } else {
                     const credentialsFunc = async (encoded) => {
                         const decoded = JSON.parse(CoderProvider.decode(encoded));
@@ -39,7 +38,6 @@ export const AuthMiddleware: MiddlewareImplementation<{ auth: 'full' | 'partial'
                             throw Object.assign(hawk.utils.unauthorized('Unknown credentials'), { artifacts: output.artifacts, credentials: undefined });
                         }
                         response.locals.hawk = { artifacts: output.artifacts, credentials };
-                        response.locals.authenticated = true;
                     } else if (params.auth === 'full') {
                         const options = { payload: JSON.stringify({ body: request.body, params: request.query.params }), nonceFunc: NonceProvider.check };
                         const output = await hawk.server.authenticate(request, credentialsFunc, options);
@@ -49,7 +47,6 @@ export const AuthMiddleware: MiddlewareImplementation<{ auth: 'full' | 'partial'
                         credentials.attempts = 0;
                         await dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityUpdate', { eid: credentials.eid }, { attempts: credentials.attempts });
                         response.locals.hawk = { artifacts: output.artifacts, credentials };
-                        response.locals.authenticated = true;
                     }
                 }
                 next();
@@ -63,8 +60,7 @@ export const AuthMiddleware: MiddlewareImplementation<{ auth: 'full' | 'partial'
                     }
                 }
                 response.locals.hawk = { artifacts: error.artifacts, credentials };
-                response.locals.authenticated = false;
-                if (error.message === 'Unknown credentials') {
+                if (error.message === 'Unknown credentials' || error.message === 'Unauthorized') {
                     SendProvider.sendError(request, response, error.output.statusCode, CustomErrorProvider.getError('Rest', 'AUTH', 'CREDENTIALS_INVALID'));
                 } else if (error.message === 'Max attemps reached') {
                     SendProvider.sendError(request, response, error.output.statusCode, CustomErrorProvider.getError('Rest', 'AUTH', 'AUTH_ENTITY_BLOCKED'));

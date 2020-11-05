@@ -63,7 +63,7 @@ export class InitializeService implements InitializeImplementation {
     private initializeStorages(): Promise<boolean>[] {
         this.storageFactory.clear();
         const storages: [keyof StorageFT.StorageFactoryTypes, StorageFT.StorageFactoryTypes[keyof StorageFT.StorageFactoryTypes]][] = [];
-        storages.push(['PersOutData', this.platformService.isPlatform(PlatformEnum.Browser) ? new IonicStorage<StorageFT.StorageFactoryTypePersOutData>(this.storage) : new CapacitorStorage<StorageFT.StorageFactoryTypePersOutData>(this.pluginService.get('Storage'))]);
+        storages.push(['PersData', this.platformService.isPlatform(PlatformEnum.Browser) ? new IonicStorage<StorageFT.StorageFactoryTypePersOutData>(this.storage) : new CapacitorStorage<StorageFT.StorageFactoryTypePersOutData>(this.pluginService.get('Storage'))]);
         storages.push(['TempOutData', new JSStorage<StorageFT.StorageFactoryTypesTempOutData>()]);
         storages.push(['TempInData', new JSStorage<StorageFT.StorageFactoryTypesTempInData>()]);
         const check = storages.reduce((r, s) => this.storageFactory.set(s[0], s[1]) && r, true);

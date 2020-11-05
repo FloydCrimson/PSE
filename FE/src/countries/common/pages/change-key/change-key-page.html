@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      ChangeKeyPage
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen="true">
+  <div class="form-container">
+    <h1>ChangeKey</h1>
+    <form [formGroup]="changeKeyForm">
+      <ion-item>
+        <ion-label>New Password</ion-label>
+        <ion-input type="password" formControlName="newPassword"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Confirm Password</ion-label>
+        <ion-input type="password" formControlName="confirmPassword"></ion-input>
+      </ion-item>
+      <p>{{ getErrorFromFormGroup(changeKeyForm) }}</p>
+    </form>
+    <ion-button (click)="onChangeKeyClicked()" [disabled]="changeKeyForm?.status !== 'VALID'">Continue</ion-button>
+  </div>
+</ion-content>

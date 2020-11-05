@@ -16,7 +16,7 @@ export class AuthenticatedGuard implements CanActivate {
     ) { }
 
     public async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
-        const authenticated: boolean = await this.storageFactory.get('PersOutData').get('authenticated');
+        const authenticated = await this.storageFactory.get('PersData').get('authenticated');
         return authenticated ? true : this.router.parseUrl(RoutesIndex.UnauthPageRoute.path);
     }
 

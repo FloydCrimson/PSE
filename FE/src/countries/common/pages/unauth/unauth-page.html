@@ -18,13 +18,13 @@
           <ion-label>Nickname</ion-label>
           <ion-input type="text" formControlName="nickname"></ion-input>
         </ion-item>
+        <p>{{ getErrorFromFormGroup(signInForm) }}</p>
       </form>
-      <p>{{ getErrorFromFormGroup(signInForm) }}</p>
       <ion-button (click)="onSignInClicked()" [disabled]="signInForm?.status !== 'VALID'">Continue</ion-button>
     </ion-slide>
     <ion-slide>
-      <h1>Login</h1>
-      <form [formGroup]="loginForm">
+      <h1>LogIn</h1>
+      <form [formGroup]="logInForm">
         <ion-item>
           <ion-label>Nickname</ion-label>
           <ion-input type="text" formControlName="nickname"></ion-input>
@@ -33,9 +33,9 @@
           <ion-label>Password</ion-label>
           <ion-input type="password" formControlName="password"></ion-input>
         </ion-item>
+        <p>{{ getErrorFromFormGroup(logInForm) }}</p>
       </form>
-      <p>{{ getErrorFromFormGroup(loginForm) }}</p>
-      <ion-button (click)="onLoginClicked()" [disabled]="loginForm?.status !== 'VALID'">Continue</ion-button>
+      <ion-button (click)="onLoginClicked()" [disabled]="logInForm?.status !== 'VALID'">Continue</ion-button>
     </ion-slide>
   </ion-slides>
 </ion-content>

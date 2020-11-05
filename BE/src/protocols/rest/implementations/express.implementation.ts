@@ -21,5 +21,4 @@ export type Locals = {
         artifacts?: HawkArtifactType;
         credentials?: EI.AuthEntity;
     };
-    authenticated: boolean;
 }

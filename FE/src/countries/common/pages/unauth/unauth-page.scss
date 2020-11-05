@@ -9,6 +9,7 @@ ion-content {
             form {
                 display: flex;
                 flex-direction: column;
+                max-width: 80%;
 
                 ion-item {
                     display: flex;

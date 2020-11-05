@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError, of, from } from 'rxjs';
-import { exhaustMap, take, timeout, tap, catchError, finalize, skip, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { take, timeout, tap, catchError, finalize, skip, map } from 'rxjs/operators';
 import * as hawk from '@hapi/hawk';
 
 import { domain } from '@domains/domain';

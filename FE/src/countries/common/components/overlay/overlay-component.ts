@@ -7,7 +7,7 @@ import * as ModalsIndex from '@countries/modals.index';
 @Component({
   selector: 'overlay-component',
   templateUrl: 'overlay-component.html',
-  styleUrls: ['overlay-component.scss'],
+  styleUrls: ['overlay-component.scss']
 })
 export class OverlayComponent implements OnInit {
 

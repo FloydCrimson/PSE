@@ -1,7 +1,7 @@
 import { StorageFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
 
 export interface StorageFactoryTypes {
-    PersOutData: StorageFactoryImplementation<StorageFactoryTypePersOutData, Promise<any>>;
+    PersData: StorageFactoryImplementation<StorageFactoryTypePersOutData, Promise<any>>;
     TempOutData: StorageFactoryImplementation<StorageFactoryTypesTempOutData>;
     TempInData: StorageFactoryImplementation<StorageFactoryTypesTempInData>;
 }

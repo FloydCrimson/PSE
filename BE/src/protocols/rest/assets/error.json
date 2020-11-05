@@ -44,12 +44,20 @@
                     "CODE": "0015",
                     "DESCRIPTION": "Failed to recover id from database. Unable to check if taken."
                 },
-                "AUTH_ENTITY_NOT_SAVED": {
+                "AUTH_ENTITY_NOT_RECOVERED": {
                     "CODE": "0016",
+                    "DESCRIPTION": "Failed to recover auth entity from database. Unable to check if exists."
+                },
+                "AUTH_ENTITY_NOT_FOUND": {
+                    "CODE": "0017",
+                    "DESCRIPTION": "Auth entity does not exist."
+                },
+                "AUTH_ENTITY_NOT_SAVED": {
+                    "CODE": "0018",
                     "DESCRIPTION": "Failed to save auth entity in database."
                 },
                 "EMAIL_NOT_SENT": {
-                    "CODE": "0017",
+                    "CODE": "0019",
                     "DESCRIPTION": "Failed to send email with temporary password."
                 }
             }

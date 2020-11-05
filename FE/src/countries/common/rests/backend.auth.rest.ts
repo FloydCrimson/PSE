@@ -37,12 +37,28 @@ export class BackendAuthRest {
     public LogInPOST(body: undefined, params?: undefined) {
         const endpoint = RestFactoryEndpoint.Backend.Auth.LogInPOST;
         const request = this.restService.getRequest('Backend', endpoint);
+        request.input = { body, params };
         return this.restService.makeCall('Backend', endpoint, request);
     }
 
     public LogOutPOST(body: undefined, params?: undefined) {
         const endpoint = RestFactoryEndpoint.Backend.Auth.LogOutPOST;
         const request = this.restService.getRequest('Backend', endpoint);
+        request.input = { body, params };
+        return this.restService.makeCall('Backend', endpoint, request);
+    }
+
+    public RecoverKeyPOST(body: { type: 'id' | 'email' | 'nickname'; value: string; }, params?: undefined) {
+        const endpoint = RestFactoryEndpoint.Backend.Auth.RecoverKeyPOST;
+        const request = this.restService.getRequest('Backend', endpoint);
+        request.input = { body, params };
+        return this.restService.makeCall('Backend', endpoint, request);
+    }
+
+    public ChangeKeyPOST(body: { key: string; }, params?: undefined) {
+        const endpoint = RestFactoryEndpoint.Backend.Auth.ChangeKeyPOST;
+        const request = this.restService.getRequest('Backend', endpoint);
+        request.input = { body, params };
         return this.restService.makeCall('Backend', endpoint, request);
     }
 

@@ -8,13 +8,17 @@ export interface AuthRouteImplementation {
     NicknameAvailableOPTIONS: RouteImplementation;
     NicknameAvailablePOST: RouteImplementation<{ nickname: string; }, undefined, { available: boolean; }>;
     SignInOPTIONS: RouteImplementation;
-    SignInPOST: RouteImplementation<{ email: string; nickname: string; }, undefined, { success: boolean; }>;
+    SignInPOST: RouteImplementation<{ email: string; nickname: string; }>;
     SignOutOPTIONS: RouteImplementation;
     SignOutPOST: RouteImplementation;
     LogInOPTIONS: RouteImplementation;
-    LogInPOST: RouteImplementation;
+    LogInPOST: RouteImplementation<undefined, undefined, { authenticated: boolean; }>;
     LogOutOPTIONS: RouteImplementation;
     LogOutPOST: RouteImplementation;
+    RecoverKeyOPTIONS: RouteImplementation;
+    RecoverKeyPOST: RouteImplementation<{ type: 'id' | 'email' | 'nickname'; value: string; }>;
+    ChangeKeyOPTIONS: RouteImplementation;
+    ChangeKeyPOST: RouteImplementation<{ key: string; }>;
 }
 
 export const AuthRoute: AuthRouteImplementation = {
@@ -51,8 +55,7 @@ export const AuthRoute: AuthRouteImplementation = {
         endpoint: { method: MethodType.POST, route: '/auth/sign-in' },
         middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],
         handler: { controller: 'AuthController', action: 'SignInPOST' },
-        maskB: { email: 'string', nickname: 'string' },
-        maskO: { success: 'boolean' }
+        maskB: { email: 'string', nickname: 'string' }
     },
     // /auth/sign-out
     SignOutOPTIONS: {
@@ -72,7 +75,8 @@ export const AuthRoute: AuthRouteImplementation = {
     LogInPOST: {
         endpoint: { method: MethodType.POST, route: '/auth/log-in' },
         middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware({ auth: 'full' })],
-        handler: { controller: 'AuthController', action: 'LogInPOST' }
+        handler: { controller: 'AuthController', action: 'LogInPOST' },
+        maskO: { authenticated: 'boolean' }
     },
     // /auth/log-out
     LogOutOPTIONS: {
@@ -83,5 +87,27 @@ export const AuthRoute: AuthRouteImplementation = {
         endpoint: { method: MethodType.POST, route: '/auth/log-out' },
         middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware({ auth: 'full' })],
         handler: { controller: 'AuthController', action: 'LogOutPOST' }
+    },
+    // /auth/recover-key
+    RecoverKeyOPTIONS: {
+        endpoint: { method: MethodType.OPTIONS, route: '/auth/recover-key' },
+        middlewares: [MI.CORSMiddleware({ allowedOrigin: '*', allowedMethods: [MethodType.OPTIONS, MethodType.POST], allowedHeaders: ['Content-Type'] })]
+    },
+    RecoverKeyPOST: {
+        endpoint: { method: MethodType.POST, route: '/auth/recover-key' },
+        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware()],
+        handler: { controller: 'AuthController', action: 'RecoverKeyPOST' },
+        maskB: { type: 'string', value: 'string' }
+    },
+    // /auth/log-out
+    ChangeKeyOPTIONS: {
+        endpoint: { method: MethodType.OPTIONS, route: '/auth/change-key' },
+        middlewares: [MI.CORSMiddleware({ allowedOrigin: '*', allowedMethods: [MethodType.OPTIONS, MethodType.POST], allowedHeaders: ['Authorization', 'Content-Type'] })]
+    },
+    ChangeKeyPOST: {
+        endpoint: { method: MethodType.POST, route: '/auth/change-key' },
+        middlewares: [MI.CORSMiddleware(), MI.AuthMiddleware({ auth: 'full' })],
+        handler: { controller: 'AuthController', action: 'ChangeKeyPOST' },
+        maskB: { key: 'string' }
     }
 };

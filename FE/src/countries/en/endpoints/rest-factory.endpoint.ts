@@ -14,6 +14,8 @@ class BackendAuthEndpoint implements RestFT.RestFactoryTypeBackendAuth {
     SignOutPOST = { auth: 'full', timeout: TIMEOUT, method: 'POST', url: '/auth/sign-out' } as RestFT.RestFactoryTypeBackendAuth['SignOutPOST'];
     LogInPOST = { auth: 'full', timeout: TIMEOUT, method: 'POST', url: '/auth/log-in' } as RestFT.RestFactoryTypeBackendAuth['LogInPOST'];
     LogOutPOST = { auth: 'full', timeout: TIMEOUT, method: 'POST', url: '/auth/log-out' } as RestFT.RestFactoryTypeBackendAuth['LogOutPOST'];
+    RecoverKeyPOST = { auth: 'none', timeout: TIMEOUT, method: 'POST', url: '/auth/recover-key' } as RestFT.RestFactoryTypeBackendAuth['RecoverKeyPOST'];
+    ChangeKeyPOST = { auth: 'full', timeout: TIMEOUT, method: 'POST', url: '/auth/change-key' } as RestFT.RestFactoryTypeBackendAuth['ChangeKeyPOST'];
 }
 
 class BackendEchoEndpoint implements RestFT.RestFactoryTypeBackendEcho {
