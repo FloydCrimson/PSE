@@ -26,7 +26,7 @@ export class BackendAuthRestService {
 
     public LogIn(auth: { type: 'id' | 'email' | 'nickname'; value: string; key: string; algorithm: 'sha256' | 'sha1'; }): Observable<{ authenticated: boolean; }> {
         this.storageFactory.get('TempInData').set('auth', auth);
-        return this.backendAuthRest.LogInPOST(undefined).pipe(
+        return this.backendAuthRest.LogInPOST().pipe(
             exhaustMap((result) => {
                 if (result.success) {
                     return from((async () => {
@@ -35,7 +35,7 @@ export class BackendAuthRestService {
                         this.storageFactory.get('TempOutData').set('logged', true);
                         // await this.socketService.open('Backend').toPromise();
                     })()).pipe(
-                        exhaustMap(_ => of<{ authenticated: boolean; }>({ authenticated: result.response.output.authenticated }))
+                        exhaustMap(_ => of(result.response.output))
                     );
                 } else {
                     return from((async () => {
@@ -50,7 +50,7 @@ export class BackendAuthRestService {
     }
 
     public LogOut(): Observable<void> {
-        return this.backendAuthRest.LogOutPOST(undefined).pipe(
+        return this.backendAuthRest.LogOutPOST().pipe(
             exhaustMap(_ => {
                 return from((async () => {
                     this.storageFactory.get('TempOutData').set('logged', false);

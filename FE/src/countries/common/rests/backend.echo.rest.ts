@@ -20,7 +20,7 @@ export class BackendEchoRest {
         return this.restService.makeCall('Backend', endpoint, request);
     }
 
-    public EchoPOST(body: any, params?: undefined) {
+    public EchoPOST(body: any) {
         const endpoint = RestFactoryEndpoint.Backend.Echo.EchoPOST;
         const request = this.restService.getRequest('Backend', endpoint);
         request.input.body = body;
@@ -34,7 +34,7 @@ export class BackendEchoRest {
         return this.restService.makeCall('Backend', endpoint, request);
     }
 
-    public EchoAuthPOST(body: any, params?: undefined) {
+    public EchoAuthPOST(body: any) {
         const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthPOST;
         const request = this.restService.getRequest('Backend', endpoint);
         request.input.body = body;
