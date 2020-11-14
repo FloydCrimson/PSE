@@ -15,6 +15,6 @@
       </ion-item>
       <p>{{ getErrorFromFormGroup(logInForm) }}</p>
     </form>
-    <ion-button (click)="onLogInClicked()" [disabled]="logInForm?.status !== 'VALID'">Continue</ion-button>
+    <ion-button [click-async]="getClickAsyncParams(onLogInClicked.bind(this))" [disabled]="logInForm?.status !== 'VALID'">Continue</ion-button>
   </div>
 </ion-content>

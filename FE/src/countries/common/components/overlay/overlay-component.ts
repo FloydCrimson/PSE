@@ -11,7 +11,8 @@ import * as ModalsIndex from '@countries/modals.index';
 })
 export class OverlayComponent implements OnInit {
 
-  @Input('text') text: string;
+  @Input('text')
+  text: string;
 
   constructor(
     private readonly modalService: ModalService

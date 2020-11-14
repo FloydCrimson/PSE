@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Observable, of } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 import { PasswordCheckerProvider } from 'global/providers/password-checker.provider';
 import { RoutingService } from 'global/services/routing.service';
 import { StorageFactory } from 'global/factories/storage.factory';
+import { ClickAsyncDirective } from 'global/directives/click-async/click-async-directive';
 import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest.service';
 
 import * as RoutesIndex from '@countries/routes.index';
@@ -15,6 +17,8 @@ import * as RoutesIndex from '@countries/routes.index';
   styleUrls: ['auth-page.scss']
 })
 export class AuthPage {
+
+  public readonly getClickAsyncParams = ClickAsyncDirective.getClickAsyncParams;
 
   passwordChecker = PasswordCheckerProvider.getPasswordChecker(['a-z', 'A-Z', '0-9', '@$!%*?&'], '', undefined, 8, 32);
 
@@ -56,17 +60,21 @@ export class AuthPage {
 
   // Events
 
-  public async onLogInClicked(): Promise<void> {
-    const key: string = this.logInForm.get('password').value;
-    const { type, value } = await this.storageFactory.get('PersData').get('auth');
-    this.backendAuthRestService.LogIn({ type, value, key, algorithm: 'sha256' }).subscribe((result) => {
-      if (result.authenticated) {
-        this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
-      } else {
-        this.routingService.navigate('NavigateRoot', RoutesIndex.ChangeKeyPageRoute, undefined, { animationDirection: 'forward' });
-      }
-    }, (error) => {
-      alert(JSON.stringify(error));
+  public onLogInClicked(): Promise<void> {
+    return new Promise<any>(async (resolve) => {
+      const key: string = this.logInForm.get('password').value;
+      const { type, value } = await this.storageFactory.get('PersData').get('auth');
+      this.backendAuthRestService.LogIn({ type, value, key, algorithm: 'sha256' }).pipe(
+        finalize(() => resolve())
+      ).subscribe(async (result) => {
+        if (result.authenticated) {
+          await this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
+        } else {
+          await this.routingService.navigate('NavigateRoot', RoutesIndex.ChangeKeyPageRoute, undefined, { animationDirection: 'forward' });
+        }
+      }, async (error) => {
+        alert(JSON.stringify(error));
+      });
     });
   }
 
