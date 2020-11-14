@@ -1,8 +1,8 @@
 import { StoragePlugin } from '@capacitor/core';
 
-import { StorageFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
+import { StorageAsyncFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
 
-export class CapacitorStorage<T> implements StorageFactoryImplementation<T, Promise<any>> {
+export class CapacitorStorage<T> implements StorageAsyncFactoryImplementation<Promise<T>> {
 
     constructor(
         private readonly storagePlugin: StoragePlugin

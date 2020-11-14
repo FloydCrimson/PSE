@@ -1,8 +1,8 @@
-import { StorageFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
+import { StorageAsyncFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
 import { SQLitePluginImplementation, IDatabase, IResponse } from 'global/common/implementations/plugins/sqlite.plugin.implementation';
 import { LoggingService } from 'global/services/logging.service';
 
-export class SQLiteStorage<T> implements StorageFactoryImplementation<T, Promise<any>> {
+export class SQLiteStorage<T> implements StorageAsyncFactoryImplementation<Promise<T>> {
 
     private storage: IDatabase;
 
@@ -12,112 +12,74 @@ export class SQLiteStorage<T> implements StorageFactoryImplementation<T, Promise
     ) { }
 
     public ready(): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
-            this.storage = this.sqLitePlugin.openDatabase({ name: 'SQLiteStorage.db', location: 'default' });
-            const queries: { query: string, values?: any[] }[] = [];
-            queries.push(...this.readyQueries());
-            this.executeQueries(queries).then((resolved) => {
-                resolve(true);
-            }, (rejected) => {
-                reject(rejected);
-            }).catch((caught) => {
-                reject(caught);
-            });
-        });
+        this.storage = this.sqLitePlugin.openDatabase({ name: 'SQLiteStorage.db', location: 'default' });
+        const queries: { query: string, values?: any[] }[] = [];
+        queries.push(...this.readyQueries());
+        return this.executeQueries(queries).then(_ => true);
     }
 
     public set<K extends keyof T>(key: K, data: T[K]): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            const queries: { query: string, values?: any[] }[] = [];
-            queries.push(...this.removeQueries(key.toString(), ''));
-            queries.push(...this.setQueries(key.toString(), data, ''));
-            this.executeQueries(queries).then((resolved) => {
-                resolve();
-            }, (rejected) => {
-                reject(rejected);
-            }).catch((caught) => {
-                reject(caught);
-            });
-        });
+        const queries: { query: string, values?: any[] }[] = [];
+        queries.push(...this.removeQueries(key.toString(), ''));
+        queries.push(...this.setQueries(key.toString(), data, ''));
+        return this.executeQueries(queries).then(_ => { });
     }
 
     public get<K extends keyof T>(key: K): Promise<T[K]> {
-        return new Promise<T[K]>((resolve, reject) => {
-            const queries: { query: string, values?: any[] }[] = [];
-            queries.push(...this.getQueries(key.toString(), ''));
-            this.executeQueries(queries).then((resolved) => {
-                let result = {};
-                for (const response of resolved) {
-                    for (let index = 0; index < response.rows.length; index++) {
-                        const { name, value, type, path } = response.rows.item(index);
-                        let casted;
-                        switch (type) {
-                            case 'Undefined':
-                                casted = undefined;
-                                break;
-                            case 'Null':
-                                casted = null;
-                                break;
-                            case 'Object':
-                                casted = {};
-                                break;
-                            case 'Array':
-                                casted = [];
-                                break;
-                            case 'String':
-                                casted = value.toString();
-                                break;
-                            case 'Number':
-                                casted = Number(value);
-                                break;
-                            case 'Symbol':
-                                casted = Symbol(value);
-                                break;
-                            case 'Boolean':
-                                casted = value === 'true';
-                                break;
-                            default:
-                                this.loggingService.LOG('WARN', { class: SQLiteStorage.name, function: this.get.name, text: 'Unrecognizable type found' }, type);
-                                break;
-                        }
-                        path.split('/').slice(0, -1).reduce((r, n, i, a) => r[n] = (n in r) ? r[n] : (a.length === i + 1 ? casted : {}), result);
+        const queries: { query: string, values?: any[] }[] = [];
+        queries.push(...this.getQueries(key.toString(), ''));
+        return this.executeQueries(queries).then((resolved) => {
+            let result = {};
+            for (const response of resolved) {
+                for (let index = 0; index < response.rows.length; index++) {
+                    const { name, value, type, path } = response.rows.item(index);
+                    let casted;
+                    switch (type) {
+                        case 'Undefined':
+                            casted = undefined;
+                            break;
+                        case 'Null':
+                            casted = null;
+                            break;
+                        case 'Object':
+                            casted = {};
+                            break;
+                        case 'Array':
+                            casted = [];
+                            break;
+                        case 'String':
+                            casted = value.toString();
+                            break;
+                        case 'Number':
+                            casted = Number(value);
+                            break;
+                        case 'Symbol':
+                            casted = Symbol(value);
+                            break;
+                        case 'Boolean':
+                            casted = value === 'true';
+                            break;
+                        default:
+                            this.loggingService.LOG('WARN', { class: SQLiteStorage.name, function: this.get.name, text: 'Unrecognizable type found' }, type);
+                            break;
                     }
+                    path.split('/').slice(0, -1).reduce((r, n, i, a) => r[n] = (n in r) ? r[n] : (a.length === i + 1 ? casted : {}), result);
                 }
-                resolve(result[Object.keys(result)[0]]);
-            }, (rejected) => {
-                reject(rejected);
-            }).catch((caught) => {
-                reject(caught);
-            });
+            }
+            return result[Object.keys(result)[0]];
         });
     }
 
     public remove<K extends keyof T>(key: K): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            const queries: { query: string, values?: any[] }[] = [];
-            queries.push(...this.removeQueries(key.toString(), ''));
-            this.executeQueries(queries).then((resolved) => {
-                resolve();
-            }, (rejected) => {
-                reject(rejected);
-            }).catch((caught) => {
-                reject(caught);
-            });
-        });
+        const queries: { query: string, values?: any[] }[] = [];
+        queries.push(...this.removeQueries(<string>key, ''));
+        return this.executeQueries(queries).then(_ => { });
     }
 
     public clear(): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            const queries: { query: string, values?: any[] }[] = [];
-            queries.push(...this.clearQueries());
-            this.executeQueries(queries).then((resolved) => {
-                resolve();
-            }, (rejected) => {
-                reject(rejected);
-            }).catch((caught) => {
-                reject(caught);
-            });
-        });
+        const queries: { query: string, values?: any[] }[] = [];
+        queries.push(...this.clearQueries());
+        return this.executeQueries(queries).then(_ => { });
     }
 
     //
