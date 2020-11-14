@@ -6,7 +6,7 @@ import { routes } from '@countries/services/routing.service';
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules, enableTracing: environment.enableRouterTracing, initialNavigation: 'disabled' })
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules, enableTracing: environment.enableRouterTracing, initialNavigation: 'disabled', relativeLinkResolution: 'legacy' })
   ],
   exports: [RouterModule]
 })
