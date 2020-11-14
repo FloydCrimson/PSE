@@ -21,6 +21,10 @@ export class KeyValueStorage<T> implements PersistentStorageFactoryImplementatio
         });
     }
 
+    public update<K extends keyof T>(key: K, pdata: Partial<T[K]>): Promise<void> {
+        return this.get(key).then((data) => this.set(key, { ...data, ...pdata }));
+    }
+
     public get<K extends keyof T>(key: K): Promise<T[K]> {
         return new Promise<T[K]>((resolve, reject) => {
             this.nativeStoragePlugin.getItem(key as string, (success) => {

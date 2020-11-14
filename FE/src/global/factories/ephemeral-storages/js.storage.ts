@@ -15,6 +15,11 @@ export class JSStorage<T> implements EphemeralStorageFactoryImplementation<T> {
         this.storage.set(key, data);
     }
 
+    public update<K extends keyof T>(key: K, pdata: Partial<T[K]>): void {
+        const data = this.get(key);
+        this.set(key, { ...data, ...pdata });
+    }
+
     public get<K extends keyof T>(key: K): T[K] {
         return <T[K]>this.storage.get(key);
     }

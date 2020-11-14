@@ -25,6 +25,10 @@ export class SQLiteStorage<T> implements PersistentStorageFactoryImplementation<
         return this.executeQueries(queries).then(_ => { });
     }
 
+    public update<K extends keyof T>(key: K, pdata: Partial<T[K]>): Promise<void> {
+        return this.get(key).then((data) => this.set(key, { ...data, ...pdata }));
+    }
+
     public get<K extends keyof T>(key: K): Promise<T[K]> {
         const queries: { query: string, values?: any[] }[] = [];
         queries.push(...this.getQueries(key.toString(), ''));

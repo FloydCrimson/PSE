@@ -16,6 +16,10 @@ export class CapacitorStorage<T> implements PersistentStorageFactoryImplementati
         return this.storagePlugin.set({ key: key as string, value: JSON.stringify(data) });
     }
 
+    public update<K extends keyof T>(key: K, pdata: Partial<T[K]>): Promise<void> {
+        return this.get(key).then((data) => this.set(key, { ...data, ...pdata }));
+    }
+
     public get<K extends keyof T>(key: K): Promise<T[K]> {
         return this.storagePlugin.get({ key: key as string }).then((resolved) => <T[K]>JSON.parse(resolved.value));
     }

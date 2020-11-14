@@ -70,9 +70,7 @@ export class BackendAuthRestService {
             exhaustMap((result) => {
                 if (result.success) {
                     return from((async () => {
-                        const auth = this.eStorageFactory.get('In').get('auth');
-                        auth.key = key;
-                        this.eStorageFactory.get('In').set('auth', auth);
+                        this.eStorageFactory.get('In').update('auth', { key });
                     })()).pipe(
                         exhaustMap(_ => of(undefined))
                     );

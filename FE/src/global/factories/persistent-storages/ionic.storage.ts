@@ -16,6 +16,10 @@ export class IonicStorage<T> implements PersistentStorageFactoryImplementation<T
         return this.storage.set(key as string, data).then();
     }
 
+    public update<K extends keyof T>(key: K, pdata: Partial<T[K]>): Promise<void> {
+        return this.get(key).then((data) => this.set(key, { ...data, ...pdata }));
+    }
+
     public get<K extends keyof T>(key: K): Promise<T[K]> {
         return this.storage.get(key as string).then((resolved) => <T[K]>resolved);
     }
