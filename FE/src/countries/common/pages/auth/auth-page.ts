@@ -61,7 +61,7 @@ export class AuthPage {
   // Events
 
   public onLogInClicked(): Promise<void> {
-    return new Promise<any>(async (resolve) => {
+    return new Promise<void>(async (resolve) => {
       const key: string = this.logInForm.get('password').value;
       const { type, value } = await this.storageFactory.get('PersData').get('auth');
       this.backendAuthRestService.LogIn({ type, value, key, algorithm: 'sha256' }).pipe(

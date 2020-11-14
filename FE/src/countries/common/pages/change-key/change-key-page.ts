@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Observable, of } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 import { PasswordCheckerProvider } from 'global/providers/password-checker.provider';
 import { RoutingService } from 'global/services/routing.service';
+import { ClickAsyncDirective } from 'global/directives/click-async/click-async-directive';
 import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest.service';
 
 import * as RoutesIndex from '@countries/routes.index';
@@ -14,6 +16,8 @@ import * as RoutesIndex from '@countries/routes.index';
   styleUrls: ['change-key-page.scss']
 })
 export class ChangeKeyPage {
+
+  public readonly getClickAsyncParams = ClickAsyncDirective.getClickAsyncParams;
 
   passwordChecker = PasswordCheckerProvider.getPasswordChecker(['a-z', 'A-Z', '0-9', '@$!%*?&'], '', undefined, 8, 32);
 
@@ -61,11 +65,15 @@ export class ChangeKeyPage {
   // Events
 
   public async onChangeKeyClicked(): Promise<void> {
-    const key: string = this.changeKeyForm.get('newPassword').value;
-    this.backendAuthRestService.ChangeKey(key).subscribe(_ => {
-      this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
-    }, (error) => {
-      alert(JSON.stringify(error));
+    return new Promise<void>(async (resolve) => {
+      const key: string = this.changeKeyForm.get('newPassword').value;
+      this.backendAuthRestService.ChangeKey(key).pipe(
+        finalize(() => resolve())
+      ).subscribe(async _ => {
+        await this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
+      }, async (error) => {
+        alert(JSON.stringify(error));
+      });
     });
   }
 

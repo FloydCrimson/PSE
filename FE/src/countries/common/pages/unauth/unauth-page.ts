@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Observable, of, timer } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { switchMap, map, finalize } from 'rxjs/operators';
 
 import { PasswordCheckerProvider } from 'global/providers/password-checker.provider';
 import { RoutingService } from 'global/services/routing.service';
+import { ClickAsyncDirective } from 'global/directives/click-async/click-async-directive';
 import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest.service';
 
 import { BackendAuthRest } from 'countries/common/rests/backend.auth.rest';
@@ -17,6 +18,8 @@ import * as RoutesIndex from '@countries/routes.index';
   styleUrls: ['unauth-page.scss']
 })
 export class UnauthPage {
+
+  public readonly getClickAsyncParams = ClickAsyncDirective.getClickAsyncParams;
 
   passwordChecker = PasswordCheckerProvider.getPasswordChecker(['a-z', 'A-Z', '0-9', '@$!%*?&'], '', undefined, 8, 32);
 
@@ -106,27 +109,35 @@ export class UnauthPage {
 
   // Events
 
-  public onSignInClicked(): void {
-    const email: string = this.signInForm.get('email').value;
-    const nickname: string = this.signInForm.get('nickname').value;
-    this.backendAuthRestService.SignIn(email, nickname).subscribe(_ => {
-      alert('An email with a Temporary Password has been sent to ' + email + '. After you first login you will be asked to change it.');
-    }, (error) => {
-      alert(JSON.stringify(error));
+  public onSignInClicked(): Promise<void> {
+    return new Promise<void>(async (resolve) => {
+      const email: string = this.signInForm.get('email').value;
+      const nickname: string = this.signInForm.get('nickname').value;
+      this.backendAuthRestService.SignIn(email, nickname).pipe(
+        finalize(() => resolve())
+      ).subscribe(async _ => {
+        alert('An email with a Temporary Password has been sent to ' + email + '. After you first login you will be asked to change it.');
+      }, async (error) => {
+        alert(JSON.stringify(error));
+      });
     });
   }
 
-  public onLoginClicked(): void {
-    const value: string = this.logInForm.get('nickname').value;
-    const key: string = this.logInForm.get('password').value;
-    this.backendAuthRestService.LogIn({ type: 'nickname', value, key, algorithm: 'sha256' }).subscribe((result) => {
-      if (result.authenticated) {
-        this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
-      } else {
-        this.routingService.navigate('NavigateRoot', RoutesIndex.ChangeKeyPageRoute, undefined, { animationDirection: 'forward' });
-      }
-    }, (error) => {
-      alert(JSON.stringify(error));
+  public onLoginClicked(): Promise<void> {
+    return new Promise<void>(async (resolve) => {
+      const value: string = this.logInForm.get('nickname').value;
+      const key: string = this.logInForm.get('password').value;
+      this.backendAuthRestService.LogIn({ type: 'nickname', value, key, algorithm: 'sha256' }).pipe(
+        finalize(() => resolve())
+      ).subscribe(async (result) => {
+        if (result.authenticated) {
+          await this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
+        } else {
+          await this.routingService.navigate('NavigateRoot', RoutesIndex.ChangeKeyPageRoute, undefined, { animationDirection: 'forward' });
+        }
+      }, async (error) => {
+        alert(JSON.stringify(error));
+      });
     });
   }
 
