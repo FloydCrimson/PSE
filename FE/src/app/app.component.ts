@@ -6,7 +6,7 @@ import { DeeplinksService } from 'global/services/deeplinks.service';
 import { PlatformService } from 'global/services/platform.service';
 import { PlatformEnum } from 'global/common/enum/platform.enum';
 import { LoggingService } from 'global/services/logging.service';
-import { StorageFactory } from 'global/factories/storage.factory';
+import { EphemeralStorageFactory } from 'global/factories/ephemeral-storages.factory';
 import { PluginService } from 'global/services/plugin.service';
 
 import { InitializeService } from '@countries/services/initialize.service';
@@ -25,7 +25,7 @@ export class AppComponent {
     private readonly deeplinksService: DeeplinksService,
     private readonly platformService: PlatformService,
     private readonly loggingService: LoggingService,
-    private readonly storageFactory: StorageFactory
+    private readonly eStorageFactory: EphemeralStorageFactory
   ) {
     this.start();
   }
@@ -38,12 +38,12 @@ export class AppComponent {
         throw 'The app was unable to initialize properly.';
       }
       this.loggingService.LOG('INFO', { class: AppComponent.name, function: this.start.name, text: source + ' is ready!' });
-      this.storageFactory.get('TempOutData').set('initialized', true);
+      this.eStorageFactory.get('Out').set('initialized', true);
     } catch (error) {
       this.loggingService.LOG('FATAL', { class: AppComponent.name, function: this.start.name }, error);
-      this.storageFactory.get('TempOutData').set('initialized', false);
+      this.eStorageFactory.get('Out').set('initialized', false);
     } finally {
-      this.storageFactory.get('TempOutData').set('logged', false);
+      this.eStorageFactory.get('Out').set('logged', false);
       if (this.platformService.isPlatform(PlatformEnum.Mobile)) {
         await this.pluginService.get('StatusBar').setStyle({ style: StatusBarStyle.Light });
         await this.pluginService.get('SplashScreen').hide();

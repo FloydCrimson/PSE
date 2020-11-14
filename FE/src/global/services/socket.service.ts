@@ -9,7 +9,7 @@ import { EndpointSocketImplementation } from 'global/common/implementations/endp
 import { MessageSocketImplementation } from 'global/common/implementations/message-socket.implementation';
 import { SocketFactory } from 'global/factories/socket.factory';
 import { SocketFactoryTypes } from 'global/factories/socket.factory.type';
-import { StorageFactory } from 'global/factories/storage.factory';
+import { EphemeralStorageFactory } from 'global/factories/ephemeral-storages.factory';
 import { NonceProvider } from 'global/providers/nonce.provider';
 import { CoderProvider } from 'global/providers/coder.provider';
 
@@ -20,7 +20,7 @@ export class SocketService {
 
     constructor(
         private readonly socketFactory: SocketFactory,
-        private readonly storageFactory: StorageFactory
+        private readonly eStorageFactory: EphemeralStorageFactory
     ) { }
 
     public getMessage<K extends keyof SocketFactoryTypes, P>(type: K, endpoint: EndpointSocketImplementation<P>): MessageSocketImplementation<P> {
@@ -39,7 +39,7 @@ export class SocketService {
     }
 
     public send<K extends keyof SocketFactoryTypes, P>(type: K, endpoint: EndpointSocketImplementation<P>, params: P): Observable<boolean> {
-        const auth = endpoint.auth ? this.storageFactory.get('TempInData').get('auth') : undefined;
+        const auth = endpoint.auth ? this.eStorageFactory.get('In').get('auth') : undefined;
         const message: MessageSocketImplementation<P> = { operation: endpoint.operation, params };
         const protocol = domain.protocols['socket'];
         const url: string = `${protocol.secure ? 'https' : 'http'}://${protocol.url}:${protocol.port}${endpoint.operation}`;

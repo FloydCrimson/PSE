@@ -1,6 +1,6 @@
-import { StorageSyncFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
+import { EphemeralStorageFactoryImplementation } from 'global/common/implementations/factories/ephemeral-storage.factory.implementation';
 
-export class JSStorage<T> implements StorageSyncFactoryImplementation<T> {
+export class JSStorage<T> implements EphemeralStorageFactoryImplementation<T> {
 
     private storage: Map<keyof T, any>;
 

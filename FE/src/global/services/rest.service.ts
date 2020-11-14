@@ -6,7 +6,7 @@ import * as hawk from '@hapi/hawk';
 import { domain } from '@domains/domain';
 
 import { RestFactory } from 'global/factories/rest.factory';
-import { StorageFactory } from 'global/factories/storage.factory';
+import { EphemeralStorageFactory } from 'global/factories/ephemeral-storages.factory';
 import { RestFactoryTypes } from 'global/factories/rest.factory.type';
 import { EndpointRestImplementation } from 'global/common/implementations/endpoint-rest.implementation';
 import { RequestRestImplementation } from 'global/common/implementations/request-rest.implementation';
@@ -25,7 +25,7 @@ export class RestService {
 
     constructor(
         private readonly restFactory: RestFactory,
-        private readonly storageFactory: StorageFactory
+        private readonly eStorageFactory: EphemeralStorageFactory
     ) {
         this.cache = new Map<string, Map<string, [BehaviorSubject<{ response?: ResponseRestImplementation<any>; error?: ErrorRestImplementation; success: boolean; }>, number]>>();
     }
@@ -127,7 +127,7 @@ export class RestService {
     }
 
     private callMethod<K extends keyof RestFactoryTypes, B, P, O>(type: K, endpoint: EndpointRestImplementation<B, P, O>, request: RequestRestImplementation<B, P>): Observable<ResponseRestImplementation<O>> {
-        const auth = (endpoint.auth !== 'none') ? this.storageFactory.get('TempInData').get('auth') : undefined;
+        const auth = (endpoint.auth !== 'none') ? this.eStorageFactory.get('In').get('auth') : undefined;
         request.input = request.input || { body: undefined, params: undefined };
         request.input.body = request.input.body || {} as B;
         request.input.params = request.input.params || {} as P;

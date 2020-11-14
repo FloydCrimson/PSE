@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { HttpClient } from '@angular/common/http';
 import { HTTP } from '@ionic-native/http/ngx';
-// import { Observable } from 'rxjs';
 
 import { InitializeImplementation } from 'global/common/implementations/initialize.implementation';
 import { PlatformEnum } from 'global/common/enum/platform.enum';
@@ -10,11 +9,16 @@ import { PlatformEnum } from 'global/common/enum/platform.enum';
 import { PlatformService } from 'global/services/platform.service';
 import { LoggingService } from 'global/services/logging.service';
 
-import { StorageFactory } from 'global/factories/storage.factory';
-import * as StorageFT from 'global/factories/storage.factory.type';
-import { IonicStorage } from 'global/factories/storages/ionic.storage';
-import { CapacitorStorage } from 'global/factories/storages/capacitor.storage';
-import { JSStorage } from 'global/factories/storages/js.storage';
+import { PersistentStorageFactory } from 'global/factories/persistent-storages.factory';
+import { PersistentStorageFactoryImplementation } from 'global/common/implementations/factories/persistent-storage.factory.implementation';
+import * as PStorageFT from 'global/factories/persistent-storages.factory.type';
+import { IonicStorage } from 'global/factories/persistent-storages/ionic.storage';
+import { CapacitorStorage } from 'global/factories/persistent-storages/capacitor.storage';
+
+import { EphemeralStorageFactory } from 'global/factories/ephemeral-storages.factory';
+import { EphemeralStorageFactoryImplementation } from 'global/common/implementations/factories/ephemeral-storage.factory.implementation';
+import * as EStorageFT from 'global/factories/ephemeral-storages.factory.type';
+import { JSStorage } from 'global/factories/ephemeral-storages/js.storage';
 
 import { RestFactory } from 'global/factories/rest.factory';
 import { RestFactoryImplementation } from 'global/common/implementations/factories/rest.factory.implementation';
@@ -35,7 +39,8 @@ export class InitializeService implements InitializeImplementation {
     constructor(
         private readonly pluginService: PluginService,
         private readonly platformService: PlatformService,
-        private readonly storageFactory: StorageFactory,
+        private readonly pStorageFactory: PersistentStorageFactory,
+        private readonly eStorageFactory: EphemeralStorageFactory,
         private readonly restFactory: RestFactory,
         private readonly socketFactory: SocketFactory,
         private readonly loggingService: LoggingService,
@@ -45,51 +50,36 @@ export class InitializeService implements InitializeImplementation {
     ) { }
 
     public initialize(): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
-            const promises: Promise<boolean>[] = [];
-            promises.push(...this.initializeStorages());
-            promises.push(...this.initializeRests());
-            promises.push(...this.initializeSockets());
-            Promise.all(promises).then((resolved) => {
-                resolve(resolved.reduce((r, e) => r && e, true));
-            }, (rejected) => {
-                reject(rejected);
-            }).catch((caught) => {
-                reject(caught);
-            });
-        });
+        const promises: Promise<boolean>[] = [];
+        promises.push(...this.initializePersistentStorages());
+        promises.push(...this.initializeEphemeralStorages());
+        promises.push(...this.initializeRests());
+        promises.push(...this.initializeSockets());
+        return Promise.all(promises).then((resolved) => !resolved.some((r) => !r));
     }
 
-    private initializeStorages(): Promise<boolean>[] {
-        this.storageFactory.clear();
-        const storages: [keyof StorageFT.StorageFactoryTypes, StorageFT.StorageFactoryTypes[keyof StorageFT.StorageFactoryTypes]][] = [];
-        storages.push(['PersData', this.platformService.isPlatform(PlatformEnum.Browser) ? new IonicStorage<StorageFT.StorageFactoryTypePersOutData>(this.storage) : new CapacitorStorage<StorageFT.StorageFactoryTypePersOutData>(this.pluginService.get('Storage'))]);
-        storages.push(['TempOutData', new JSStorage<StorageFT.StorageFactoryTypesTempOutData>()]);
-        storages.push(['TempInData', new JSStorage<StorageFT.StorageFactoryTypesTempInData>()]);
-        const check = storages.reduce((r, s) => this.storageFactory.set(s[0], s[1]) && r, true);
-        if (check) {
-            return storages.map((s) => {
-                const call: Promise<boolean> | boolean = this.storageFactory.get(s[0]).ready(); // | Observable<boolean>
-                if (call.constructor === Promise) {
-                    return call as Promise<boolean>;
-                // } else if (call.constructor === Observable) {
-                //     return (call as Observable<boolean>).toPromise();
-                } else if (call.constructor === Boolean) {
-                    return Promise.resolve(call as boolean);
-                } else {
-                    return Promise.resolve(false);
-                }
-            });
-        } else {
-            return [Promise.resolve(false)];
-        }
+    private initializePersistentStorages(): Promise<boolean>[] {
+        this.pStorageFactory.clear();
+        const storages: [keyof PStorageFT.PersistentStorageFactoryTypes, PersistentStorageFactoryImplementation<PStorageFT.PersistentStorageFactoryTypes[keyof PStorageFT.PersistentStorageFactoryTypes]>][] = [];
+        storages.push(['Local', this.platformService.isPlatform(PlatformEnum.Browser) ? new IonicStorage<PStorageFT.PersistentStorageFactoryTypeLocal>(this.storage) : new CapacitorStorage<PStorageFT.PersistentStorageFactoryTypeLocal>(this.pluginService.get('Storage'))]);
+        const check = !storages.some(([t, f]) => !this.pStorageFactory.set(t, f));
+        return [Promise.resolve(check && !storages.some(([, s]) => !s.ready()))];
+    }
+
+    private initializeEphemeralStorages(): Promise<boolean>[] {
+        this.eStorageFactory.clear();
+        const storages: [keyof EStorageFT.EphemeralStorageFactoryTypes, EphemeralStorageFactoryImplementation<EStorageFT.EphemeralStorageFactoryTypes[keyof EStorageFT.EphemeralStorageFactoryTypes]>][] = [];
+        storages.push(['Out', new JSStorage<EStorageFT.EphemeralStorageFactoryTypeOut>()]);
+        storages.push(['In', new JSStorage<EStorageFT.EphemeralStorageFactoryTypeIn>()]);
+        const check = !storages.some(([t, f]) => !this.eStorageFactory.set(t, f));
+        return [Promise.resolve(check && !storages.some(([, s]) => !s.ready()))];
     }
 
     private initializeRests(): Promise<boolean>[] {
         this.restFactory.clear();
         const rests: [keyof RestFT.RestFactoryTypes, RestFactoryImplementation][] = [];
         rests.push(['Backend', this.platformService.isPlatform(PlatformEnum.Browser) ? new AngularRest(this.httpBrowser) : new NativeRest(this.httpNative)]);
-        const check = rests.reduce((r, s) => this.restFactory.set(s[0], s[1]) && r, true);
+        const check = !rests.some(([t, f]) => !this.restFactory.set(t, f));
         return [Promise.resolve(check)];
     }
 
@@ -97,7 +87,7 @@ export class InitializeService implements InitializeImplementation {
         this.socketFactory.clear();
         const sockets: [keyof SocketFT.SocketFactoryTypes, SocketFactoryImplementation][] = [];
         sockets.push(['Backend', new AngularSocket(this.loggingService)]);
-        const check = sockets.reduce((r, s) => this.socketFactory.set(s[0], s[1]) && r, true);
+        const check = !sockets.some(([t, f]) => !this.socketFactory.set(t, f));
         return [Promise.resolve(check)];
     }
 

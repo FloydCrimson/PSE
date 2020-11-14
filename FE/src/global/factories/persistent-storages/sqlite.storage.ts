@@ -1,8 +1,8 @@
-import { StorageAsyncFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
+import { PersistentStorageFactoryImplementation } from 'global/common/implementations/factories/persistent-storage.factory.implementation';
 import { SQLitePluginImplementation, IDatabase, IResponse } from 'global/common/implementations/plugins/sqlite.plugin.implementation';
 import { LoggingService } from 'global/services/logging.service';
 
-export class SQLiteStorage<T> implements StorageAsyncFactoryImplementation<Promise<T>> {
+export class SQLiteStorage<T> implements PersistentStorageFactoryImplementation<T> {
 
     private storage: IDatabase;
 

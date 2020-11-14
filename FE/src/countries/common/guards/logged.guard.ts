@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 
-import { StorageFactory } from 'global/factories/storage.factory';
+import { EphemeralStorageFactory } from 'global/factories/ephemeral-storages.factory';
 
 import * as RoutesIndex from '@countries/routes.index';
 
@@ -12,11 +12,11 @@ export class LoggedGuard implements CanActivate {
 
     constructor(
         private readonly router: Router,
-        private readonly storageFactory: StorageFactory,
+        private readonly eStorageFactory: EphemeralStorageFactory,
     ) { }
 
     public async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
-        const logged = this.storageFactory.get('TempOutData').get('logged');
+        const logged = this.eStorageFactory.get('Out').get('logged');
         return logged ? true : this.router.parseUrl(RoutesIndex.AuthPageRoute.path);
     }
 

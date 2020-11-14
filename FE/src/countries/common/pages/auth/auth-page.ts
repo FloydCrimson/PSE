@@ -5,7 +5,7 @@ import { finalize } from 'rxjs/operators';
 
 import { PasswordCheckerProvider } from 'global/providers/password-checker.provider';
 import { RoutingService } from 'global/services/routing.service';
-import { StorageFactory } from 'global/factories/storage.factory';
+import { PersistentStorageFactory } from 'global/factories/persistent-storages.factory';
 import { ClickAsyncDirective } from 'global/directives/click-async/click-async-directive';
 import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest.service';
 
@@ -28,7 +28,7 @@ export class AuthPage {
 
   constructor(
     private readonly routingService: RoutingService,
-    private readonly storageFactory: StorageFactory,
+    private readonly pStorageFactory: PersistentStorageFactory,
     private readonly backendAuthRestService: BackendAuthRestService
   ) { }
 
@@ -63,7 +63,7 @@ export class AuthPage {
   public onLogInClicked(): Promise<void> {
     return new Promise<void>(async (resolve) => {
       const key: string = this.logInForm.get('password').value;
-      const { type, value } = await this.storageFactory.get('PersData').get('auth');
+      const { type, value } = await this.pStorageFactory.get('Local').get('auth');
       this.backendAuthRestService.LogIn({ type, value, key, algorithm: 'sha256' }).pipe(
         finalize(() => resolve())
       ).subscribe(async (result) => {

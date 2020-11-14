@@ -1,7 +1,7 @@
 import { NativeStoragePluginImplementation } from 'global/common/implementations/plugins/native-storage.plugin.implementation';
-import { StorageAsyncFactoryImplementation } from 'global/common/implementations/factories/storage.factory.implementation';
+import { PersistentStorageFactoryImplementation } from 'global/common/implementations/factories/persistent-storage.factory.implementation';
 
-export class KeyValueStorage<T> implements StorageAsyncFactoryImplementation<Promise<T>> {
+export class KeyValueStorage<T> implements PersistentStorageFactoryImplementation<T> {
 
     constructor(
         private readonly nativeStoragePlugin: NativeStoragePluginImplementation
