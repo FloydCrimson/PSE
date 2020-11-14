@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { take, timeout, tap, catchError, finalize, skip, map } from 'rxjs/operators';
+import { BehaviorSubject, merge, Observable, throwError, TimeoutError, timer } from 'rxjs';
+import { take, catchError, finalize, skip, map, switchMap } from 'rxjs/operators';
 import * as hawk from '@hapi/hawk';
 
 import { domain } from '@domains/domain';
@@ -13,6 +13,7 @@ import { RequestRestImplementation } from 'global/common/implementations/request
 import { ResponseRestImplementation } from 'global/common/implementations/response-rest.implementation';
 import { ErrorRestImplementation } from 'global/common/implementations/error-rest.implementation';
 import { CoderProvider } from 'global/providers/coder.provider';
+import { CrypterProvider } from 'global/providers/crypter.provider';
 import { NonceProvider } from 'global/providers/nonce.provider';
 
 @Injectable({
@@ -53,31 +54,24 @@ export class RestService {
         if (request.options.cached && mapRequest[0].getValue().response) {
             return mapRequest[0].asObservable().pipe(
                 take(1),
-                map((response) => {
-                    delete response.error;
-                    response.success = true;
-                    return response;
-                })
+                map((response) => { return { ...response, error: undefined, success: true }; })
             );
         }
         if (!request.options.wait || mapRequest[1] === 0) {
             mapRequest[1]++;
-            this.callMethod(type, endpoint, request).pipe(
-                timeout(endpoint.timeout || 60000),
-                tap((response) => {
-                    mapRequest[0].next({ response, success: true });
-                }),
-                catchError((error) => {
-                    if (!('error' in error) || !('status' in error)) {
-                        error = { error: error, status: undefined } as ErrorRestImplementation;
-                    }
-                    if (mapRequest[1] === 1) {
-                        mapRequest[0].next({ response: mapRequest[0].getValue().response, error, success: false });
-                    }
-                    return throwError(error);
-                }),
+            merge(
+                timer(endpoint.timeout || 60000).pipe(switchMap(_ => throwError({ error: new TimeoutError(), status: 408 } as ErrorRestImplementation))),
+                this.callMethod(type, endpoint, request)
+            ).pipe(
+                take(1),
                 finalize(() => mapRequest[1]--)
-            ).subscribe();
+            ).subscribe((response) => {
+                mapRequest[0].next({ response, error: undefined, success: true });
+            }, (error: ErrorRestImplementation) => {
+                if (mapRequest[1] === 1) {
+                    mapRequest[0].next({ response: mapRequest[0].getValue().response, error, success: false });
+                }
+            });
         }
         return mapRequest[0].asObservable().pipe(
             skip(1),
@@ -99,15 +93,27 @@ export class RestService {
         return !!mapRequest[0].getValue().response;
     }
 
-    public clearCache(): void {
-        for (const hashEndpoint of this.cache.keys()) {
+    public clearCache(): void;
+    public clearCache<K extends keyof RestFactoryTypes, B, P, O>(type: K, endpoint: EndpointRestImplementation<B, P, O>): void;
+    public clearCache(...args: any[]): void {
+        if (args.length === 0) {
+            for (const hashEndpoint of this.cache.keys()) {
+                const mapEndpoint = this.cache.get(hashEndpoint);
+                if (mapEndpoint) {
+                    mapEndpoint.clear();
+                    this.cache.delete(hashEndpoint);
+                }
+            }
+            this.cache.clear();
+        } else if (args.length === 2) {
+            const [type, endpoint] = args;
+            const hashEndpoint: string = this.generateHashEndpoint(type, endpoint);
             const mapEndpoint = this.cache.get(hashEndpoint);
             if (mapEndpoint) {
                 mapEndpoint.clear();
                 this.cache.delete(hashEndpoint);
             }
         }
-        this.cache.clear();
     }
 
     //
@@ -117,7 +123,7 @@ export class RestService {
     }
 
     private generateHashRequest<B, P>(request: RequestRestImplementation<B, P>): string {
-        return CoderProvider.encode(JSON.stringify(request.input));
+        return CrypterProvider.hash(JSON.stringify(request.input));
     }
 
     private callMethod<K extends keyof RestFactoryTypes, B, P, O>(type: K, endpoint: EndpointRestImplementation<B, P, O>, request: RequestRestImplementation<B, P>): Observable<ResponseRestImplementation<O>> {
