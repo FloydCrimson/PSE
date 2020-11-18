@@ -1,7 +1,8 @@
+import { CoderProvider } from 'pse-global-providers';
+
 import { Request, Response, NextFunction } from '../implementations/express.implementation';
 import { MiddlewareImplementation } from '../implementations/middleware.implementation';
 import { DispatcherService } from '../services/dispatcher.service';
-import { CoderProvider } from '../../../global/providers/coder.provider';
 import { SendProvider } from '../providers/send.provider';
 
 export const ParamsMiddleware: MiddlewareImplementation = () => {

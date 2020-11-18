@@ -93,7 +93,7 @@ export class InitializeService implements InitializeImplementation {
             Promise.all(servers.map((server) => {
                 return new Promise<boolean>((resolve, reject) => {
                     server.instance.listen(server.port, (...args: any[]) => {
-                        console.log(`Express Socket server has started on port ${server.instance.address().port}.`);
+                        console.log(`Express Socket server has started on port ${server.port}.`);
                         resolve(true);
                     });
                 });

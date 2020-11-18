@@ -1,7 +1,6 @@
 import * as hawk from '@hapi/hawk';
+import { CoderProvider, NonceProvider } from 'pse-global-providers';
 
-import { CoderProvider } from '../../../global/providers/coder.provider';
-import { NonceProvider } from '../../../global/providers/nonce.provider';
 import { CustomErrorProvider } from '../../common/providers/error.provider';
 import * as EI from '../../database/entities.index';
 import { Request, Response, NextFunction } from '../implementations/express.implementation';

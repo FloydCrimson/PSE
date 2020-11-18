@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { finalize } from 'rxjs/operators';
+import { PasswordCheckerProvider } from 'pse-global-providers';
 
-import { PasswordCheckerProvider } from 'global/providers/password-checker.provider';
 import { RoutingService } from 'global/services/routing.service';
 import { PersistentStorageFactory } from 'global/factories/persistent-storages.factory';
 import { ClickAsyncDirective } from 'global/directives/click-async/click-async-directive';

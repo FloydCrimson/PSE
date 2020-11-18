@@ -1,10 +1,10 @@
 import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
 import { from, Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { CoderProvider } from 'pse-global-providers';
 
 import { RestFactoryImplementation } from 'global/common/implementations/factories/rest.factory.implementation';
 import { ErrorRestImplementation } from 'global/common/implementations/error-rest.implementation';
-import { CoderProvider } from 'global/providers/coder.provider';
 
 export class NativeRest implements RestFactoryImplementation {
 

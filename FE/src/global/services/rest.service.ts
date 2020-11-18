@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, merge, Observable, throwError, TimeoutError, timer } from 'rxjs';
 import { take, catchError, finalize, skip, map, switchMap } from 'rxjs/operators';
 import * as hawk from '@hapi/hawk';
+import { CoderProvider, CrypterProvider, NonceProvider } from 'pse-global-providers';
 
 import { domain } from '@domains/domain';
 
@@ -12,9 +13,6 @@ import { EndpointRestImplementation } from 'global/common/implementations/endpoi
 import { RequestRestImplementation } from 'global/common/implementations/request-rest.implementation';
 import { ResponseRestImplementation } from 'global/common/implementations/response-rest.implementation';
 import { ErrorRestImplementation } from 'global/common/implementations/error-rest.implementation';
-import { CoderProvider } from 'global/providers/coder.provider';
-import { CrypterProvider } from 'global/providers/crypter.provider';
-import { NonceProvider } from 'global/providers/nonce.provider';
 
 @Injectable({
     providedIn: 'root'

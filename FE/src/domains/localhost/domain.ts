@@ -1,5 +1,6 @@
+import { MergerProvider } from 'pse-global-providers';
+
 import { DomainImplementation } from 'domains/common/implementations/domains.implementation';
-import { MergerProvider } from 'global/providers/merger.provider';
 import * as extra from '../domain-extra.json';
 
 const domainExtra: DomainImplementation = (<any>extra as { default: any }).default;

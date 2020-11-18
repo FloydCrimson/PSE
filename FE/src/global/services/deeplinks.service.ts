@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
-
 import { Subscription } from 'rxjs';
+import { CoderProvider } from 'pse-global-providers';
+
 import { DeeplinksRepository, DeeplinksImplementation } from 'global/repositories/deeplinks.repository';
 import { LoggingService } from './logging.service';
-import { CoderProvider } from 'global/providers/coder.provider';
 
 @Injectable({
     providedIn: 'root'

@@ -1,9 +1,8 @@
 import { FindConditions, SaveOptions } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { RandomProvider } from 'pse-global-providers';
 
 import { EmailProvider } from '../../../global/providers/email.provider';
-import { RandomProvider } from '../../../global/providers/random.provider';
-import { CrypterProvider } from '../../../global/providers/crypter.provider';
 
 import { CustomErrorProvider } from '../../common/providers/error.provider';
 

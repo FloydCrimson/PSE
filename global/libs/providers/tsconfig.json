@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./src",
+        "outDir": "./lib",
+        "declaration": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "es2015"
+    }
+}

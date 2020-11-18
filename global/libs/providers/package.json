@@ -1,0 +1,19 @@
+{
+   "name": "pse-global-providers",
+   "version": "0.0.1",
+   "description": "",
+   "main": "lib/index.js",
+   "types": "lib/index.d.ts",
+   "scripts": {
+      "build": "tsc"
+   },
+   "devDependencies": {
+      "typescript": "^4.0.5"
+   },
+   "dependencies": {
+      "crypto-js": "^4.0.0"
+   },
+   "files": [
+      "lib/**/*"
+   ]
+}

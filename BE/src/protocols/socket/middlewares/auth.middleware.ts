@@ -1,11 +1,10 @@
 import { NextFunction } from 'express';
 import * as hawk from '@hapi/hawk';
+import { CoderProvider, NonceProvider } from 'pse-global-providers';
 
 import { MiddlewareImplementation } from '../implementations/middleware.implementation';
 import { RequestImplementation } from '../implementations/request.implementation';
 import { DispatcherService } from '../services/dispatcher.service';
-import { CoderProvider } from '../../../global/providers/coder.provider';
-import { NonceProvider } from '../../../global/providers/nonce.provider';
 
 export const AuthMiddleware: MiddlewareImplementation<undefined> = () => {
     return (dispatcherService: DispatcherService) => {

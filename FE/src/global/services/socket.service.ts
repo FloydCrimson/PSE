@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 import * as hawk from '@hapi/hawk';
+import { CoderProvider, NonceProvider } from 'pse-global-providers';
 
 import { domain } from '@domains/domain';
 
@@ -10,8 +11,6 @@ import { MessageSocketImplementation } from 'global/common/implementations/messa
 import { SocketFactory } from 'global/factories/socket.factory';
 import { SocketFactoryTypes } from 'global/factories/socket.factory.type';
 import { EphemeralStorageFactory } from 'global/factories/ephemeral-storages.factory';
-import { NonceProvider } from 'global/providers/nonce.provider';
-import { CoderProvider } from 'global/providers/coder.provider';
 
 @Injectable({
     providedIn: 'root'
