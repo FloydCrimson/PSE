@@ -1,4 +1,4 @@
-import * as hawk from '@hapi/hawk';
+import * as hawk from 'hawk';
 import { CoderProvider, NonceProvider } from 'pse-global-providers';
 
 import { CustomErrorProvider } from '../../common/providers/error.provider';

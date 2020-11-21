@@ -11,9 +11,9 @@
       "typescript": "^4.0.5"
    },
    "dependencies": {
-      "@hapi/hawk": "^8.0.0",
       "crypto-js": "^4.0.0",
       "express": "^4.17.1",
+      "hawk": "^8.0.1",
       "nodemailer": "^6.4.16",
       "pse-global-providers": "file:../global/libs/providers/pse-global-providers-0.0.1.tgz",
       "reflect-metadata": "^0.1.13",

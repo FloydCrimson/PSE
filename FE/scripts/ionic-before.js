@@ -19,7 +19,7 @@ module.exports = function (context) {
 
     // HAPI PATCHER
 
-    const packageLocation = path.resolve(projectDirectory, 'node_modules', '@hapi', 'hawk', 'package.json');
+    const packageLocation = path.resolve(projectDirectory, 'node_modules', 'hawk', 'package.json');
     if (fs.existsSync(packageLocation)) {
         const package = require(packageLocation);
         package.main = 'lib/browser.js';

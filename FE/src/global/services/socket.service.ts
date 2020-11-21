@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
-import * as hawk from '@hapi/hawk';
+import * as hawk from 'hawk';
 import { CoderProvider, NonceProvider } from 'pse-global-providers';
 
 import { domain } from '@domains/domain';

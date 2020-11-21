@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, merge, Observable, throwError, TimeoutError, timer } from 'rxjs';
 import { take, catchError, finalize, skip, map, switchMap } from 'rxjs/operators';
-import * as hawk from '@hapi/hawk';
+import * as hawk from 'hawk';
 import { CoderProvider, CrypterProvider, NonceProvider } from 'pse-global-providers';
 
 import { domain } from '@domains/domain';

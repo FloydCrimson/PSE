@@ -1,4 +1,4 @@
-import * as hawk from '@hapi/hawk';
+import * as hawk from 'hawk';
 import { Request, Response } from '../implementations/express.implementation';
 
 export class SendProvider {

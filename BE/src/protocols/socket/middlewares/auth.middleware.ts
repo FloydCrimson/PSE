@@ -1,5 +1,5 @@
 import { NextFunction } from 'express';
-import * as hawk from '@hapi/hawk';
+import * as hawk from 'hawk';
 import { CoderProvider, NonceProvider } from 'pse-global-providers';
 
 import { MiddlewareImplementation } from '../implementations/middleware.implementation';
