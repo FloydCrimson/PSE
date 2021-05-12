@@ -4,8 +4,8 @@ import { Observable, of } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { PasswordCheckerProvider } from 'pse-global-providers';
 
+import { BusyService } from 'global/services/busy.service';
 import { RoutingService } from 'global/services/routing.service';
-import { ClickAsyncDirective } from 'global/directives/click-async/click-async-directive';
 import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest.service';
 
 import * as RoutesIndex from '@countries/routes.index';
@@ -17,16 +17,17 @@ import * as RoutesIndex from '@countries/routes.index';
 })
 export class ChangeKeyPage {
 
-  public readonly getClickAsyncParams = ClickAsyncDirective.getClickAsyncParams;
+  public readonly passwordChecker = PasswordCheckerProvider.getPasswordChecker(['a-z', 'A-Z', '0-9', '@$!%*?&'], '', undefined, 8, 32);
 
-  passwordChecker = PasswordCheckerProvider.getPasswordChecker(['a-z', 'A-Z', '0-9', '@$!%*?&'], '', undefined, 8, 32);
-
-  changeKeyForm = new FormGroup({
+  public readonly changeKeyForm = new FormGroup({
     newPassword: new FormControl('', [], [this.getPasswordValidator.bind(this)]),
     confirmPassword: new FormControl('', [], [this.getPasswordValidator.bind(this)])
   });
 
+  public readonly changeKeyBusy = this.busyService.subscribe([ChangeKeyPageBusyEnum.ChangeKey]);
+
   constructor(
+    private readonly busyService: BusyService,
     private readonly routingService: RoutingService,
     private readonly backendAuthRestService: BackendAuthRestService
   ) { }
@@ -64,17 +65,20 @@ export class ChangeKeyPage {
 
   // Events
 
-  public async onChangeKeyClicked(): Promise<void> {
-    return new Promise<void>(async (resolve) => {
-      const key: string = this.changeKeyForm.get('newPassword').value;
-      this.backendAuthRestService.ChangeKey(key).pipe(
-        finalize(() => resolve())
-      ).subscribe(async _ => {
-        await this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
-      }, async (error) => {
-        alert(JSON.stringify(error));
-      });
+  public onChangeKeyClicked(): void {
+    const key: string = this.changeKeyForm.get('newPassword').value;
+    this.busyService.addTokens([ChangeKeyPageBusyEnum.ChangeKey]);
+    this.backendAuthRestService.ChangeKey(key).pipe(
+      finalize(() => this.busyService.removeTokens([ChangeKeyPageBusyEnum.ChangeKey]))
+    ).subscribe(async _ => {
+      await this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
+    }, async (error) => {
+      alert(JSON.stringify(error));
     });
   }
 
+}
+
+export enum ChangeKeyPageBusyEnum {
+  ChangeKey = 'ChangeKey'
 }

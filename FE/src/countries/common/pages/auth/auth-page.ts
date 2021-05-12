@@ -4,9 +4,9 @@ import { Observable, of } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { PasswordCheckerProvider } from 'pse-global-providers';
 
+import { BusyService } from 'global/services/busy.service';
 import { RoutingService } from 'global/services/routing.service';
 import { PersistentStorageFactory } from 'global/factories/persistent-storages.factory';
-import { ClickAsyncDirective } from 'global/directives/click-async/click-async-directive';
 import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest.service';
 
 import * as RoutesIndex from '@countries/routes.index';
@@ -18,15 +18,16 @@ import * as RoutesIndex from '@countries/routes.index';
 })
 export class AuthPage {
 
-  public readonly getClickAsyncParams = ClickAsyncDirective.getClickAsyncParams;
+  public readonly passwordChecker = PasswordCheckerProvider.getPasswordChecker(['a-z', 'A-Z', '0-9', '@$!%*?&'], '', undefined, 8, 32);
 
-  passwordChecker = PasswordCheckerProvider.getPasswordChecker(['a-z', 'A-Z', '0-9', '@$!%*?&'], '', undefined, 8, 32);
-
-  logInForm = new FormGroup({
+  public readonly logInForm = new FormGroup({
     password: new FormControl('', [], [this.getPasswordValidator.bind(this)])
   });
 
+  public readonly logInBusy = this.busyService.subscribe([AuthPageBusyEnum.LogIn]);
+
   constructor(
+    private readonly busyService: BusyService,
     private readonly routingService: RoutingService,
     private readonly pStorageFactory: PersistentStorageFactory,
     private readonly backendAuthRestService: BackendAuthRestService
@@ -60,22 +61,25 @@ export class AuthPage {
 
   // Events
 
-  public onLogInClicked(): Promise<void> {
-    return new Promise<void>(async (resolve) => {
-      const key: string = this.logInForm.get('password').value;
-      const { type, value } = await this.pStorageFactory.get('Local').get('auth');
-      this.backendAuthRestService.LogIn({ type, value, key, algorithm: 'sha256' }).pipe(
-        finalize(() => resolve())
-      ).subscribe(async (result) => {
-        if (result.authenticated) {
-          await this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
-        } else {
-          await this.routingService.navigate('NavigateRoot', RoutesIndex.ChangeKeyPageRoute, undefined, { animationDirection: 'forward' });
-        }
-      }, async (error) => {
-        alert(JSON.stringify(error));
-      });
+  public async onLogInClicked(): Promise<void> {
+    const key: string = this.logInForm.get('password').value;
+    const { type, value } = await this.pStorageFactory.get('Local').get('auth');
+    this.busyService.addTokens([AuthPageBusyEnum.LogIn]);
+    this.backendAuthRestService.LogIn({ type, value, key, algorithm: 'sha256' }).pipe(
+      finalize(() => this.busyService.removeTokens([AuthPageBusyEnum.LogIn]))
+    ).subscribe(async (result) => {
+      if (result.authenticated) {
+        await this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
+      } else {
+        await this.routingService.navigate('NavigateRoot', RoutesIndex.ChangeKeyPageRoute, undefined, { animationDirection: 'forward' });
+      }
+    }, async (error) => {
+      alert(JSON.stringify(error));
     });
   }
 
+}
+
+export enum AuthPageBusyEnum {
+  LogIn = 'LogIn'
 }

@@ -20,7 +20,7 @@
         </ion-item>
         <p>{{ getErrorFromFormGroup(signInForm) }}</p>
       </form>
-      <ion-button [click-async]="getClickAsyncParams(onSignInClicked.bind(this))" [disabled]="signInForm?.status !== 'VALID'">Continue</ion-button>
+      <ion-button (click)="onSignInClicked()" [disabled]="(signInForm?.status !== 'VALID') || (signInBusy | async)">Continue</ion-button>
     </ion-slide>
     <ion-slide>
       <h1>LogIn</h1>
@@ -35,7 +35,7 @@
         </ion-item>
         <p>{{ getErrorFromFormGroup(logInForm) }}</p>
       </form>
-      <ion-button [click-async]="getClickAsyncParams(onLoginClicked.bind(this))" [disabled]="logInForm?.status !== 'VALID'">Continue</ion-button>
+      <ion-button (click)="onLoginClicked()" [disabled]="(logInForm?.status !== 'VALID') || (logInBusy | async)">Continue</ion-button>
     </ion-slide>
   </ion-slides>
 </ion-content>

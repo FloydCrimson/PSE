@@ -19,6 +19,6 @@
       </ion-item>
       <p>{{ getErrorFromFormGroup(changeKeyForm) }}</p>
     </form>
-    <ion-button [click-async]="getClickAsyncParams(onChangeKeyClicked.bind(this))" [disabled]="changeKeyForm?.status !== 'VALID'">Continue</ion-button>
+    <ion-button (click)="onChangeKeyClicked()" [disabled]="(changeKeyForm?.status !== 'VALID') || (changeKeyBusy | async)">Continue</ion-button>
   </div>
 </ion-content>

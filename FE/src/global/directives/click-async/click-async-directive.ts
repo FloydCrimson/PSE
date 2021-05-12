@@ -23,7 +23,7 @@ export class ClickAsyncDirective {
             if (result.constructor === Observable) {
                 (result as Observable<any>).pipe(finalize(() => this.ongoing = false)).subscribe();
             } else if (result.constructor === Promise) {
-                (result as Promise<any>).finally(() => this.ongoing = false)
+                (result as Promise<any>).finally(() => this.ongoing = false);
             } else {
                 this.ongoing = false;
             }

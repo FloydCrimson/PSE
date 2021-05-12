@@ -4,8 +4,8 @@ import { Observable, of, timer } from 'rxjs';
 import { switchMap, map, finalize } from 'rxjs/operators';
 import { PasswordCheckerProvider } from 'pse-global-providers';
 
+import { BusyService } from 'global/services/busy.service';
 import { RoutingService } from 'global/services/routing.service';
-import { ClickAsyncDirective } from 'global/directives/click-async/click-async-directive';
 import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest.service';
 
 import { BackendAuthRest } from 'countries/common/rests/backend.auth.rest';
@@ -19,21 +19,23 @@ import * as RoutesIndex from '@countries/routes.index';
 })
 export class UnauthPage {
 
-  public readonly getClickAsyncParams = ClickAsyncDirective.getClickAsyncParams;
+  public readonly passwordChecker = PasswordCheckerProvider.getPasswordChecker(['a-z', 'A-Z', '0-9', '@$!%*?&'], '', undefined, 8, 32);
 
-  passwordChecker = PasswordCheckerProvider.getPasswordChecker(['a-z', 'A-Z', '0-9', '@$!%*?&'], '', undefined, 8, 32);
-
-  signInForm = new FormGroup({
+  public readonly signInForm = new FormGroup({
     email: new FormControl('', [], [this.getEmailValidator.bind(this)]),
     nickname: new FormControl('', [], [this.getNicknameValidator.bind(this)])
   });
 
-  logInForm = new FormGroup({
+  public readonly logInForm = new FormGroup({
     nickname: new FormControl('', [], [this.getNicknameValidator.bind(this)]),
     password: new FormControl('', [], [this.getPasswordValidator.bind(this)])
   });
 
+  public readonly signInBusy = this.busyService.subscribe([UnauthPageBusyEnum.SignIn]);
+  public readonly logInBusy = this.busyService.subscribe([UnauthPageBusyEnum.LogIn]);
+
   constructor(
+    private readonly busyService: BusyService,
     private readonly routingService: RoutingService,
     private readonly backendAuthRest: BackendAuthRest,
     private readonly backendAuthRestService: BackendAuthRestService
@@ -109,36 +111,39 @@ export class UnauthPage {
 
   // Events
 
-  public onSignInClicked(): Promise<void> {
-    return new Promise<void>(async (resolve) => {
-      const email: string = this.signInForm.get('email').value;
-      const nickname: string = this.signInForm.get('nickname').value;
-      this.backendAuthRestService.SignIn(email, nickname).pipe(
-        finalize(() => resolve())
-      ).subscribe(async _ => {
-        alert('An email with a Temporary Password has been sent to ' + email + '. After you first login you will be asked to change it.');
-      }, async (error) => {
-        alert(JSON.stringify(error));
-      });
+  public onSignInClicked(): void {
+    const email: string = this.signInForm.get('email').value;
+    const nickname: string = this.signInForm.get('nickname').value;
+    this.busyService.addTokens([UnauthPageBusyEnum.SignIn]);
+    this.backendAuthRestService.SignIn(email, nickname).pipe(
+      finalize(() => this.busyService.removeTokens([UnauthPageBusyEnum.SignIn]))
+    ).subscribe(async _ => {
+      alert('An email with a Temporary Password has been sent to ' + email + '. After you first login you will be asked to change it.');
+    }, async (error) => {
+      alert(JSON.stringify(error));
     });
   }
 
-  public onLoginClicked(): Promise<void> {
-    return new Promise<void>(async (resolve) => {
-      const value: string = this.logInForm.get('nickname').value;
-      const key: string = this.logInForm.get('password').value;
-      this.backendAuthRestService.LogIn({ type: 'nickname', value, key, algorithm: 'sha256' }).pipe(
-        finalize(() => resolve())
-      ).subscribe(async (result) => {
-        if (result.authenticated) {
-          await this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
-        } else {
-          await this.routingService.navigate('NavigateRoot', RoutesIndex.ChangeKeyPageRoute, undefined, { animationDirection: 'forward' });
-        }
-      }, async (error) => {
-        alert(JSON.stringify(error));
-      });
+  public onLoginClicked(): void {
+    const value: string = this.logInForm.get('nickname').value;
+    const key: string = this.logInForm.get('password').value;
+    this.busyService.addTokens([UnauthPageBusyEnum.LogIn]);
+    this.backendAuthRestService.LogIn({ type: 'nickname', value, key, algorithm: 'sha256' }).pipe(
+      finalize(() => this.busyService.removeTokens([UnauthPageBusyEnum.LogIn]))
+    ).subscribe(async (result) => {
+      if (result.authenticated) {
+        await this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
+      } else {
+        await this.routingService.navigate('NavigateRoot', RoutesIndex.ChangeKeyPageRoute, undefined, { animationDirection: 'forward' });
+      }
+    }, async (error) => {
+      alert(JSON.stringify(error));
     });
   }
 
+}
+
+export enum UnauthPageBusyEnum {
+  SignIn = 'SignIn',
+  LogIn = 'LogIn'
 }
