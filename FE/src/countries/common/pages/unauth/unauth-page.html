@@ -10,11 +10,11 @@
     <ion-slide>
       <h1>Sign In</h1>
       <form [formGroup]="signInForm">
-        <ion-item>
+        <ion-item [disabled]="signInBusy | async">
           <ion-label>Email</ion-label>
           <ion-input type="text" formControlName="email"></ion-input>
         </ion-item>
-        <ion-item>
+        <ion-item [disabled]="signInBusy | async">
           <ion-label>Nickname</ion-label>
           <ion-input type="text" formControlName="nickname"></ion-input>
         </ion-item>
@@ -25,11 +25,11 @@
     <ion-slide>
       <h1>LogIn</h1>
       <form [formGroup]="logInForm">
-        <ion-item>
+        <ion-item [disabled]="logInBusy | async">
           <ion-label>Nickname</ion-label>
           <ion-input type="text" formControlName="nickname"></ion-input>
         </ion-item>
-        <ion-item>
+        <ion-item [disabled]="logInBusy | async">
           <ion-label>Password</ion-label>
           <ion-input type="password" formControlName="password"></ion-input>
         </ion-item>

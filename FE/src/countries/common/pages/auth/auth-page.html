@@ -9,7 +9,7 @@
   <div class="form-container">
     <h1>LogIn</h1>
     <form [formGroup]="logInForm">
-      <ion-item>
+      <ion-item [disabled]="logInBusy | async">
         <ion-label>Password</ion-label>
         <ion-input type="password" formControlName="password"></ion-input>
       </ion-item>
