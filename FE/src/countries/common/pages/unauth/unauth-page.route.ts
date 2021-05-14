@@ -1,4 +1,4 @@
-import { PSERoute } from '@pse-fe/core/controllers/pse-nav-router.controller';
+import { PSERoute } from '@pse-fe/core';
 
 export const UnauthPageRoute: PSERoute<undefined, undefined, undefined> = {
     path: 'unauth',

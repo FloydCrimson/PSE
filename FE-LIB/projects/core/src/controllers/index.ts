@@ -1,1 +1,1 @@
-export { PSENavController } from './pse-nav-router.controller';
+export * from './nav-router.controller';

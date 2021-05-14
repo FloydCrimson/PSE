@@ -1,4 +1,4 @@
-import { PSERoute } from '@pse-fe/core/controllers/pse-nav-router.controller';
+import { PSERoute } from '@pse-fe/core';
 
 export const NotFoundPageRoute: PSERoute<undefined, undefined, undefined> = {
     path: 'not-found',

@@ -1,4 +1,4 @@
-import { PSERoute } from '@pse-fe/core/controllers/pse-nav-router.controller';
+import { PSERoute } from '@pse-fe/core';
 
 export const HomePageRoute: PSERoute<undefined, undefined, undefined> = {
     path: 'home',
