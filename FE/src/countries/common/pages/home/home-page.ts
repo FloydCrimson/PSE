@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
-import { RoutingService } from 'global/services/routing.service';
+import { PSENavController } from '@pse-fe/core';
+
 import { BackendEchoRestService } from 'countries/common/rests/backend.echo.rest.service';
 import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest.service';
 
@@ -14,7 +15,7 @@ import * as RoutesIndex from '@countries/routes.index';
 export class HomePage {
 
   constructor(
-    private readonly routingService: RoutingService,
+    private readonly pseNavController: PSENavController,
     private readonly BackendEchoRestService: BackendEchoRestService,
     private readonly backendAuthRestService: BackendAuthRestService
   ) { }
@@ -37,7 +38,7 @@ export class HomePage {
 
   public onLogOutClicked(): void {
     this.backendAuthRestService.LogOut().subscribe(_ => {
-      this.routingService.navigate('NavigateRoot', RoutesIndex.AuthPageRoute, undefined, { animationDirection: 'back' });
+      this.pseNavController.navigate('NavigateRoot', RoutesIndex.AuthPageRoute, undefined, { animationDirection: 'back' });
     });
   }
 

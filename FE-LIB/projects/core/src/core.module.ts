@@ -1,11 +1,10 @@
 import { ModuleWithProviders, Optional, SkipSelf } from '@angular/core';
 import { NgModule } from '@angular/core';
-import { PSEControllersModule } from './controllers/controllers.module';
+
+import * as Controllers from './controllers';
 
 @NgModule({
-    imports: [
-        PSEControllersModule
-    ],
+    imports: [],
     declarations: [],
     providers: [],
     exports: []
@@ -22,6 +21,7 @@ export class PSECoreModule {
         return {
             ngModule: PSECoreModule,
             providers: [
+                Controllers.PSENavController,
                 { provide: PSECoreModuleConfig, useValue: config }
             ]
         };

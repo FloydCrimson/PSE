@@ -1,6 +1,6 @@
-import { RouteImplementation } from 'global/common/implementations/route.implementation';
+import { PSERoute } from '@pse-fe/core/controllers/pse-nav-router.controller';
 
-export const HomePageRoute: RouteImplementation = {
+export const HomePageRoute: PSERoute<undefined, undefined, undefined> = {
     path: 'home',
     loadChildren: () => import('./home-page.module').then(m => m.HomePageModule)
 };

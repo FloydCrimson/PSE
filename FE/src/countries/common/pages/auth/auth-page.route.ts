@@ -1,6 +1,6 @@
-import { RouteImplementation } from 'global/common/implementations/route.implementation';
+import { PSERoute } from '@pse-fe/core/controllers/pse-nav-router.controller';
 
-export const AuthPageRoute: RouteImplementation = {
+export const AuthPageRoute: PSERoute<undefined, undefined, undefined> = {
     path: 'auth',
     loadChildren: () => import('./auth-page.module').then(m => m.AuthPageModule)
 };

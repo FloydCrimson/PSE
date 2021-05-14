@@ -7,6 +7,8 @@ import { IonicStorageModule } from '@ionic/storage';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { HTTP } from '@ionic-native/http/ngx';
 
+import { PSECoreModule } from '@pse-fe/core';
+
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
@@ -17,12 +19,9 @@ import { AppRoutingModule } from './app-routing.module';
   entryComponents: [],
   imports: [
     BrowserModule,
-    IonicModule.forRoot({
-      mode: 'md'
-    }),
-    IonicStorageModule.forRoot({
-      name: 'IonicStorage'
-    }),
+    IonicModule.forRoot({ mode: 'md' }),
+    IonicStorageModule.forRoot({ name: 'IonicStorage' }),
+    PSECoreModule.forRoot(),
     AppRoutingModule,
     HttpClientModule
   ],

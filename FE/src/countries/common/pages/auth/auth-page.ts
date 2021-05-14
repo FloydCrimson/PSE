@@ -4,8 +4,9 @@ import { Observable, of } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { PasswordCheckerProvider } from 'pse-global-providers';
 
+import { PSENavController } from '@pse-fe/core';
+
 import { BusyService } from 'global/services/busy.service';
-import { RoutingService } from 'global/services/routing.service';
 import { PersistentStorageFactory } from 'global/factories/persistent-storages.factory';
 import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest.service';
 
@@ -27,8 +28,8 @@ export class AuthPage {
   public readonly logInBusy = this.busyService.subscribe([AuthPageBusyEnum.LogIn]);
 
   constructor(
+    private readonly pseNavController: PSENavController,
     private readonly busyService: BusyService,
-    private readonly routingService: RoutingService,
     private readonly pStorageFactory: PersistentStorageFactory,
     private readonly backendAuthRestService: BackendAuthRestService
   ) { }
@@ -69,9 +70,9 @@ export class AuthPage {
       finalize(() => this.busyService.removeTokens([AuthPageBusyEnum.LogIn]))
     ).subscribe(async (result) => {
       if (result.authenticated) {
-        await this.routingService.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
+        await this.pseNavController.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
       } else {
-        await this.routingService.navigate('NavigateRoot', RoutesIndex.ChangeKeyPageRoute, undefined, { animationDirection: 'forward' });
+        await this.pseNavController.navigate('NavigateRoot', RoutesIndex.ChangeKeyPageRoute, undefined, { animationDirection: 'forward' });
       }
     }, async (error) => {
       alert(JSON.stringify(error));

@@ -1,6 +1,6 @@
-import { RouteImplementation } from 'global/common/implementations/route.implementation';
+import { PSERoute } from '@pse-fe/core/controllers/pse-nav-router.controller';
 
-export const ChangeKeyPageRoute: RouteImplementation = {
+export const ChangeKeyPageRoute: PSERoute<undefined, undefined, undefined> = {
     path: 'change-key',
     loadChildren: () => import('./change-key-page.module').then(m => m.ChangeKeyPageModule)
 };
