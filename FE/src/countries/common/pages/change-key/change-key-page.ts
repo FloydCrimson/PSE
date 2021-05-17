@@ -4,9 +4,8 @@ import { Observable, of } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { PasswordCheckerProvider } from 'pse-global-providers';
 
-import { PSENavController } from '@pse-fe/core';
+import { PSEBusyService, PSENavController } from '@pse-fe/core';
 
-import { BusyService } from 'global/services/busy.service';
 import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest.service';
 
 import * as RoutesIndex from '@countries/routes.index';
@@ -25,11 +24,11 @@ export class ChangeKeyPage {
     confirmPassword: new FormControl('', [], [this.getPasswordValidator.bind(this)])
   });
 
-  public readonly changeKeyBusy = this.busyService.subscribe([ChangeKeyPageBusyEnum.ChangeKey]);
+  public readonly changeKeyBusy = this.pseBusyService.check([ChangeKeyPageBusyEnum.ChangeKey]);
 
   constructor(
     private readonly pseNavController: PSENavController,
-    private readonly busyService: BusyService,
+    private readonly pseBusyService: PSEBusyService,
     private readonly backendAuthRestService: BackendAuthRestService
   ) { }
 
@@ -68,9 +67,9 @@ export class ChangeKeyPage {
 
   public onChangeKeyClicked(): void {
     const key: string = this.changeKeyForm.get('newPassword').value;
-    this.busyService.addTokens([ChangeKeyPageBusyEnum.ChangeKey]);
+    this.pseBusyService.mark([ChangeKeyPageBusyEnum.ChangeKey]);
     this.backendAuthRestService.ChangeKey(key).pipe(
-      finalize(() => this.busyService.removeTokens([ChangeKeyPageBusyEnum.ChangeKey]))
+      finalize(() => this.pseBusyService.unmark([ChangeKeyPageBusyEnum.ChangeKey]))
     ).subscribe(async _ => {
       await this.pseNavController.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
     }, async (error) => {

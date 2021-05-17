@@ -4,9 +4,8 @@ import { Observable, of } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { PasswordCheckerProvider } from 'pse-global-providers';
 
-import { PSENavController } from '@pse-fe/core';
+import { PSEBusyService, PSENavController } from '@pse-fe/core';
 
-import { BusyService } from 'global/services/busy.service';
 import { PersistentStorageFactory } from 'global/factories/persistent-storages.factory';
 import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest.service';
 
@@ -25,11 +24,11 @@ export class AuthPage {
     password: new FormControl('', [], [this.getPasswordValidator.bind(this)])
   });
 
-  public readonly logInBusy = this.busyService.subscribe([AuthPageBusyEnum.LogIn]);
+  public readonly logInBusy = this.pseBusyService.check([AuthPageBusyEnum.LogIn]);
 
   constructor(
     private readonly pseNavController: PSENavController,
-    private readonly busyService: BusyService,
+    private readonly pseBusyService: PSEBusyService,
     private readonly pStorageFactory: PersistentStorageFactory,
     private readonly backendAuthRestService: BackendAuthRestService
   ) { }
@@ -65,9 +64,9 @@ export class AuthPage {
   public async onLogInClicked(): Promise<void> {
     const key: string = this.logInForm.get('password').value;
     const { type, value } = await this.pStorageFactory.get('Local').get('auth');
-    this.busyService.addTokens([AuthPageBusyEnum.LogIn]);
+    this.pseBusyService.mark([AuthPageBusyEnum.LogIn]);
     this.backendAuthRestService.LogIn({ type, value, key, algorithm: 'sha256' }).pipe(
-      finalize(() => this.busyService.removeTokens([AuthPageBusyEnum.LogIn]))
+      finalize(() => this.pseBusyService.unmark([AuthPageBusyEnum.LogIn]))
     ).subscribe(async (result) => {
       if (result.authenticated) {
         await this.pseNavController.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });

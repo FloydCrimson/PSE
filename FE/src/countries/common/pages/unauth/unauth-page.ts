@@ -4,9 +4,8 @@ import { Observable, of, timer } from 'rxjs';
 import { switchMap, map, finalize } from 'rxjs/operators';
 import { PasswordCheckerProvider } from 'pse-global-providers';
 
-import { PSENavController } from '@pse-fe/core';
+import { PSEBusyService, PSENavController } from '@pse-fe/core';
 
-import { BusyService } from 'global/services/busy.service';
 import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest.service';
 
 import { BackendAuthRest } from 'countries/common/rests/backend.auth.rest';
@@ -32,12 +31,12 @@ export class UnauthPage {
     password: new FormControl('', [], [this.getPasswordValidator.bind(this)])
   });
 
-  public readonly signInBusy = this.busyService.subscribe([UnauthPageBusyEnum.SignIn]);
-  public readonly logInBusy = this.busyService.subscribe([UnauthPageBusyEnum.LogIn]);
+  public readonly signInBusy = this.pseBusyService.check([UnauthPageBusyEnum.SignIn]);
+  public readonly logInBusy = this.pseBusyService.check([UnauthPageBusyEnum.LogIn]);
 
   constructor(
     private readonly pseNavController: PSENavController,
-    private readonly busyService: BusyService,
+    private readonly pseBusyService: PSEBusyService,
     private readonly backendAuthRest: BackendAuthRest,
     private readonly backendAuthRestService: BackendAuthRestService
   ) { }
@@ -115,9 +114,9 @@ export class UnauthPage {
   public onSignInClicked(): void {
     const email: string = this.signInForm.get('email').value;
     const nickname: string = this.signInForm.get('nickname').value;
-    this.busyService.addTokens([UnauthPageBusyEnum.SignIn]);
+    this.pseBusyService.mark([UnauthPageBusyEnum.SignIn]);
     this.backendAuthRestService.SignIn(email, nickname).pipe(
-      finalize(() => this.busyService.removeTokens([UnauthPageBusyEnum.SignIn]))
+      finalize(() => this.pseBusyService.unmark([UnauthPageBusyEnum.SignIn]))
     ).subscribe(async _ => {
       alert('An email with a Temporary Password has been sent to ' + email + '. After you first login you will be asked to change it.');
     }, async (error) => {
@@ -128,9 +127,9 @@ export class UnauthPage {
   public onLoginClicked(): void {
     const value: string = this.logInForm.get('nickname').value;
     const key: string = this.logInForm.get('password').value;
-    this.busyService.addTokens([UnauthPageBusyEnum.LogIn]);
+    this.pseBusyService.mark([UnauthPageBusyEnum.LogIn]);
     this.backendAuthRestService.LogIn({ type: 'nickname', value, key, algorithm: 'sha256' }).pipe(
-      finalize(() => this.busyService.removeTokens([UnauthPageBusyEnum.LogIn]))
+      finalize(() => this.pseBusyService.unmark([UnauthPageBusyEnum.LogIn]))
     ).subscribe(async (result) => {
       if (result.authenticated) {
         await this.pseNavController.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });

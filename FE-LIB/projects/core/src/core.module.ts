@@ -2,10 +2,12 @@ import { ModuleWithProviders, Optional, SkipSelf } from '@angular/core';
 import { NgModule } from '@angular/core';
 
 import { PSEControllersModule } from './controllers/controllers.module';
+import { PSEServicesModule } from './services/services.module';
 
 @NgModule({
     imports: [
-        PSEControllersModule
+        PSEControllersModule,
+        PSEServicesModule
     ],
     declarations: [],
     providers: [],
@@ -36,3 +38,4 @@ export class PSECoreModuleConfig { }
  */
 
 export * from './controllers';
+export * from './services';
