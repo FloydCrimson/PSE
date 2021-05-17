@@ -29,8 +29,8 @@ export class PSENavController {
     }
 
     private navigateBack(options?: AnimationOptions) {
-        const config: AnimationOptions = { animated: true, ...options };
-        this.navController.back(config);
+        options = { animated: true, ...options };
+        return this.navController.back(options);
     }
 
     private navigatePop() {
@@ -38,21 +38,21 @@ export class PSENavController {
     }
 
     private navigateRoute<I extends IInput, R extends IRoute, Q extends IQuery>(method: 'navigateBack' | 'navigateForward' | 'navigateRoot', route: PSERoute<I, R, Q>, params?: IParams<I, R, Q>, options?: IOptions<I, R, Q>) {
-        const config: NavigationOptionsG<I, R, Q> = { animated: true, ...options, state: { input: params?.input }, queryParams: params?.query, queryParamsHandling: 'preserve', fragment: params?.fragment, preserveFragment: false };
+        const optionsG: NavigationOptionsG<I, R, Q> = { animated: true, ...options, state: { input: params?.input }, queryParams: params?.query, queryParamsHandling: 'preserve', fragment: params?.fragment, preserveFragment: false };
         const url = this.getURL(route.path, params?.route);
-        return this.navController[method](url, config);
+        return this.navController[method](url, optionsG);
     }
 
     //
 
-    public getNavigationParams<I extends IInput, R extends IRoute, Q extends IQuery>(route: PSERoute<I, R, Q>): IParams<I, R, Q> | null {
+    public getNavigationParams<I extends IInput, R extends IRoute, Q extends IQuery>(route: PSERoute<I, R, Q>): IParams<I, R, Q> | undefined {
         const navigation = this.router.getCurrentNavigation();
         return navigation?.finalUrl ? ({
             input: this.getInput<I>(route.defaultInput, navigation.extras.state as { input?: I; }),
             route: this.getRoute<R>(route.path, new URL(window.location.origin + navigation.finalUrl.toString()).pathname.replace(/^\/?/, '')),
             query: this.getQuery<Q>(navigation.finalUrl.queryParams as Q),
             fragment: this.getFragment(navigation.finalUrl.fragment)
-        } as IParams<I, R, Q>) : null;
+        } as IParams<I, R, Q>) : undefined;
     }
 
     //
@@ -101,7 +101,7 @@ export class PSENavController {
     }
 
     private getQuery<Q extends IQuery>(queryParams: Q): Q | undefined {
-        return (Object.keys(queryParams).length > 0) ? queryParams : undefined;
+        return (Object.keys(queryParams || {}).length > 0) ? queryParams : undefined;
     }
 
     private getFragment(fragment: string | null): string | undefined {
