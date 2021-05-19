@@ -1,5 +1,12 @@
 # Custom parameters
 
+Webpack Bundle Analyzer
+
+Run `ng build --prod --stats-json` command.
+
+Run `npx webpack-bundle-analyzer www/stats.json` command.
+
+
 WebPack
 
 | Parameters               | Values                                                                 |
