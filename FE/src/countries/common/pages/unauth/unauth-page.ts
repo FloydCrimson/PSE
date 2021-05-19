@@ -1,15 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Observable, of, timer } from 'rxjs';
 import { switchMap, map, finalize } from 'rxjs/operators';
 import { PasswordCheckerProvider } from 'pse-global-providers';
 
-import { PSEBusyService, PSENavController } from '@pse-fe/core';
+import { PSEBusyService, PSELoadingService, PSENavController } from '@pse-fe/core';
 
 import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest.service';
 
 import { BackendAuthRest } from 'countries/common/rests/backend.auth.rest';
 
+import * as LoadersIndex from '@countries/loaders.index';
 import * as RoutesIndex from '@countries/routes.index';
 
 @Component({
@@ -17,7 +18,7 @@ import * as RoutesIndex from '@countries/routes.index';
   templateUrl: 'unauth-page.html',
   styleUrls: ['unauth-page.scss']
 })
-export class UnauthPage {
+export class UnauthPage implements OnDestroy {
 
   public readonly passwordChecker = PasswordCheckerProvider.getPasswordChecker(['a-z', 'A-Z', '0-9', '@$!%*?&'], '', undefined, 8, 32);
 
@@ -34,12 +35,19 @@ export class UnauthPage {
   public readonly signInBusy = this.pseBusyService.check([UnauthPageBusyEnum.SignIn]);
   public readonly logInBusy = this.pseBusyService.check([UnauthPageBusyEnum.LogIn]);
 
+  private readonly loadingSubscription = this.pseLoadingService.subscribe([UnauthPageBusyEnum.SignIn, UnauthPageBusyEnum.LogIn], LoadersIndex.MainLoader);
+
   constructor(
     private readonly pseNavController: PSENavController,
     private readonly pseBusyService: PSEBusyService,
+    private readonly pseLoadingService: PSELoadingService,
     private readonly backendAuthRest: BackendAuthRest,
     private readonly backendAuthRestService: BackendAuthRestService
   ) { }
+
+  public ngOnDestroy(): void {
+    this.loadingSubscription.unsubscribe();
+  }
 
   public getErrorFromFormGroup(formGroup: FormGroup): { message: string; } {
     for (const control in formGroup.controls) {
