@@ -9,5 +9,6 @@ export const routes: Routes = [
     { path: RoutesIndex.AuthPageRoute.path, loadChildren: RoutesIndex.AuthPageRoute.loadChildren, canActivate: [GuardsIndex.AuthenticatedGuard] },
     { path: RoutesIndex.HomePageRoute.path, loadChildren: RoutesIndex.HomePageRoute.loadChildren, canActivate: [GuardsIndex.LoggedGuard] },
     { path: RoutesIndex.ChangeKeyPageRoute.path, loadChildren: RoutesIndex.ChangeKeyPageRoute.loadChildren, canActivate: [GuardsIndex.LoggedGuard] },
+    { path: RoutesIndex.TestPageRoute.path, loadChildren: RoutesIndex.TestPageRoute.loadChildren },
     { path: '**', loadChildren: RoutesIndex.NotFoundPageRoute.loadChildren, canActivate: [GuardsIndex.NotFoundPageGuard] }
 ];
