@@ -20,5 +20,7 @@ console.log('[command-wrapper] Parameters:        ' + JSON.stringify(parameters)
 const projectDirectory = path.resolve(__dirname, '../');
 commandParameters.saveParameters(projectDirectory, parameters);
 
-const commandPath = execSync('where ' + commands[0]).toString().trim().split('\n')[0];
-execSync(['"' + commandPath + '"', ...commands.slice(1)].join(' '), { stdio: 'inherit' });
+if (commands.length > 0) {
+    const commandPath = execSync('where ' + commands[0]).toString().trim().split('\n')[0];
+    execSync(['"' + commandPath + '"', ...commands.slice(1)].join(' '), { stdio: 'inherit' });
+}
