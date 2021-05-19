@@ -6,21 +6,13 @@ import { RouterModule } from '@angular/router';
 
 import { UnauthPage } from './unauth-page';
 
-import { ClickAsyncDirectiveModule } from 'global/directives/click-async/click-async-directive.module';
-
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    ClickAsyncDirectiveModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        component: UnauthPage
-      }
-    ])
+    RouterModule.forChild([{ path: '', component: UnauthPage }])
   ],
   declarations: [
     UnauthPage

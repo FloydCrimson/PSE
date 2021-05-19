@@ -6,21 +6,13 @@ import { RouterModule } from '@angular/router';
 
 import { ChangeKeyPage } from './change-key-page';
 
-import { ClickAsyncDirectiveModule } from 'global/directives/click-async/click-async-directive.module';
-
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    ClickAsyncDirectiveModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        component: ChangeKeyPage
-      }
-    ])
+    RouterModule.forChild([{ path: '', component: ChangeKeyPage }])
   ],
   declarations: [
     ChangeKeyPage
