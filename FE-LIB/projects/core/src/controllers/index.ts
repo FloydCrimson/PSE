@@ -1,1 +1,1 @@
-export * from './nav-router.controller';
+export * from './routing.controller';

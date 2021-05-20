@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { PSENavController } from '@pse-fe/core';
+import { PSERoutingController } from '@pse-fe/core';
 
 import * as RoutesIndex from '@countries/routes.index';
 
@@ -11,16 +11,16 @@ import * as RoutesIndex from '@countries/routes.index';
 })
 export class TestPage {
 
-  public readonly params = this.pseNavController.getNavigationParams(RoutesIndex.TestPageRoute);
+  public readonly params = this.pseRoutingController.getNavigationParams(RoutesIndex.TestPageRoute);
 
   constructor(
-    private readonly pseNavController: PSENavController
+    private readonly pseRoutingController: PSERoutingController
   ) { }
 
   // Events
 
   public async onButtonClicked(): Promise<void> {
-    await this.pseNavController.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
+    await this.pseRoutingController.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
   }
 
 }

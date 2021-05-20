@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 
-import { PSENavController } from './nav-router.controller';
+import { PSERoutingController } from './routing.controller';
 
 @NgModule({
     imports: [],
     declarations: [],
     providers: [
-        PSENavController
+        PSERoutingController
     ],
     exports: []
 })

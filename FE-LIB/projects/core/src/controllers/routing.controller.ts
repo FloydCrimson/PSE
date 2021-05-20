@@ -4,7 +4,7 @@ import { NavController } from '@ionic/angular';
 import { AnimationOptions } from '@ionic/angular/providers/nav-controller';
 
 @Injectable()
-export class PSENavController {
+export class PSERoutingController {
 
     constructor(
         private readonly navController: NavController,
@@ -101,7 +101,7 @@ export class PSENavController {
     }
 
     private getQuery<Q extends IQuery>(queryParams: Q): Q | undefined {
-        return (Object.keys(queryParams || {}).length > 0) ? queryParams : undefined;
+        return (Object.keys(queryParams).length > 0) ? queryParams : undefined;
     }
 
     private getFragment(fragment: string | null): string | undefined {
