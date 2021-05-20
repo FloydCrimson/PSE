@@ -2,6 +2,9 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/core",
   "lib": {
-    "entryFile": "src/core.module.ts"
+    "entryFile": "src/core.module.ts",
+    "umdModuleIds": {
+      "@ionic/angular": "angular"
+    }
   }
 }

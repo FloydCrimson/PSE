@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 
-import { PSERoutingController } from '@pse-fe/core';
+import { PSEModalController, PSERouteController } from '@pse-fe/core';
 
 import * as RoutesIndex from '@countries/routes.index';
+import * as ModalsIndex from '@countries/modals.index';
 
 @Component({
   selector: 'test-page',
@@ -11,16 +12,24 @@ import * as RoutesIndex from '@countries/routes.index';
 })
 export class TestPage {
 
-  public readonly params = this.pseRoutingController.getNavigationParams(RoutesIndex.TestPageRoute);
+  public params = this.pseRouteController.getNavigationParams(RoutesIndex.TestPageRoute);
 
   constructor(
-    private readonly pseRoutingController: PSERoutingController
+    private readonly pseRouteController: PSERouteController,
+    private readonly pseModalController: PSEModalController
   ) { }
 
   // Events
 
-  public async onButtonClicked(): Promise<void> {
-    await this.pseRoutingController.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
+  public async onOpenModalClicked(): Promise<void> {
+    const params = PSEModalController.getParams(ModalsIndex.TestComponentModal);
+    params.input = { message: 'CIAONE' };
+    const modal = await this.pseModalController.create(ModalsIndex.TestComponentModal, params);
+    await modal.present();
+  }
+
+  public async onBackClicked(): Promise<void> {
+    await this.pseRouteController.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
   }
 
 }

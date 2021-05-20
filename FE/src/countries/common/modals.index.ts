@@ -1,1 +1,1 @@
-export { OverlayComponentModal } from 'countries/common/components/overlay/overlay-component.modal';
+export { TestComponentModal } from 'countries/common/components/test/test-component.modal';

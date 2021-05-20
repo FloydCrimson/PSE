@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
 
-import { PSERoutingController } from './routing.controller';
+import { PSERouteController } from './route.controller';
+import { PSEModalController } from './modal.controller';
 
 @NgModule({
     imports: [],
     declarations: [],
     providers: [
-        PSERoutingController
+        PSERouteController,
+        PSEModalController
     ],
     exports: []
 })

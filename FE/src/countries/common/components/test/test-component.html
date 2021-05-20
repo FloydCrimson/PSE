@@ -1,12 +1,11 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      OverlayComponent
+      TestPage
     </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content fullscreen="true">
-  <ion-item>
-    <ion-button (click)="dismiss()">dismiss</ion-button>
-  </ion-item>
+  <h1>{{ message }}</h1>
+  <ion-button (click)="onButtonClicked()">Button</ion-button>
 </ion-content>

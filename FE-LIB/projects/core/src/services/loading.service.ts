@@ -4,7 +4,9 @@ import { LoadingOptions } from '@ionic/core';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { PSEBusyService, PSEPipeService } from '../core.module';
+import { PSEBusyService } from './busy.service';
+import { PSEPipeService } from './pipe.service';
+
 
 @Injectable()
 export class PSELoadingService {

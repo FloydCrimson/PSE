@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { PasswordCheckerProvider } from 'pse-global-providers';
 
-import { PSEBusyService, PSERoutingController } from '@pse-fe/core';
+import { PSEBusyService, PSERouteController } from '@pse-fe/core';
 
 import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest.service';
 
@@ -27,7 +27,7 @@ export class ChangeKeyPage {
   public readonly changeKeyBusy = this.pseBusyService.check([ChangeKeyPageBusyEnum.ChangeKey]);
 
   constructor(
-    private readonly pseRoutingController: PSERoutingController,
+    private readonly pseRouteController: PSERouteController,
     private readonly pseBusyService: PSEBusyService,
     private readonly backendAuthRestService: BackendAuthRestService
   ) { }
@@ -71,7 +71,7 @@ export class ChangeKeyPage {
     this.backendAuthRestService.ChangeKey(key).pipe(
       finalize(() => this.pseBusyService.unmark([ChangeKeyPageBusyEnum.ChangeKey]))
     ).subscribe(async _ => {
-      await this.pseRoutingController.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
+      await this.pseRouteController.navigate('NavigateRoot', RoutesIndex.HomePageRoute, undefined, { animationDirection: 'forward' });
     }, async (error) => {
       alert(JSON.stringify(error));
     });
