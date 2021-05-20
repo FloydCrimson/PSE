@@ -40,15 +40,15 @@ node scripts\command-wrapper.js ionic serve -b -- --co=en --env=dev --env-ex="{ 
 
 node scripts\command-wrapper.js ionic capacitor run android -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android
 
-node scripts\command-wrapper.js ionic capacitor run android -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android --dom-ex="{ \\"url\\": \\"10.0.0.7\\" }"
+node scripts\command-wrapper.js ionic capacitor run android -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android --dom-ex="{ \\"url\\": \\"192.168.1.167\\" }"
 
 node scripts\command-wrapper.js ionic capacitor run android -l --external -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android
 
-node scripts\command-wrapper.js ionic capacitor run android -l --external -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android --dom-ex="{ \\"url\\": \\"10.0.0.7\\" }"
+node scripts\command-wrapper.js ionic capacitor run android -l --external -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android --dom-ex="{ \\"url\\": \\"192.168.1.167\\" }"
 
 # Extra
 
 | Parameters                        | Value                                                                                                 | Description        |
 |:----------------------------------|:------------------------------------------------------------------------------------------------------|:------------------:|
 | `--environment-extra`, `--env-ex` | `"{ \"enableRouterTracing\": false }"`                                                                | Disable router log |
-| `--domain-extra`, `--dom-ex`      | `"{ \"protocols\": { \"rest\": { \"url\": \"10.0.0.7\" }, \"socket\": { \"url\": \"10.0.0.7\" } } }"` | Change endpoint    |
+| `--domain-extra`, `--dom-ex`      | `"{ \"protocols\": { \"rest\": { \"url\": \"192.168.1.167\" }, \"socket\": { \"url\": \"192.168.1.167\" } } }"` | Change endpoint    |
