@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 const commandParameters = require('./command-parameters');
 
 module.exports = (config, options) => {
