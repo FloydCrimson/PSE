@@ -29,7 +29,6 @@ import { SocketFactory } from 'global/factories/socket.factory';
 import { SocketFactoryImplementation } from 'global/common/implementations/factories/socket.factory.implementation';
 import * as SocketFT from 'global/factories/socket.factory.type';
 import { AngularSocket } from 'global/factories/sockets/angular.socket';
-import { PluginService } from 'global/services/plugin.service';
 
 @Injectable({
     providedIn: 'root'
@@ -37,7 +36,6 @@ import { PluginService } from 'global/services/plugin.service';
 export class InitializeService implements InitializeImplementation {
 
     constructor(
-        private readonly pluginService: PluginService,
         private readonly platformService: PlatformService,
         private readonly pStorageFactory: PersistentStorageFactory,
         private readonly eStorageFactory: EphemeralStorageFactory,
@@ -61,7 +59,7 @@ export class InitializeService implements InitializeImplementation {
     private initializePersistentStorages(): Promise<boolean>[] {
         this.pStorageFactory.clear();
         const storages: [keyof PStorageFT.PersistentStorageFactoryTypes, PersistentStorageFactoryImplementation<PStorageFT.PersistentStorageFactoryTypes[keyof PStorageFT.PersistentStorageFactoryTypes]>][] = [];
-        storages.push(['Local', this.platformService.isPlatform(PlatformEnum.Browser) ? new IonicStorage<PStorageFT.PersistentStorageFactoryTypeLocal>(this.storage) : new CapacitorStorage<PStorageFT.PersistentStorageFactoryTypeLocal>(this.pluginService.get('Storage'))]);
+        storages.push(['Local', this.platformService.isPlatform(PlatformEnum.Browser) ? new IonicStorage<PStorageFT.PersistentStorageFactoryTypeLocal>(this.storage) : new CapacitorStorage<PStorageFT.PersistentStorageFactoryTypeLocal>()]);
         const check = !storages.some(([t, f]) => !this.pStorageFactory.set(t, f));
         return [Promise.resolve(check && !storages.some(([, s]) => !s.ready()))];
     }

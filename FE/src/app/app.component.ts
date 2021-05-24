@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { StatusBarStyle } from '@capacitor/core';
+import { StatusBar as CapacitorStatusBarPlugin, Style } from '@capacitor/status-bar';
+import { SplashScreen as CapacitorSplashScreenPlugin } from '@capacitor/splash-screen';
 
 import { DeeplinksService } from 'global/services/deeplinks.service';
 import { PlatformService } from 'global/services/platform.service';
 import { PlatformEnum } from 'global/common/enum/platform.enum';
 import { LoggingService } from 'global/services/logging.service';
 import { EphemeralStorageFactory } from 'global/factories/ephemeral-storages.factory';
-import { PluginService } from 'global/services/plugin.service';
 
 import { InitializeService } from '@countries/services/initialize.service';
 
@@ -19,7 +19,6 @@ import { InitializeService } from '@countries/services/initialize.service';
 export class AppComponent {
 
   constructor(
-    private readonly pluginService: PluginService,
     private readonly router: Router,
     private readonly initializeService: InitializeService,
     private readonly deeplinksService: DeeplinksService,
@@ -45,8 +44,8 @@ export class AppComponent {
     } finally {
       this.eStorageFactory.get('Out').set('logged', false);
       if (this.platformService.isPlatform(PlatformEnum.Mobile)) {
-        await this.pluginService.get('StatusBar').setStyle({ style: StatusBarStyle.Light });
-        await this.pluginService.get('SplashScreen').hide();
+        await CapacitorStatusBarPlugin.setStyle({ style: Style.Light });
+        await CapacitorSplashScreenPlugin.hide();
         this.deeplinksService.subscribe();
       }
       this.router.initialNavigation();
