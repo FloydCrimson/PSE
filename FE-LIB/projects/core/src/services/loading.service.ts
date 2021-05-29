@@ -14,8 +14,6 @@ export class PSELoadingService {
 
     private readonly loaders = new Array<[PSELoadingOptions, number]>();
 
-    private subscriptions?: Subscription;
-
     private element?: HTMLIonLoadingElement;
 
     constructor(
@@ -39,10 +37,6 @@ export class PSELoadingService {
         const subscription = this.pseBusyService.check(tokens).pipe(
             filter((busy, index) => busy || (index > 0))
         ).subscribe((busy) => busy ? this.present(options) : this.dismiss(options));
-        if (!this.subscriptions) {
-            this.subscriptions = new Subscription();
-        }
-        this.subscriptions?.add(subscription);
         return subscription;
     }
 
@@ -82,8 +76,6 @@ export class PSELoadingService {
             await this.dismissElement();
         }
         this.loaders.splice(0);
-        this.subscriptions?.unsubscribe();
-        delete this.subscriptions;
     }
 
     private async presentElement(): Promise<void> {
