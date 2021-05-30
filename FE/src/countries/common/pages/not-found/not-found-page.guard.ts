@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 
-import * as RoutesIndex from '@countries/routes.index';
+import * as RoutesIndex from '@countries/indexes/routes.index';
 
 @Injectable({
     providedIn: 'root'

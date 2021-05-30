@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 
 import { PSEModalController } from '@pse-fe/core';
 
-import * as ModalsIndex from '@countries/modals.index';
+import * as ModalsIndex from '@countries/indexes/modals.index';
 
 @Component({
   selector: 'test-component',

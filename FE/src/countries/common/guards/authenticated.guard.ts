@@ -3,7 +3,7 @@ import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTr
 
 import { PersistentStorageFactory } from 'global/factories/persistent-storages.factory';
 
-import * as RoutesIndex from '@countries/routes.index';
+import * as RoutesIndex from '@countries/indexes/routes.index';
 
 @Injectable({
     providedIn: 'root'

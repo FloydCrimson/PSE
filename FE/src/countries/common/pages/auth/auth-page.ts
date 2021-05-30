@@ -9,7 +9,7 @@ import { PSEBusyService, PSERouteController } from '@pse-fe/core';
 import { PersistentStorageFactory } from 'global/factories/persistent-storages.factory';
 import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest.service';
 
-import * as RoutesIndex from '@countries/routes.index';
+import * as RoutesIndex from '@countries/indexes/routes.index';
 
 @Component({
   selector: 'auth-page',

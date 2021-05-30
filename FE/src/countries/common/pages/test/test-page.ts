@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 
 import { PSEModalController, PSERouteController } from '@pse-fe/core';
 
-import * as RoutesIndex from '@countries/routes.index';
-import * as ModalsIndex from '@countries/modals.index';
+import * as RoutesIndex from '@countries/indexes/routes.index';
+import * as ModalsIndex from '@countries/indexes/modals.index';
 
 @Component({
   selector: 'test-page',

@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 
-import * as GuardsIndex from '../guards.index';
-import * as RoutesIndex from '../routes.index';
+import * as GuardsIndex from '../indexes/guards.index';
+import * as RoutesIndex from '../indexes/routes.index';
 
 export const routes: Routes = [
     { path: '', redirectTo: RoutesIndex.AuthPageRoute.path, pathMatch: 'full' },

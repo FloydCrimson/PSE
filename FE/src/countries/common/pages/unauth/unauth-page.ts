@@ -10,8 +10,8 @@ import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest
 
 import { BackendAuthRest } from 'countries/common/rests/backend.auth.rest';
 
-import * as LoadersIndex from '@countries/loaders.index';
-import * as RoutesIndex from '@countries/routes.index';
+import * as LoadersIndex from '@countries/indexes/loaders.index';
+import * as RoutesIndex from '@countries/indexes/routes.index';
 
 @Component({
   selector: 'unauth-page',

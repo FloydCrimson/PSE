@@ -5,7 +5,7 @@ import { PSERouteController } from '@pse-fe/core';
 import { BackendEchoRestService } from 'countries/common/rests/backend.echo.rest.service';
 import { BackendAuthRestService } from 'countries/common/rests/backend.auth.rest.service';
 
-import * as RoutesIndex from '@countries/routes.index';
+import * as RoutesIndex from '@countries/indexes/routes.index';
 
 @Component({
   selector: 'home-page',
