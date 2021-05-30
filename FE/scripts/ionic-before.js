@@ -84,6 +84,7 @@ const createTSConfigCustomJSON = (context) => {
     const parameters = commandParameters.loadParameters(projectDirectory);
 
     const extraArray = [
+        { alias: 'country-extra', path: path.join(projectDirectory, 'src', 'countries', 'country-extra.json') },
         { alias: 'environment-extra', path: path.join(projectDirectory, 'src', 'environments', 'environment-extra.json') },
         { alias: 'domain-extra', path: path.join(projectDirectory, 'src', 'domains', 'domain-extra.json') }
     ];

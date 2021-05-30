@@ -10,4 +10,4 @@ const environmentOriginal: EnvironmentImplementation = {
   loggingLevel: 'MAIN'
 };
 
-export const environment: EnvironmentImplementation = MergerProvider.merger(environmentOriginal, environmentExtra);
+export const EnvironmentConfig: EnvironmentImplementation = MergerProvider.merger(environmentOriginal, environmentExtra);

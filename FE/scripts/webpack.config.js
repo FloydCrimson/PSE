@@ -6,19 +6,15 @@ module.exports = (config, options) => {
     const parameters = commandParameters.loadParameters(projectDirectory);
 
     const placeholder = '{{ALIAS}}';
-    const aliases = [
-        { parameters: ['--country', '--co'], alias: '@countries', url: `countries/${placeholder}` },
-        { parameters: ['--platform', '--plt'], alias: '@platforms', url: `platforms/${placeholder}` },
-        { parameters: ['--environment', '--env'], alias: '@environments', url: `environments/${placeholder}` },
-        { parameters: ['--domain', '--dom'], alias: '@domains', url: `domains/${placeholder}` }
+    const aliasArray = [
+        { name: 'country', alias: '@countries', url: `countries/${placeholder}` },
+        { name: 'platform', alias: '@platforms', url: `platforms/${placeholder}` },
+        { name: 'environment', alias: '@environments', url: `environments/${placeholder}` },
+        { name: 'domain', alias: '@domains', url: `domains/${placeholder}` }
     ];
-    for (const alias of aliases) {
-        for (const parameter of alias.parameters) {
-            if (parameter in parameters) {
-                config.resolve.alias[alias.alias] = alias.url.replace(placeholder, parameters[parameter]);
-            }
-        }
-    };
+    aliasArray.forEach((alias) => {
+        config.resolve.alias[alias.alias] = alias.url.replace(placeholder, parameters[alias.name]);
+    });
 
     return config;
 };

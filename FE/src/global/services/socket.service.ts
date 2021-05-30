@@ -4,7 +4,7 @@ import { map, filter } from 'rxjs/operators';
 import * as hawk from 'hawk';
 import { CoderProvider, NonceProvider } from 'pse-global-providers';
 
-import { domain } from '@domains/domain';
+import { DomainConfig } from '@domains/domain';
 
 import { EndpointSocketImplementation } from 'global/common/implementations/endpoint-socket.implementation';
 import { MessageSocketImplementation } from 'global/common/implementations/message-socket.implementation';
@@ -28,7 +28,7 @@ export class SocketService {
     }
 
     public open<K extends keyof SocketFactoryTypes>(type: K): Observable<boolean> {
-        const protocol = domain.protocols['socket'];
+        const protocol = DomainConfig.protocols['socket'];
         const url = `${protocol.secure ? 'wss' : 'ws'}://${protocol.url}:${protocol.port}`;
         return this.socketFactory.get(type).open(url);
     }
@@ -40,7 +40,7 @@ export class SocketService {
     public send<K extends keyof SocketFactoryTypes, P>(type: K, endpoint: EndpointSocketImplementation<P>, params: P): Observable<boolean> {
         const auth = endpoint.auth ? this.eStorageFactory.get('In').get('auth') : undefined;
         const message: MessageSocketImplementation<P> = { operation: endpoint.operation, params };
-        const protocol = domain.protocols['socket'];
+        const protocol = DomainConfig.protocols['socket'];
         const url: string = `${protocol.secure ? 'https' : 'http'}://${protocol.url}:${protocol.port}${endpoint.operation}`;
         const credentials = auth ? { id: CoderProvider.encode(JSON.stringify({ [auth.type]: auth.value })), key: auth.key, algorithm: auth.algorithm } : undefined;
         if (endpoint.auth && credentials) {

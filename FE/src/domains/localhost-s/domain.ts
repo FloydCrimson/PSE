@@ -19,4 +19,4 @@ const domainOriginal: DomainImplementation = {
     }
 };
 
-export const domain: DomainImplementation = MergerProvider.merger(domainOriginal, domainExtra);
+export const DomainConfig: DomainImplementation = MergerProvider.merger(domainOriginal, domainExtra);

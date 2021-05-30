@@ -34,5 +34,6 @@ npm-debug.log*
 
 parameters.json
 tsconfig.app.custom.json
+src/countries/country-extra.json
 src/domains/domain-extra.json
 src/environments/environment-extra.json

@@ -4,7 +4,7 @@ import { take, catchError, finalize, skip, map, switchMap } from 'rxjs/operators
 import * as hawk from 'hawk';
 import { CoderProvider, CrypterProvider, NonceProvider } from 'pse-global-providers';
 
-import { domain } from '@domains/domain';
+import { DomainConfig } from '@domains/domain';
 
 import { RestFactory } from 'global/factories/rest.factory';
 import { EphemeralStorageFactory } from 'global/factories/ephemeral-storages.factory';
@@ -129,7 +129,7 @@ export class RestService {
         request.input = request.input || { body: undefined, params: undefined };
         request.input.body = request.input.body || {} as B;
         request.input.params = request.input.params || {} as P;
-        const protocol = domain.protocols['rest'];
+        const protocol = DomainConfig.protocols['rest'];
         const url: string = `${protocol.secure ? 'https' : 'http'}://${protocol.url}:${protocol.port}${endpoint.url}`;
         const credentials = auth ? { id: CoderProvider.encode(JSON.stringify({ [auth.type]: auth.value })), key: auth.key, algorithm: auth.algorithm } : undefined;
         let headers: { [key: string]: string } = {};

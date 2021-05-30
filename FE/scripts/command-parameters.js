@@ -1,5 +1,6 @@
 const parameterMap = new Map([
     ['country', { alias: ['--country', '--co'], overwrite: false, default: 'en', check: (value) => ['it', 'en'].includes(value) }],
+    ['country-extra', { alias: ['--country-extra', '--co-ex'], overwrite: true, default: JSON.stringify({}), check: (value) => { try { JSON.parse(value); } catch (_) { return false; } return true; } }],
     ['environment', { alias: ['--environment', '--env'], overwrite: false, default: 'dev', check: (value) => ['dev', 'prod'].includes(value) }],
     ['environment-extra', { alias: ['--environment-extra', '--env-ex'], overwrite: true, default: JSON.stringify({}), check: (value) => { try { JSON.parse(value); } catch (_) { return false; } return true; } }],
     ['domain', { alias: ['--domain', '--dom'], overwrite: true, default: 'localhost', check: (value) => ['localhost', 'localhost-s', 'localhost-android', 'localhost-android-s'].includes(value) }],

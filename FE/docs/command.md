@@ -18,6 +18,7 @@ Run `npx webpack-bundle-analyzer www/stats.json` command.
 | Name                | Alias                             | Values                                                                                                |
 |:--------------------|:----------------------------------|:------------------------------------------------------------------------------------------------------|
 | `domain`            | `--domain`, `--dom`               | `localhost`, `localhost-s`, `localhost-android`, `localhost-android-s`                                |
+| `country-extra`     | `--country-extra`, `--co-ex`      | [CountryImplementation](../src/countries/common/implementations/countries.implementation.ts)          |
 | `environment-extra` | `--environment-extra`, `--env-ex` | [EnvironmentImplementation](../src/environments/common/implementations/environment.implementation.ts) |
 | `domain-extra`      | `--domain-extra`, `--dom-ex`      | [DomainImplementation](../src/domains/common/implementations/domains.implementation.ts)               |
 
@@ -38,7 +39,7 @@ Run `node scripts\command-wrapper.js ionic serve -b --configuration=it,productio
 
 Run `node scripts\command-wrapper.js ionic serve -b --configuration=it -- --environment-extra="{ \"enableRouterTracing\": false }"` command.
 
-Run `node scripts\command-wrapper.js ionic serve -b --configuration=it -- --env-ex="{ \"enableRouterTracing\": false }"` command.
+Run `node scripts\command-wrapper.js ionic serve -b --configuration=it -- --co-ex="{ \"defaultLanguage\": \"en\" }" --env-ex="{ \"enableRouterTracing\": false }"` command.
 
 
 # Browser on Android (msite)
