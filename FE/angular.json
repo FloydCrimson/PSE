@@ -22,18 +22,6 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.custom.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "src/assets",
-                "output": "assets"
-              },
-              {
-                "glob": "**/*.svg",
-                "input": "node_modules/ionicons/dist/ionicons/svg",
-                "output": "./svg"
-              }
-            ],
             "styles": [
               {
                 "input": "src/theme/variables.scss"
@@ -63,6 +51,34 @@
                 }
               ]
             },
+            "en": {
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "src/assets/common",
+                  "output": "assets/common"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "src/assets/en",
+                  "output": "assets/en"
+                }
+              ]
+            },
+            "it": {
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "src/assets/common",
+                  "output": "assets/common"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "src/assets/it",
+                  "output": "assets/it"
+                }
+              ]
+            },
             "ci": {
               "progress": false
             }
@@ -76,6 +92,12 @@
           "configurations": {
             "production": {
               "browserTarget": "app:build:production"
+            },
+            "en": {
+              "browserTarget": "app:build:en"
+            },
+            "it": {
+              "browserTarget": "app:build:it"
             },
             "ci": {
               "progress": false
@@ -140,6 +162,12 @@
             "production": {
               "devServerTarget": "app:serve:production"
             },
+            "en": {
+              "devServerTarget": "app:serve:en"
+            },
+            "it": {
+              "devServerTarget": "app:serve:it"
+            },
             "ci": {
               "devServerTarget": "app:serve:ci"
             }
@@ -153,6 +181,12 @@
           "configurations": {
             "production": {
               "browserTarget": "app:build:production"
+            },
+            "en": {
+              "browserTarget": "app:build:en"
+            },
+            "it": {
+              "browserTarget": "app:build:it"
             }
           }
         },
@@ -166,6 +200,14 @@
             "production": {
               "cordovaBuildTarget": "app:ionic-cordova-build:production",
               "devServerTarget": "app:serve:production"
+            },
+            "en": {
+              "cordovaBuildTarget": "app:ionic-cordova-build:en",
+              "devServerTarget": "app:serve:en"
+            },
+            "it": {
+              "cordovaBuildTarget": "app:ionic-cordova-build:it",
+              "devServerTarget": "app:serve:it"
             }
           }
         }

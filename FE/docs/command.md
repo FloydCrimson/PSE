@@ -1,54 +1,63 @@
-# Custom parameters
+# Others
 
-Webpack Bundle Analyzer
+## Schema Generator
 
-Run `ng build --prod --stats-json` command.
+Run `node scripts\schema-generator.js <path> --cleaned --sorted` command.
+
+## Webpack Bundle Analyzer
+
+Run `ng build --configuration=it,production --stats-json` command.
 
 Run `npx webpack-bundle-analyzer www/stats.json` command.
 
 
-WebPack
+# Custom parameters
 
-| Parameters               | Values                                                                 |
-|:-------------------------|:-----------------------------------------------------------------------|
-| `--country`, `--co`      | `it`, `en`                                                             |
-| `--environment`, `--env` | `dev`, `prod`                                                          |
-| `--domain`, `--dom`      | `localhost`, `localhost-s`, `localhost-android`, `localhost-android-s` |
+## Overwritable
 
+| Name                | Alias                             | Values                                                                                                |
+|:--------------------|:----------------------------------|:------------------------------------------------------------------------------------------------------|
+| `domain`            | `--domain`, `--dom`               | `localhost`, `localhost-s`, `localhost-android`, `localhost-android-s`                                |
+| `environment-extra` | `--environment-extra`, `--env-ex` | [EnvironmentImplementation](../src/environments/common/implementations/environment.implementation.ts) |
+| `domain-extra`      | `--domain-extra`, `--dom-ex`      | [DomainImplementation](../src/domains/common/implementations/domains.implementation.ts)               |
 
-Extra
+## Unoverwritable
 
-| Parameters                        | Path to model                                                                                         |
-|:----------------------------------|:------------------------------------------------------------------------------------------------------|
-| `--environment-extra`, `--env-ex` | [EnvironmentImplementation](../src/environments/common/implementations/environment.implementation.ts) |
-| `--domain-extra`, `--dom-ex`      | [DomainImplementation](../src/domains/common/implementations/domains.implementation.ts)               |
+| Name          | Alias                    | Values                      |
+|:--------------|:-------------------------|:----------------------------|
+| `country`     | `--country`, `--co`      | `it`, `en`                  |
+| `environment` | `--environment`, `--env` | `dev`, `prod`               |
+| `platform`    | `--platform`, `--plt`    | `browser`, `android`, `ios` |
 
 
 # Browser
 
-node scripts\command-wrapper.js ionic serve -b -- --country=en --environment=dev --environment-extra="{ \\"enableRouterTracing\\": false }" --domain=localhost
+Run `node scripts\command-wrapper.js ionic serve -b --configuration=it` command.
 
-node scripts\command-wrapper.js ionic serve -b -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost
+Run `node scripts\command-wrapper.js ionic serve -b --configuration=it,production` command.
+
+Run `node scripts\command-wrapper.js ionic serve -b --configuration=it -- --environment-extra="{ \"enableRouterTracing\": false }"` command.
+
+Run `node scripts\command-wrapper.js ionic serve -b --configuration=it -- --env-ex="{ \"enableRouterTracing\": false }"` command.
+
 
 # Browser on Android (msite)
 
-node scripts\command-wrapper.js ionic serve -b -- --country=en --environment=dev --environment-extra="{ \\"enableRouterTracing\\": false }" --domain=localhost-android
+Run `node scripts\command-wrapper.js ionic serve --external -b --configuration=it -- --domain=localhost-android` command.
 
-node scripts\command-wrapper.js ionic serve -b -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android
+Run `node scripts\command-wrapper.js ionic serve --external -b --configuration=it,production -- --domain=localhost-android` command.
+
+Run `node scripts\command-wrapper.js ionic serve --external -b --configuration=it -- --domain=localhost-android --environment-extra="{ \"enableRouterTracing\": false }"` command.
+
+Run `node scripts\command-wrapper.js ionic serve --external -b --configuration=it -- --dom=localhost-android --env-ex="{ \"enableRouterTracing\": false }"` command.
+
 
 # Android
 
-node scripts\command-wrapper.js ionic capacitor run android -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android
+Run `node scripts\command-wrapper.js ionic capacitor run android -- --co=en --env=dev --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android` command.
 
-node scripts\command-wrapper.js ionic capacitor run android -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android --dom-ex="{ \\"url\\": \\"192.168.1.167\\" }"
+Run `node scripts\command-wrapper.js ionic capacitor run android -- --co=en --env=dev --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android --dom-ex="{ \"url\": \"192.168.1.167\" }"` command.
 
-node scripts\command-wrapper.js ionic capacitor run android -l --external -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android
+Run `node scripts\command-wrapper.js ionic capacitor run android -l --external -- --co=en --env=dev --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android` command.
 
-node scripts\command-wrapper.js ionic capacitor run android -l --external -- --co=en --env=dev --env-ex="{ \\"enableRouterTracing\\": false }" --dom=localhost-android --dom-ex="{ \\"url\\": \\"192.168.1.167\\" }"
-
-# Extra
-
-| Parameters                        | Value                                                                                                 | Description        |
-|:----------------------------------|:------------------------------------------------------------------------------------------------------|:------------------:|
-| `--environment-extra`, `--env-ex` | `"{ \"enableRouterTracing\": false }"`                                                                | Disable router log |
-| `--domain-extra`, `--dom-ex`      | `"{ \"protocols\": { \"rest\": { \"url\": \"192.168.1.167\" }, \"socket\": { \"url\": \"192.168.1.167\" } } }"` | Change endpoint    |
+Run `node scripts\command-wrapper.js ionic capacitor run android -l --external -- --co=en --env=dev --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android --dom-ex="{ \"url\": \"192.168.1.167\" }"` command.
