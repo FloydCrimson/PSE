@@ -2,12 +2,16 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { HttpClient } from '@angular/common/http';
 import { HTTP } from '@ionic-native/http/ngx';
+import { TranslateService } from '@ngx-translate/core';
+
+import { CountryConfig } from '@countries/country';
 
 import { InitializeImplementation } from 'global/common/implementations/initialize.implementation';
 import { PlatformEnum } from 'global/common/enum/platform.enum';
 
 import { PlatformService } from 'global/services/platform.service';
 import { LoggingService } from 'global/services/logging.service';
+import { LanguageService } from 'global/services/language.service';
 
 import { PersistentStorageFactory } from 'global/factories/persistent-storages.factory';
 import { PersistentStorageFactoryImplementation } from 'global/common/implementations/factories/persistent-storage.factory.implementation';
@@ -44,7 +48,9 @@ export class InitializeService implements InitializeImplementation {
         private readonly loggingService: LoggingService,
         private readonly storage: Storage,
         private readonly httpBrowser: HttpClient,
-        private readonly httpNative: HTTP
+        private readonly httpNative: HTTP,
+        private readonly languageService: LanguageService,
+        private readonly translateService: TranslateService
     ) { }
 
     public initialize(): Promise<boolean> {
@@ -53,6 +59,7 @@ export class InitializeService implements InitializeImplementation {
         promises.push(...this.initializeEphemeralStorages());
         promises.push(...this.initializeRests());
         promises.push(...this.initializeSockets());
+        promises.push(...this.initializeTranslate());
         return Promise.all(promises).then((resolved) => !resolved.some((r) => !r));
     }
 
@@ -87,6 +94,13 @@ export class InitializeService implements InitializeImplementation {
         sockets.push(['Backend', new AngularSocket(this.loggingService)]);
         const check = !sockets.some(([t, f]) => !this.socketFactory.set(t, f));
         return [Promise.resolve(check)];
+    }
+
+    private initializeTranslate(): Promise<boolean>[] {
+        this.languageService.addURLs(['alert.json']);
+        this.translateService.setDefaultLang(CountryConfig.defaultLanguage);
+        const result = this.translateService.use(CountryConfig.defaultLanguage).toPromise().then(_ => true).catch(_ => false);
+        return [result];
     }
 
 }

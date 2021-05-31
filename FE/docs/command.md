@@ -55,10 +55,10 @@ Run `node scripts\command-wrapper.js ionic serve --external -b --configuration=i
 
 # Android
 
-Run `node scripts\command-wrapper.js ionic capacitor run android -- --co=en --env=dev --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android` command.
+Run `node scripts\command-wrapper.js ionic capacitor run android --configuration=it -- --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android` command.
 
-Run `node scripts\command-wrapper.js ionic capacitor run android -- --co=en --env=dev --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android --dom-ex="{ \"url\": \"192.168.1.167\" }"` command.
+Run `node scripts\command-wrapper.js ionic capacitor run android --configuration=it -- --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android --dom-ex="{ \"url\": \"192.168.1.167\" }"` command.
 
-Run `node scripts\command-wrapper.js ionic capacitor run android -l --external -- --co=en --env=dev --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android` command.
+Run `node scripts\command-wrapper.js ionic capacitor run android -l --external --configuration=it -- --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android` command.
 
-Run `node scripts\command-wrapper.js ionic capacitor run android -l --external -- --co=en --env=dev --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android --dom-ex="{ \"url\": \"192.168.1.167\" }"` command.
+Run `node scripts\command-wrapper.js ionic capacitor run android -l --external --configuration=it -- --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android --dom-ex="{ \"url\": \"192.168.1.167\" }"` command.

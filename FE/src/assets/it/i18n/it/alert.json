@@ -1,0 +1,16 @@
+{
+    "$schema": "../schema/alert.schema.json",
+    "ALERT": {
+        "BUTTONS": {
+            "CANCEL": "Annulla",
+            "CONTINUE": "Continua",
+            "NO": "No",
+            "YES": "Sì"
+        },
+        "TITLE": {
+            "ERROR": "Errore",
+            "NOTICE": "Avviso",
+            "WARNING": "Attenzione"
+        }
+    }
+}
