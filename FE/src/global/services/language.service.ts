@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { TranslateLoader } from '@ngx-translate/core';
+import { MissingTranslationHandler, MissingTranslationHandlerParams, TranslateLoader } from '@ngx-translate/core';
 import { Observable, of, zip } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
@@ -11,7 +11,7 @@ import { CountryConfig } from '@countries/country';
 @Injectable({
     providedIn: 'root'
 })
-export class LanguageService implements TranslateLoader {
+export class LanguageService implements TranslateLoader, MissingTranslationHandler {
 
     private readonly setRelativeURLs = new Set<string>();
     private readonly setAbsoluteURLs = new Set<string>();
@@ -20,6 +20,10 @@ export class LanguageService implements TranslateLoader {
     constructor(
         private readonly httpClient: HttpClient
     ) { }
+
+    public handle(params: MissingTranslationHandlerParams) {
+        return params.key;
+    }
 
     public getTranslation(language: string): Observable<any> {
         const prefix = `assets/${CountryConfig.country}/i18n/${language}/`;
@@ -31,6 +35,8 @@ export class LanguageService implements TranslateLoader {
             tap((JSON) => this.mapJSON.set(language, JSON))
         );
     }
+
+    //
 
     public addURLs(URLs: string[]): void {
         URLs.forEach((URL) => this.setRelativeURLs.add(URL));

@@ -6,7 +6,7 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { HTTP } from '@ionic-native/http/ngx';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { PSECoreModule } from '@pse-fe/core';
 
@@ -27,7 +27,7 @@ import { LanguageService } from 'global/services/language.service';
     IonicStorageModule.forRoot({ name: 'IonicStorage' }),
     AppRoutingModule,
     PSECoreModule.forRoot(),
-    TranslateModule.forRoot({ loader: { provide: TranslateLoader, useExisting: LanguageService } })
+    TranslateModule.forRoot({ loader: { provide: TranslateLoader, useExisting: LanguageService }, missingTranslationHandler: { provide: MissingTranslationHandler, useExisting: LanguageService } })
   ],
   providers: [
     Deeplinks,

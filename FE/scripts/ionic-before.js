@@ -52,7 +52,7 @@ const patchHapiLibrary = (context) => {
     }
 };
 
-const createParametersExtraJSON = (context) => {
+const createTSConfigCustomJSON = (context) => {
     const projectDirectory = path.resolve(__dirname, '../');
     const parameters = commandParameters.loadParameters(projectDirectory);
 
@@ -79,7 +79,7 @@ const createParametersExtraJSON = (context) => {
     fs.writeFileSync(tsconfigAppCustomDirectory, JSON.stringify(tsconfigJSON, undefined, '\t'));
 };
 
-const createTSConfigCustomJSON = (context) => {
+const createParametersExtraJSON = (context) => {
     const projectDirectory = path.resolve(__dirname, '../');
     const parameters = commandParameters.loadParameters(projectDirectory);
 
@@ -110,6 +110,6 @@ const createTSConfigCustomJSON = (context) => {
 module.exports = (context) => {
     addUnoverwritableParameters(context);
     patchHapiLibrary(context);
-    createParametersExtraJSON(context);
     createTSConfigCustomJSON(context);
+    createParametersExtraJSON(context);
 };

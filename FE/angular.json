@@ -37,7 +37,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -61,7 +60,10 @@
                 {
                   "glob": "**/*",
                   "input": "src/assets/en",
-                  "output": "assets/en"
+                  "output": "assets/en",
+                  "ignore": [
+                    "**/*.schema.json"
+                  ]
                 }
               ]
             },
@@ -75,7 +77,10 @@
                 {
                   "glob": "**/*",
                   "input": "src/assets/it",
-                  "output": "assets/it"
+                  "output": "assets/it",
+                  "ignore": [
+                    "**/*.schema.json"
+                  ]
                 }
               ]
             },
