@@ -19,7 +19,6 @@ import { LanguageService } from 'global/services/language.service';
   declarations: [
     AppComponent
   ],
-  entryComponents: [],
   imports: [
     BrowserModule,
     HttpClientModule,

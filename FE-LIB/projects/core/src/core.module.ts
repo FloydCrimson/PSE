@@ -1,16 +1,23 @@
 import { ModuleWithProviders, Optional, SkipSelf } from '@angular/core';
 import { NgModule } from '@angular/core';
 
-import { PSEControllersModule } from './controllers/controllers.module';
-import { PSEServicesModule } from './services/services.module';
+import { PSEModalController } from './controllers/modal.controller';
+import { PSERouteController } from './controllers/route.controller';
+
+import { PSEBusyService } from './services/busy.service';
+import { PSELoadingService } from './services/loading.service';
+import { PSEPipeService } from './services/pipe.service';
 
 @NgModule({
-    imports: [
-        PSEControllersModule,
-        PSEServicesModule
-    ],
+    imports: [],
     declarations: [],
-    providers: [],
+    providers: [
+        PSEModalController,
+        PSERouteController,
+        PSEBusyService,
+        PSELoadingService,
+        PSEPipeService
+    ],
     exports: []
 })
 export class PSECoreModule {
@@ -37,5 +44,8 @@ export class PSECoreModuleConfig { }
  * Public API Surface of core
  */
 
-export * from './controllers';
-export * from './services';
+export { PSEModalController, PSEModal } from './controllers/modal.controller';
+export { PSERouteController, PSERoute } from './controllers/route.controller';
+export { PSEBusyService } from './services/busy.service';
+export { PSELoadingService } from './services/loading.service';
+export { PSEPipeService } from './services/pipe.service';
