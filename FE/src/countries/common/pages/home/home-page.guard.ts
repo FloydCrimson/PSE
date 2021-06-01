@@ -1,4 +1,4 @@
-import { LanguageGuardProvider } from 'countries/common/guards/language.guard';
+import { PSELanguageGuardProvider } from '@pse-fe/core';
 
-export const HomePageLanguageGuardProvider = LanguageGuardProvider('home-page', ['home-page.json']);
+export const HomePageLanguageGuardProvider = PSELanguageGuardProvider('home-page', ['home-page.json']);
 export const HomePageLanguageGuardToken = HomePageLanguageGuardProvider.provide;
