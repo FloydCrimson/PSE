@@ -44,15 +44,10 @@ const fs = require('fs');
 const argv = process.argv.slice(2);
 
 const cleaned = argv.includes('--cleaned');
-
 const sorted = argv.includes('--sorted');
-
 const filePath = argv[0];
-
 const fileJSON = transform(JSON.parse(fs.readFileSync(filePath).toString()), cleaned && clean, sorted && sort);
-
 const schemaPath = path.resolve(path.dirname(filePath), fileJSON['$schema']);
-
 const schemaJSON = { '$schema': 'http://json-schema.org/draft-07/schema#' };
 
 generator(fileJSON, schemaJSON);

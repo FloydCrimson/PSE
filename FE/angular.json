@@ -33,7 +33,8 @@
             "scripts": []
           },
           "configurations": {
-            "production": {
+            "dev": {},
+            "prod": {
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -95,8 +96,11 @@
             "browserTarget": "app:build"
           },
           "configurations": {
-            "production": {
-              "browserTarget": "app:build:production"
+            "dev": {
+              "browserTarget": "app:build:dev"
+            },
+            "prod": {
+              "browserTarget": "app:build:prod"
             },
             "en": {
               "browserTarget": "app:build:en"
@@ -164,8 +168,11 @@
             "devServerTarget": "app:serve"
           },
           "configurations": {
-            "production": {
-              "devServerTarget": "app:serve:production"
+            "dev": {
+              "devServerTarget": "app:serve:dev"
+            },
+            "prod": {
+              "devServerTarget": "app:serve:prod"
             },
             "en": {
               "devServerTarget": "app:serve:en"
@@ -184,8 +191,11 @@
             "browserTarget": "app:build"
           },
           "configurations": {
-            "production": {
-              "browserTarget": "app:build:production"
+            "dev": {
+              "browserTarget": "app:build:dev"
+            },
+            "prod": {
+              "browserTarget": "app:build:prod"
             },
             "en": {
               "browserTarget": "app:build:en"
@@ -202,9 +212,13 @@
             "devServerTarget": "app:serve"
           },
           "configurations": {
-            "production": {
-              "cordovaBuildTarget": "app:ionic-cordova-build:production",
-              "devServerTarget": "app:serve:production"
+            "dev": {
+              "cordovaBuildTarget": "app:ionic-cordova-build:dev",
+              "devServerTarget": "app:serve:dev"
+            },
+            "prod": {
+              "cordovaBuildTarget": "app:ionic-cordova-build:prod",
+              "devServerTarget": "app:serve:prod"
             },
             "en": {
               "cordovaBuildTarget": "app:ionic-cordova-build:en",

@@ -18,14 +18,21 @@ const addUnoverwritableParameters = (context) => {
         update = update || true;
     }
     if (options['configuration']) {
-        parameters['environment'] = options['configuration'].split(',').includes('production') ? 'prod' : 'dev';
-        update = update || true;
+        const environments = ['dev', 'prod'];
+        const found = options['configuration'].split(',').filter((configuration) => environments.includes(configuration));
+        if (found.length === 0 || found.length > 1) {
+            throw '[ionic-before] None or multiple values for alias "environment" found in --configuration:   ' + JSON.stringify(found);
+        }
+        if (found.length > 0) {
+            parameters['environment'] = found[0];
+            update = update || true;
+        }
     }
     if (options['configuration']) {
         const countries = ['it', 'en'];
         const found = options['configuration'].split(',').filter((configuration) => countries.includes(configuration));
-        if (found.length > 1) {
-            throw '[ionic-before] Multiple values for alias "country" found in --configuration.';
+        if (found.length === 0 || found.length > 1) {
+            throw '[ionic-before] None or multiple values for alias "country" found in --configuration:   ' + JSON.stringify(found);
         }
         if (found.length > 0) {
             parameters['country'] = found[0];

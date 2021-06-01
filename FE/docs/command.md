@@ -6,7 +6,7 @@ Run `node scripts\schema-generator.js <path> --cleaned --sorted` command.
 
 ## Webpack Bundle Analyzer
 
-Run `ng build --configuration=it,production --stats-json` command.
+Run `ng build --configuration=prod,it --stats-json` command.
 
 Run `npx webpack-bundle-analyzer www/stats.json` command.
 
@@ -33,32 +33,32 @@ Run `npx webpack-bundle-analyzer www/stats.json` command.
 
 # Browser
 
-Run `node scripts\command-wrapper.js ionic serve -b --configuration=it` command.
+Run `node scripts\command-wrapper.js ionic serve -b --configuration=dev,it` command.
 
-Run `node scripts\command-wrapper.js ionic serve -b --configuration=it,production` command.
+Run `node scripts\command-wrapper.js ionic serve -b --configuration=prod,it` command.
 
-Run `node scripts\command-wrapper.js ionic serve -b --configuration=it -- --environment-extra="{ \"enableRouterTracing\": false }"` command.
+Run `node scripts\command-wrapper.js ionic serve -b --configuration=dev,it -- --environment-extra="{ \"enableRouterTracing\": false }"` command.
 
-Run `node scripts\command-wrapper.js ionic serve -b --configuration=it -- --co-ex="{ \"defaultLanguage\": \"en\" }" --env-ex="{ \"enableRouterTracing\": false }"` command.
+Run `node scripts\command-wrapper.js ionic serve -b --configuration=dev,it -- --co-ex="{ \"defaultLanguage\": \"en\" }" --env-ex="{ \"enableRouterTracing\": false }"` command.
 
 
 # Browser on Android (msite)
 
-Run `node scripts\command-wrapper.js ionic serve --external -b --configuration=it -- --domain=localhost-android` command.
+Run `node scripts\command-wrapper.js ionic serve --external -b --configuration=dev,it -- --domain=localhost-android` command.
 
-Run `node scripts\command-wrapper.js ionic serve --external -b --configuration=it,production -- --domain=localhost-android` command.
+Run `node scripts\command-wrapper.js ionic serve --external -b --configuration=prod,it -- --domain=localhost-android` command.
 
-Run `node scripts\command-wrapper.js ionic serve --external -b --configuration=it -- --domain=localhost-android --environment-extra="{ \"enableRouterTracing\": false }"` command.
+Run `node scripts\command-wrapper.js ionic serve --external -b --configuration=dev,it -- --domain=localhost-android --environment-extra="{ \"enableRouterTracing\": false }"` command.
 
-Run `node scripts\command-wrapper.js ionic serve --external -b --configuration=it -- --dom=localhost-android --env-ex="{ \"enableRouterTracing\": false }"` command.
+Run `node scripts\command-wrapper.js ionic serve --external -b --configuration=dev,it -- --dom=localhost-android --env-ex="{ \"enableRouterTracing\": false }"` command.
 
 
 # Android
 
-Run `node scripts\command-wrapper.js ionic capacitor run android --configuration=it -- --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android` command.
+Run `node scripts\command-wrapper.js ionic capacitor run android --configuration=dev,it -- --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android` command.
 
-Run `node scripts\command-wrapper.js ionic capacitor run android --configuration=it -- --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android --dom-ex="{ \"url\": \"192.168.1.167\" }"` command.
+Run `node scripts\command-wrapper.js ionic capacitor run android --configuration=dev,it -- --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android --dom-ex="{ \"url\": \"192.168.1.167\" }"` command.
 
-Run `node scripts\command-wrapper.js ionic capacitor run android -l --external --configuration=it -- --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android` command.
+Run `node scripts\command-wrapper.js ionic capacitor run android -l --external --configuration=dev,it -- --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android` command.
 
-Run `node scripts\command-wrapper.js ionic capacitor run android -l --external --configuration=it -- --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android --dom-ex="{ \"url\": \"192.168.1.167\" }"` command.
+Run `node scripts\command-wrapper.js ionic capacitor run android -l --external --configuration=dev,it -- --env-ex="{ \"enableRouterTracing\": false }" --dom=localhost-android --dom-ex="{ \"url\": \"192.168.1.167\" }"` command.
