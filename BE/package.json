@@ -19,7 +19,7 @@
       "reflect-metadata": "^0.1.13",
       "sqlite3": "^5.0.0",
       "typeorm": "^0.2.29",
-      "ws": "^7.4.0"
+      "ws": "^7.4.6"
    },
    "scripts": {
       "start": "ts-node src/main.ts"
