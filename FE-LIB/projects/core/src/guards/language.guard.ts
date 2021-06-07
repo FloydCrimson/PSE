@@ -1,21 +1,28 @@
-import { InjectionToken } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { CanLoad, Route, UrlSegment, UrlTree } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
 import { PSELanguageService } from '../services/language.service';
 
-export function PSELanguageGuardProvider(token: string, URLs: string[]) {
-    return {
-        provide: new InjectionToken<CanLoad>('pse-language.guard.' + token),
-        useFactory: ((URLs: string[]) => {
-            return (translateService: TranslateService, languageService: PSELanguageService) => {
-                return (route: Route, segments: UrlSegment[]): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree => {
-                    languageService.addURLs(URLs);
-                    return translateService.reloadLang(translateService.currentLang).toPromise().then(_ => true).catch(_ => true);
-                }
-            }
-        })(URLs),
-        deps: [TranslateService, PSELanguageService]
-    };
+export class PSELanguageGuardConfig {
+    URLs = new Array<string>();
+}
+
+@Injectable()
+export abstract class PSELanguageGuard implements CanLoad {
+
+    constructor(
+        protected readonly translateService: TranslateService,
+        protected readonly config: PSELanguageGuardConfig
+    ) { }
+
+    public canLoad(route: Route, segments: UrlSegment[]): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+        const languageService = this.translateService.currentLoader as PSELanguageService;
+        languageService.addURLs(this.config.URLs);
+        return this.canLoadLang(route, segments, this.translateService.reloadLang(this.translateService.currentLang));
+    }
+
+    public abstract canLoadLang(route: Route, segments: UrlSegment[], observable: Observable<any>): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree>;
+
 }

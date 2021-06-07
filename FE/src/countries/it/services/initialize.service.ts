@@ -35,6 +35,10 @@ import { SocketFactoryImplementation } from 'global/common/implementations/facto
 import * as SocketFT from 'global/factories/socket.factory.type';
 import { AngularSocket } from 'global/factories/sockets/angular.socket';
 
+const URLs = [
+    'alert.json'
+];
+
 @Injectable({
     providedIn: 'root'
 })
@@ -98,7 +102,7 @@ export class InitializeService implements InitializeImplementation {
     }
 
     private initializeTranslate(): Promise<boolean>[] {
-        this.pseLanguageService.addURLs(['alert.json']);
+        this.pseLanguageService.addURLs(URLs);
         this.translateService.setDefaultLang(CountryConfig.defaultLanguage);
         const result = this.translateService.use(CountryConfig.defaultLanguage).toPromise().then(_ => true).catch(_ => false);
         return [result];

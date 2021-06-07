@@ -8,7 +8,7 @@ import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { HTTP } from '@ionic-native/http/ngx';
 import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
-import { PSECoreModule, PSELanguageModule, PSELanguageService } from '@pse-fe/core';
+import { PSECoreModule, PSELanguageServiceModule, PSELanguageService } from '@pse-fe/core';
 
 import { CountryConfig } from '@countries/country';
 
@@ -27,7 +27,7 @@ import { AppRoutingModule } from './app-routing.module';
     AppRoutingModule,
     TranslateModule.forRoot({ loader: { provide: TranslateLoader, useExisting: PSELanguageService }, missingTranslationHandler: { provide: MissingTranslationHandler, useExisting: PSELanguageService } }),
     PSECoreModule.forRoot(),
-    PSELanguageModule.forRoot({ getURLsPrefix: (language: string) => `assets/${CountryConfig.country}/i18n/${language}/` })
+    PSELanguageServiceModule.forRoot({ getURLsPrefix: (language: string) => `assets/${CountryConfig.country}/i18n/${language}/` })
   ],
   providers: [
     Deeplinks,

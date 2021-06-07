@@ -3,9 +3,7 @@ import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTr
 
 import * as RoutesIndex from '@countries/indexes/routes.index';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class NotFoundPageGuard implements CanActivate {
 
     constructor(

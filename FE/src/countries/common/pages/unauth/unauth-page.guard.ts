@@ -1,4 +1,25 @@
-import { PSELanguageGuardProvider } from '@pse-fe/core';
+import { Injectable } from '@angular/core';
+import { Route, UrlSegment, UrlTree } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
 
-export const UnauthPageLanguageGuardProvider = PSELanguageGuardProvider('unauth-page', ['unauth-page.json']);
-export const UnauthPageLanguageGuardToken = UnauthPageLanguageGuardProvider.provide;
+import { PSELanguageGuard } from '@pse-fe/core';
+
+const URLs = [
+    'unauth-page.json'
+];
+
+@Injectable()
+export class UnauthPageLanguageGuard extends PSELanguageGuard {
+
+    constructor(
+        protected readonly translateService: TranslateService
+    ) {
+        super(translateService, { URLs });
+    }
+
+    public canLoadLang(route: Route, segments: UrlSegment[], observable: Observable<any>): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+        return observable.toPromise().then(_ => true).catch(_ => false);
+    }
+
+}

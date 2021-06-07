@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateLoader, MissingTranslationHandler, MissingTranslationHandlerParams } from '@ngx-translate/core';
 import { Observable, zip, of } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
+
 import { PSEMergerProvider } from '../providers/merger.provider';
 
 export class PSELanguageServiceConfig {
@@ -14,16 +15,12 @@ export class PSELanguageService implements TranslateLoader, MissingTranslationHa
 
     private readonly setRelativeURLs = new Set<string>();
     private readonly setAbsoluteURLs = new Set<string>();
-    private readonly mapJSON = new Map<string, Object>();
+    private readonly mapJSON = new Map<string, any>();
 
     constructor(
         private readonly httpClient: HttpClient,
         @Optional() private readonly config?: PSELanguageServiceConfig
     ) { }
-
-    public handle(params: MissingTranslationHandlerParams) {
-        return params.key;
-    }
 
     public getTranslation(language: string): Observable<any> {
         const prefix = this.config ? this.config.getURLsPrefix(language) : `assets/i18n/${language}/`;
@@ -36,6 +33,10 @@ export class PSELanguageService implements TranslateLoader, MissingTranslationHa
         );
     }
 
+    public handle(params: MissingTranslationHandlerParams) {
+        return params.key;
+    }
+
     //
 
     public addURLs(URLs: string[]): void {
@@ -45,15 +46,13 @@ export class PSELanguageService implements TranslateLoader, MissingTranslationHa
     //
 
     private getJSON(absoluteURL: string): Observable<any> {
-        return this.setAbsoluteURLs.has(absoluteURL) ? of(null) : this.httpClient.get(absoluteURL).pipe(
-            map((JSON: any) => {
+        return this.setAbsoluteURLs.has(absoluteURL) ? of(null) : this.httpClient.get<any>(absoluteURL).pipe(
+            map((JSON) => {
                 delete JSON['$schema'];
-                console.log('Asset "' + absoluteURL + '" loaded.', JSON);
                 this.setAbsoluteURLs.add(absoluteURL);
                 return JSON;
             }),
-            catchError((error) => {
-                console.error(error);
+            catchError(_ => {
                 return of(null);
             })
         );

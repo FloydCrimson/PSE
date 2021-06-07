@@ -7,16 +7,7 @@ import { PSELoadingService } from '../services/loading.service';
 import { PSEPipeService } from '../services/pipe.service';
 import { PSECoreService, PSECoreServiceConfig } from '../services/core.service';
 
-@NgModule({
-    providers: [
-        PSEModalController,
-        PSERouteController,
-        PSEBusyService,
-        PSELoadingService,
-        PSEPipeService,
-        PSECoreService
-    ]
-})
+@NgModule()
 export class PSECoreModule {
 
     constructor(
@@ -31,7 +22,13 @@ export class PSECoreModule {
         return {
             ngModule: PSECoreModule,
             providers: [
-                { provide: PSECoreServiceConfig, useValue: config }
+                { provide: PSECoreServiceConfig, useValue: config },
+                PSECoreService,
+                PSEModalController,
+                PSERouteController,
+                PSEBusyService,
+                PSELoadingService,
+                PSEPipeService
             ]
         };
     }
