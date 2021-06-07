@@ -35,9 +35,11 @@ import { SocketFactoryImplementation } from 'global/common/implementations/facto
 import * as SocketFT from 'global/factories/socket.factory.type';
 import { AngularSocket } from 'global/factories/sockets/angular.socket';
 
-const URLs = [
-    'alert.json'
-];
+const URLs = new Array<[string, 'O' | 'C' | 'L']>(
+    ['info.json', 'O'],
+    ['language.json', 'O'],
+    ['alert.json', 'C']
+);
 
 @Injectable({
     providedIn: 'root'

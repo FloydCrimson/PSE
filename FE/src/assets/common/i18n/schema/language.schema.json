@@ -1,0 +1,30 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"$schema": {
+			"type": "string"
+		},
+		"LANGUAGE": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"EN": {
+					"type": "string"
+				},
+				"IT": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"EN",
+				"IT"
+			]
+		}
+	},
+	"required": [
+		"$schema",
+		"LANGUAGE"
+	]
+}

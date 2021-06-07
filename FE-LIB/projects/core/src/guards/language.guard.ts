@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { PSELanguageService } from '../services/language.service';
 
 export class PSELanguageGuardConfig {
-    URLs = new Array<string>();
+    URLs = new Array<[string, 'O' | 'C' | 'L']>();
 }
 
 @Injectable()

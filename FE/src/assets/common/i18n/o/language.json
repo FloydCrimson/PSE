@@ -1,0 +1,7 @@
+{
+	"$schema": "../schema/language.schema.json",
+	"LANGUAGE": {
+		"EN": "English",
+		"IT": "Italiano"
+	}
+}

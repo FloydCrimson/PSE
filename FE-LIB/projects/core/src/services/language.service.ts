@@ -7,13 +7,17 @@ import { map, tap, catchError } from 'rxjs/operators';
 import { PSEMergerProvider } from '../providers/merger.provider';
 
 export class PSELanguageServiceConfig {
-    getURLsPrefix = (language: string) => `assets/i18n/${language}/`;
+    getOURLsPrefix?= () => `assets/i18n/O/`;
+    getCURLsPrefix?= (language: string) => `assets/i18n/C/${language}/`;
+    getLURLsPrefix = (language: string) => `assets/i18n/L/${language}/`;
 }
 
 @Injectable()
 export class PSELanguageService implements TranslateLoader, MissingTranslationHandler {
 
-    private readonly setRelativeURLs = new Set<string>();
+    private readonly setRelativeOURLs = new Set<string>();
+    private readonly setRelativeCURLs = new Set<string>();
+    private readonly setRelativeLURLs = new Set<string>();
     private readonly setAbsoluteURLs = new Set<string>();
     private readonly mapJSON = new Map<string, any>();
 
@@ -23,10 +27,14 @@ export class PSELanguageService implements TranslateLoader, MissingTranslationHa
     ) { }
 
     public getTranslation(language: string): Observable<any> {
-        const prefix = this.config ? this.config.getURLsPrefix(language) : `assets/i18n/${language}/`;
+        const prefixO = this.config?.getOURLsPrefix ? this.config.getOURLsPrefix() : null;
+        const prefixC = this.config?.getCURLsPrefix ? this.config.getCURLsPrefix(language) : null;
+        const prefixL = this.config ? this.config.getLURLsPrefix(language) : null;
         return zip(
             this.mapJSON.has(language) ? of(this.mapJSON.get(language)) : of(null),
-            ...Array.from(this.setRelativeURLs.values()).map((relativeURL) => this.getJSON(prefix + relativeURL))
+            ...(prefixO ? Array.from(this.setRelativeOURLs.values()).map((relativeURL) => this.getJSON(prefixO + relativeURL)) : []),
+            ...(prefixC ? Array.from(this.setRelativeCURLs.values()).map((relativeURL) => this.getJSON(prefixC + relativeURL)) : []),
+            ...(prefixL ? Array.from(this.setRelativeLURLs.values()).map((relativeURL) => this.getJSON(prefixL + relativeURL)) : [])
         ).pipe(
             map((results) => PSEMergerProvider.merger(...results.filter((result => result !== null)))),
             tap((JSON) => this.mapJSON.set(language, JSON))
@@ -39,8 +47,14 @@ export class PSELanguageService implements TranslateLoader, MissingTranslationHa
 
     //
 
-    public addURLs(URLs: string[]): void {
-        URLs.forEach((URL) => this.setRelativeURLs.add(URL));
+    public addURLs(URLs: Array<[string, 'O' | 'C' | 'L']>): void {
+        URLs.forEach(([s, t]) => {
+            switch (t) {
+                case 'O': return this.setRelativeOURLs.add(s);
+                case 'C': return this.setRelativeCURLs.add(s);
+                case 'L': return this.setRelativeLURLs.add(s);
+            }
+        });
     }
 
     //

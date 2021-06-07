@@ -5,9 +5,9 @@ import { Observable } from 'rxjs';
 
 import { PSELanguageGuard } from '@pse-fe/core';
 
-const URLs = [
-    'unauth-page.json'
-];
+const URLs = new Array<[string, 'O' | 'C' | 'L']>(
+    ['unauth-page.json', 'L']
+);
 
 @Injectable()
 export class UnauthPageLanguageGuard extends PSELanguageGuard {

@@ -5,9 +5,9 @@ import { Observable } from 'rxjs';
 
 import { PSELanguageGuard } from '@pse-fe/core';
 
-const URLs = [
-    'home-page.json'
-];
+const URLs = new Array<[string, 'O' | 'C' | 'L']>(
+    ['home-page.json', 'L']
+);
 
 @Injectable()
 export class HomePageLanguageGuard extends PSELanguageGuard {

@@ -56,7 +56,10 @@
                 {
                   "glob": "**/*",
                   "input": "src/assets/common",
-                  "output": "assets/common"
+                  "output": "assets/common",
+                  "ignore": [
+                    "**/*.schema.json"
+                  ]
                 },
                 {
                   "glob": "**/*",
@@ -73,7 +76,10 @@
                 {
                   "glob": "**/*",
                   "input": "src/assets/common",
-                  "output": "assets/common"
+                  "output": "assets/common",
+                  "ignore": [
+                    "**/*.schema.json"
+                  ]
                 },
                 {
                   "glob": "**/*",

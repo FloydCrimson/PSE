@@ -27,7 +27,7 @@ import { AppRoutingModule } from './app-routing.module';
     AppRoutingModule,
     TranslateModule.forRoot({ loader: { provide: TranslateLoader, useExisting: PSELanguageService }, missingTranslationHandler: { provide: MissingTranslationHandler, useExisting: PSELanguageService } }),
     PSECoreModule.forRoot(),
-    PSELanguageServiceModule.forRoot({ getURLsPrefix: (language: string) => `assets/${CountryConfig.country}/i18n/${language}/` })
+    PSELanguageServiceModule.forRoot({ getOURLsPrefix: () => `assets/common/i18n/o/`, getCURLsPrefix: (language: string) => `assets/common/i18n/${language}/`, getLURLsPrefix: (language: string) => `assets/${CountryConfig.country}/i18n/${language}/` })
   ],
   providers: [
     Deeplinks,
