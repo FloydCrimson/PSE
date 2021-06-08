@@ -3,10 +3,10 @@ import { CanLoad, Route, UrlSegment, UrlTree } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
-import { PSELanguageService } from '../services/language.service';
+import { PSELanguageService, PSELanguageServiceURL } from '../services/language.service';
 
 export class PSELanguageGuardConfig {
-    URLs = new Array<[string, 'O' | 'C' | 'L']>();
+    URLs = new Array<PSELanguageServiceURL>();
 }
 
 @Injectable()

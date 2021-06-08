@@ -14,6 +14,6 @@ export { PSEMergerProvider } from './providers/merger.provider';
 
 export { PSEBusyService } from './services/busy.service';
 export { PSECoreService } from './services/core.service';
-export { PSELanguageService, PSELanguageServiceConfig } from './services/language.service';
+export { PSELanguageService, PSELanguageServiceConfig, PSELanguageServiceURL, PSELanguageServiceURLTypeEnum } from './services/language.service';
 export { PSELoadingService } from './services/loading.service';
 export { PSEPipeService } from './services/pipe.service';

@@ -6,10 +6,21 @@ import { map, tap, catchError } from 'rxjs/operators';
 
 import { PSEMergerProvider } from '../providers/merger.provider';
 
+export enum PSELanguageServiceURLTypeEnum {
+    /** Translations are recovered without any discrimination. */
+    Other = 'O',
+    /** Translations are recovered by Language only. */
+    Country = 'C',
+    /** Translations are recovered by Country and Language. */
+    Language = 'L'
+}
+
+export type PSELanguageServiceURL = [string, PSELanguageServiceURLTypeEnum];
+
 export class PSELanguageServiceConfig {
     getOURLsPrefix?= () => `assets/i18n/O/`;
     getCURLsPrefix?= (language: string) => `assets/i18n/C/${language}/`;
-    getLURLsPrefix = (language: string) => `assets/i18n/L/${language}/`;
+    getLURLsPrefix?= (language: string) => `assets/i18n/L/${language}/`;
 }
 
 @Injectable()
@@ -29,7 +40,7 @@ export class PSELanguageService implements TranslateLoader, MissingTranslationHa
     public getTranslation(language: string): Observable<any> {
         const prefixO = this.config?.getOURLsPrefix ? this.config.getOURLsPrefix() : null;
         const prefixC = this.config?.getCURLsPrefix ? this.config.getCURLsPrefix(language) : null;
-        const prefixL = this.config ? this.config.getLURLsPrefix(language) : null;
+        const prefixL = this.config?.getLURLsPrefix ? this.config.getLURLsPrefix(language) : null;
         return zip(
             this.mapJSON.has(language) ? of(this.mapJSON.get(language)) : of(null),
             ...(prefixO ? Array.from(this.setRelativeOURLs.values()).map((relativeURL) => this.getJSON(prefixO + relativeURL)) : []),
@@ -47,12 +58,12 @@ export class PSELanguageService implements TranslateLoader, MissingTranslationHa
 
     //
 
-    public addURLs(URLs: Array<[string, 'O' | 'C' | 'L']>): void {
-        URLs.forEach(([s, t]) => {
-            switch (t) {
-                case 'O': return this.setRelativeOURLs.add(s);
-                case 'C': return this.setRelativeCURLs.add(s);
-                case 'L': return this.setRelativeLURLs.add(s);
+    public addURLs(URLs: Array<PSELanguageServiceURL>): void {
+        URLs.forEach(([value, type]) => {
+            switch (type) {
+                case PSELanguageServiceURLTypeEnum.Other: return this.setRelativeOURLs.add(value);
+                case PSELanguageServiceURLTypeEnum.Country: return this.setRelativeCURLs.add(value);
+                case PSELanguageServiceURLTypeEnum.Language: return this.setRelativeLURLs.add(value);
             }
         });
     }

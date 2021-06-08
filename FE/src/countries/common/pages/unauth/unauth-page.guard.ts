@@ -3,10 +3,10 @@ import { Route, UrlSegment, UrlTree } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
-import { PSELanguageGuard } from '@pse-fe/core';
+import { PSELanguageGuard, PSELanguageServiceURL, PSELanguageServiceURLTypeEnum } from '@pse-fe/core';
 
-const URLs = new Array<[string, 'O' | 'C' | 'L']>(
-    ['unauth-page.json', 'L']
+const URLs = new Array<PSELanguageServiceURL>(
+    ['unauth-page.json', PSELanguageServiceURLTypeEnum.Language]
 );
 
 @Injectable()

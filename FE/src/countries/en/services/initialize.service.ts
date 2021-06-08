@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { HTTP } from '@ionic-native/http/ngx';
 import { TranslateService } from '@ngx-translate/core';
 
-import { PSELanguageService } from '@pse-fe/core';
+import { PSELanguageService, PSELanguageServiceURL, PSELanguageServiceURLTypeEnum } from '@pse-fe/core';
 
 import { CountryConfig } from '@countries/country';
 
@@ -35,10 +35,10 @@ import { SocketFactoryImplementation } from 'global/common/implementations/facto
 import * as SocketFT from 'global/factories/socket.factory.type';
 import { AngularSocket } from 'global/factories/sockets/angular.socket';
 
-const URLs = new Array<[string, 'O' | 'C' | 'L']>(
-    ['info.json', 'O'],
-    ['language.json', 'O'],
-    ['alert.json', 'C']
+const URLs = new Array<PSELanguageServiceURL>(
+    ['info.json', PSELanguageServiceURLTypeEnum.Other],
+    ['language.json', PSELanguageServiceURLTypeEnum.Other],
+    ['alert.json', PSELanguageServiceURLTypeEnum.Country]
 );
 
 @Injectable({
