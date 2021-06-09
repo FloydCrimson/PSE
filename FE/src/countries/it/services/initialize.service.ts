@@ -36,9 +36,9 @@ import * as SocketFT from 'global/factories/socket.factory.type';
 import { AngularSocket } from 'global/factories/sockets/angular.socket';
 
 const URLs = new Array<PSELanguageServiceURL>(
-    ['info.json', PSELanguageServiceURLTypeEnum.Other],
-    ['language.json', PSELanguageServiceURLTypeEnum.Other],
-    ['alert.json', PSELanguageServiceURLTypeEnum.Country]
+    ['info.json', PSELanguageServiceURLTypeEnum.Omni],
+    ['language.json', PSELanguageServiceURLTypeEnum.Omni],
+    ['alert.json', PSELanguageServiceURLTypeEnum.Language]
 );
 
 @Injectable({
@@ -105,6 +105,7 @@ export class InitializeService implements InitializeImplementation {
 
     private initializeTranslate(): Promise<boolean>[] {
         this.pseLanguageService.addURLs(URLs);
+        this.translateService.addLangs(CountryConfig.languages);
         this.translateService.setDefaultLang(CountryConfig.defaultLanguage);
         const result = this.translateService.use(CountryConfig.defaultLanguage).toPromise().then(_ => true).catch(_ => false);
         return [result];

@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { PSELanguageGuard, PSELanguageServiceURL, PSELanguageServiceURLTypeEnum } from '@pse-fe/core';
 
 const URLs = new Array<PSELanguageServiceURL>(
-    ['unauth-page.json', PSELanguageServiceURLTypeEnum.Language]
+    ['unauth-page.json', PSELanguageServiceURLTypeEnum.Custom]
 );
 
 @Injectable()
