@@ -1,5 +1,9 @@
 # Custom parameters
 
-Run `ng build <project> --configuration=production` command.
+Run `node scripts\project-builder.js .` command.
 
-Run `npm pack ./dist/<project>` command.
+Alternatively
+
+Run `ng build <project> --configuration=prod` command.
+
+Run `npm pack .\dist\<project>` command.

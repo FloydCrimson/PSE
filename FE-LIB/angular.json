@@ -16,7 +16,8 @@
             "project": "projects/core/ng-package.json"
           },
           "configurations": {
-            "production": {
+            "dev": {},
+            "prod": {
               "tsConfig": "projects/core/tsconfig.lib.prod.json"
             }
           }
