@@ -1,5 +1,5 @@
 import { NextFunction } from 'express';
-import * as hawk from 'hawk';
+import * as hapi from '@hapi/hapi';
 import { CoderProvider, NonceProvider } from 'pse-global-providers';
 
 import { MiddlewareImplementation } from '../implementations/middleware.implementation';
@@ -21,8 +21,8 @@ export const AuthMiddleware: MiddlewareImplementation<undefined> = () => {
                 const method = request.request.method || '';
                 const url = request.message.operation;
                 const headers = { ...request.request.headers, 'authorization': request.message.auth, 'content-type': 'application/json' };
-                const output = await hawk.server.authenticate({ method, url, headers }, credentialsFunc, options);
-                request.locals.hawk = output;
+                // const output = await hapi.server.authenticate({ method, url, headers }, credentialsFunc, options);
+                // request.locals.hawk = output;
                 next();
             } catch (error) {
                 console.error('AuthMiddleware', error);

@@ -1,5 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
+import { AlertController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable, of, timer } from 'rxjs';
 import { switchMap, map, finalize } from 'rxjs/operators';
 import { PasswordCheckerProvider } from 'pse-global-providers';
@@ -42,7 +44,9 @@ export class UnauthPage implements OnDestroy {
     private readonly pseBusyService: PSEBusyService,
     private readonly pseLoadingService: PSELoadingService,
     private readonly backendAuthRest: BackendAuthRest,
-    private readonly backendAuthRestService: BackendAuthRestService
+    private readonly backendAuthRestService: BackendAuthRestService,
+    private readonly translateService: TranslateService,
+    private readonly alertController: AlertController
   ) { }
 
   public ngOnDestroy(): void {
@@ -118,6 +122,35 @@ export class UnauthPage implements OnDestroy {
   }
 
   // Events
+
+  public async onToolbarClicked(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Select language',
+      inputs: this.translateService.getLangs().map((language) => {
+        return {
+          type: 'radio',
+          label: this.translateService.instant('LANGUAGE.' + language.toUpperCase()),
+          value: language,
+          checked: language === this.translateService.currentLang
+        };
+      }),
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Ok',
+          role: 'ok'
+        }
+      ]
+    });
+    await alert.present();
+    const result = await alert.onDidDismiss<{ values: string; }>();
+    if (result.role === 'ok' && result.data.values !== this.translateService.currentLang) {
+      await this.translateService.use(result.data.values).toPromise();
+    }
+  }
 
   public onSignInClicked(): void {
     const email: string = this.signInForm.get('email').value;

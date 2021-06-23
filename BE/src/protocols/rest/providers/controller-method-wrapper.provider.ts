@@ -1,22 +1,25 @@
-import { Request, Response } from '../implementations/express.implementation';
+import { Request } from '@hapi/hapi';
+
 import { RouteImplementation } from '../implementations/route.implementation';
 import { CustomError, CustomErrorProvider } from '../../common/providers/error.provider';
 
 export class ControllerMethodWrapperProvider {
 
-    public static async wrap<B, P, O>(route: RouteImplementation<B, P, O>, request: Request, response: Response, callback: (body: B, params: P, output: O) => Promise<O>): Promise<O> {
+    public static async wrap<B, P, O>(route: RouteImplementation<B, P, O>, request: Request, callback: (body: B, params: P, output: O) => Promise<O>): Promise<O> {
         let result: O;
         try {
-            const { body, params, output } = { body: request ? (request.body as any) : undefined, params: request ? (request.query.params as any) : undefined, output: undefined };
-            if (route.maskB && ControllerMethodWrapperProvider.checkArgumentValidity(body, route.maskB)) {
-                throw CustomErrorProvider.getError('Rest', 'GENERIC', 'REQUEST_MALFORMED');
-            }
-            if (route.maskP && ControllerMethodWrapperProvider.checkArgumentValidity(params, route.maskP)) {
-                throw CustomErrorProvider.getError('Rest', 'GENERIC', 'REQUEST_MALFORMED');
-            }
-            result = await callback(body, params, output);
-            if (route.maskO && ControllerMethodWrapperProvider.checkArgumentValidity(result, route.maskO)) {
-                throw CustomErrorProvider.getError('Rest', 'GENERIC', 'RESPONSE_MALFORMED');
+            if (route.masks) {
+                const { body, params, output } = { body: request ? (request.raw as any) : undefined, params: request ? (request.query.params as any) : undefined, output: undefined };
+                if (route.masks.maskB && ControllerMethodWrapperProvider.checkArgumentValidity(body, route.masks.maskB)) {
+                    throw CustomErrorProvider.getError('Rest', 'GENERIC', 'REQUEST_MALFORMED');
+                }
+                if (route.masks.maskP && ControllerMethodWrapperProvider.checkArgumentValidity(params, route.masks.maskP)) {
+                    throw CustomErrorProvider.getError('Rest', 'GENERIC', 'REQUEST_MALFORMED');
+                }
+                result = await callback(body, params, output);
+                if (route.masks.maskO && ControllerMethodWrapperProvider.checkArgumentValidity(result, route.masks.maskO)) {
+                    throw CustomErrorProvider.getError('Rest', 'GENERIC', 'RESPONSE_MALFORMED');
+                }
             }
         } catch (error) {
             throw (error.constructor === CustomError) ? error : CustomErrorProvider.getError('Rest', 'GENERIC', 'UNCAUGHT');

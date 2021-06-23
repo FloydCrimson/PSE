@@ -1,78 +1,118 @@
 import 'reflect-metadata';
 
-import * as express from 'express';
+import * as hapi from '@hapi/hapi';
+import { CommonRouteProperties, Plugin, RouteExtObject, RouteOptionsCors, RouteRequestExtType, Server, ServerRoute } from '@hapi/hapi';
 
-import { Request, Response } from '../implementations/express.implementation';
 import { InitializeImplementation } from '../../../global/common/implementations/initialize.implementation';
 import { ProtocolConfigurationsType } from '../../../global/common/types/protocol-options.type';
-import { ServerProvider } from '../../../global/providers/server.provider';
 import { CommunicationClientService } from '../../../global/services/communication.service';
 import { CommunicationImplementationType } from '../../common/implementations/communication.implementation.type';
 import { RouteImplementation } from '../implementations/route.implementation';
+import { ControllerMethodType } from '../types/controller.type';
+import { ExtensionObjectType } from '../types/extension.type';
 import { DispatcherService } from './dispatcher.service';
-import { ControllerService } from './controller.service';
+import { PluginService, PluginServiceImplementation } from './plugin.service';
 import { CommunicationService } from './communication.service';
-import { ControllerMethodWrapperProvider } from '../providers/controller-method-wrapper.provider';
-import { SendProvider } from '../providers/send.provider';
-import * as MI from '../middlewares.index';
-import * as RI from '../routes.index';
+
+import * as PI from '../plugins.index';
 
 export class InitializeService implements InitializeImplementation {
 
-    private readonly dispatcherService: DispatcherService = new DispatcherService();
+    private readonly dispatcherService = new DispatcherService();
+    private readonly pluginService = new PluginService(this.dispatcherService);
+    private readonly communicationClientService = new CommunicationClientService<CommunicationImplementationType, 'rest'>(new CommunicationService(), 'rest');
 
-    constructor() { }
+    constructor() {
+        this.dispatcherService.set('PluginService', this.pluginService);
+        this.dispatcherService.set('CommunicationClientService', this.communicationClientService);
+    }
 
-    public initialize(configurations: ProtocolConfigurationsType[]): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
-            // SERVER
-            const app = express();
-            app.use(express.json()); // Content-Type: application/json
-            // app.use(express.urlencoded({ extended: true })); // Content-Type: application/x-www-form-urlencoded
-            // app.use(express.text()); // Content-Type: text/plain
-            app.use(MI.LogMiddleware()(this.dispatcherService));
-            app.use(MI.ParamsMiddleware()(this.dispatcherService));
-            for (const group in RI) {
-                for (const item in RI[group]) {
-                    const route: RouteImplementation<any, any, any> = RI[group][item];
-                    app[route.endpoint.method](route.endpoint.route, (route.middlewares || []).map((middleware) => middleware(this.dispatcherService)), async (request: Request, response: Response) => {
-                        if (route.handler) {
-                            try {
-                                const controller = this.dispatcherService.get('ControllerService').get(route.handler.controller);
-                                const action = controller[route.handler.action];
-                                const result = await ControllerMethodWrapperProvider.wrap(route, request, response, (body, params, output) => action.apply(controller, [response.locals, body, params, output]));
-                                SendProvider.sendResponse(request, response, 200, result)
-                            } catch (error) {
-                                SendProvider.sendError(request, response, 500, error);
+    public async initialize(configurations: ProtocolConfigurationsType[]): Promise<boolean> {
+        const servers = await Promise.all(configurations.map(async (configuration) => {
+            const server = hapi.server({
+                port: configuration.port,
+                host: 'localhost',
+                debug: { log: ['*'], request: ['*'] }
+            });
+            for (const plugin in PI) {
+                await server.register({
+                    plugin: await this.getPlugin(plugin as keyof typeof PI)
+                });
+            }
+            return server;
+        }));
+        const result = await Promise.all(servers.map((server) => {
+            return server.start().then((result) => {
+                console.log(`Express Rest server has started on port ${server.info.port}. Open ${server.info.uri}/echo/echo to see results.`, result);
+                return true;
+            }).catch((error) => {
+                console.error(`Express Rest server has not started on port ${server.info.port}. Open ${server.info.uri}/echo/echo to see results.`, error);
+                return false;
+            });
+        })).then((results) => !results.some(c => !c));
+        if (result) {
+            this.communicationClientService.receive();
+        }
+        return result;
+    }
+
+    //
+
+    private async getPlugin<K extends keyof PluginServiceImplementation>(type: K): Promise<Plugin<any>> {
+        const plugins = this.pluginService.get(type);
+        const config = await plugins.config();
+        return {
+            name: config.name,
+            register: async (server: Server, options: any) => {
+                if (config.methods) {
+                    const instance = new (await plugins.common.method())(this.dispatcherService);
+                    for (const method in config.methods) {
+                        server.method({
+                            name: type + '.' + method,
+                            method: instance[method],
+                            options: {
+                                bind: instance
                             }
-                        } else {
-                            SendProvider.sendResponse(request, response);
-                        }
-                    });
+                        });
+                    }
+                }
+                if (config.routes) {
+                    for (const route in config.routes) {
+                        const version = config.routes[route].version;
+                        const plugin = await plugins.version[version]();
+                        server.route({
+                            method: plugin.route[route].method,
+                            path: plugin.route[route].path,
+                            handler: this.controllerMapper(plugin.controller ? plugin.controller[route] : undefined, server.methods[type]),
+                            options: {
+                                ext: this.extensionMapper(plugin.extension ? plugin.extension[route] : undefined, server.methods[type]),
+                                cors: this.corsMapper(plugin.route[route].options ? plugin.route[route].options.cors : undefined)
+                            }
+                        });
+                    }
                 }
             }
-            const servers = ServerProvider.getServers(app, configurations);
-            Promise.all(servers.map((server) => {
-                return new Promise<boolean>((resolve, reject) => {
-                    server.instance.listen(server.port, (...args: any[]) => {
-                        console.log(`Express Rest server has started on port ${server.port}. Open localhost:${server.port}/echo/echo to see results.`);
-                        resolve(true);
-                    });
-                });
-            })).then(result => {
-                resolve(!result.some(c => !c));
+        };
+    }
+
+    private controllerMapper<R extends RouteImplementation, M = any>(controller?: ControllerMethodType<R, M>, methods?: M): ServerRoute['handler'] {
+        return (request, h, err): ServerRoute['handler'] => controller ? controller(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]) : h.response().code(200);
+    }
+
+    private extensionMapper<R extends RouteImplementation, M = any>(extension?: { [KR in RouteRequestExtType]?: ExtensionObjectType<R, M>[] }, methods?: M): CommonRouteProperties['ext'] {
+        return extension ? Object.entries(extension).reduce<CommonRouteProperties['ext']>((r, [p, a]) => {
+            r[p] = a.map((o) => {
+                return {
+                    method: (request, h, err): RouteExtObject['method'] => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]),
+                    options: o.options
+                };
             });
-        }).then((result) => {
-            // DISPATCHER
-            if (result) {
-                const controllerService = new ControllerService(this.dispatcherService);
-                const communicationClientService = new CommunicationClientService<CommunicationImplementationType, 'rest'>(new CommunicationService(), 'rest');
-                this.dispatcherService.set('ControllerService', controllerService);
-                this.dispatcherService.set('CommunicationClientService', communicationClientService);
-                communicationClientService.receive();
-            }
-            return result;
-        });
+            return r;
+        }, {}) : {};
+    }
+
+    private corsMapper(cors?: RouteOptionsCors): CommonRouteProperties['cors'] {
+        return cors ? cors : false;
     }
 
 }

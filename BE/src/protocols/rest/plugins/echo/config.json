@@ -1,0 +1,26 @@
+{
+    "name": "echo",
+    "routes": {
+        "EchoOPTIONS": {
+            "version": "1.0.0"
+        },
+        "EchoGET": {
+            "version": "1.0.0"
+        },
+        "EchoPOST": {
+            "version": "1.0.0"
+        },
+        "EchoAuthOPTIONS": {
+            "version": "1.0.0"
+        },
+        "EchoAuthGET": {
+            "version": "1.0.0"
+        },
+        "EchoAuthPOST": {
+            "version": "1.0.0"
+        }
+    },
+    "methods": {
+        "Log": {}
+    }
+}

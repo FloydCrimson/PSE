@@ -1,0 +1,8 @@
+{
+    "name": "not-found",
+    "routes": {
+        "NotFoundANY": {
+            "version": "1.0.0"
+        }
+    }
+}
