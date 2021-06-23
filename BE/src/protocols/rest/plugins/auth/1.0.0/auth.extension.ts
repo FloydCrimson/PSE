@@ -21,11 +21,11 @@ const SignOutOPTIONSExtension: ExtensionPluginType<AuthRouteImplementation, Auth
 };
 
 const LogInOPTIONSExtension: ExtensionPluginType<AuthRouteImplementation, AuthMethodImplementation>['LogInOPTIONS'] = {
-    onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'POST'], ACAHeaders: ['content-type'] })]
+    onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'POST'], ACAHeaders: ['content-type', 'authorization'] })]
 };
 
 const LogOutOPTIONSExtension: ExtensionPluginType<AuthRouteImplementation, AuthMethodImplementation>['LogOutOPTIONS'] = {
-    onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'POST'], ACAHeaders: ['content-type'] })]
+    onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'POST'], ACAHeaders: ['content-type', 'authorization'] })]
 };
 
 const RecoverKeyOPTIONSExtension: ExtensionPluginType<AuthRouteImplementation, AuthMethodImplementation>['RecoverKeyOPTIONS'] = {
@@ -33,7 +33,7 @@ const RecoverKeyOPTIONSExtension: ExtensionPluginType<AuthRouteImplementation, A
 };
 
 const ChangeKeyOPTIONSExtension: ExtensionPluginType<AuthRouteImplementation, AuthMethodImplementation>['ChangeKeyOPTIONS'] = {
-    onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'POST'], ACAHeaders: ['content-type'] })]
+    onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'POST'], ACAHeaders: ['content-type', 'authorization'] })]
 };
 
 export const AuthExtension: ExtensionPluginType<AuthRouteImplementation, AuthMethodImplementation> = {

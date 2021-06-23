@@ -51,15 +51,15 @@
         }
     },
     "methods": {
-        "CheckAuthEntityEmailAvailability": {},
-        "CheckAuthEntityNicknameAvailability": {},
-        "GetAvailableAuthEntityId": {},
-        "GetNewAuthEntity": {},
-        "SaveAuthEntity": {},
-        "UpdateAuthEntity": {},
-        "GetAuthEntity": {},
-        "SendTemporaryPasswordViaEmail": {},
-        "GenerateKey": {},
-        "CheckKey": {}
+        "checkAuthEntityEmailAvailability": {},
+        "checkAuthEntityNicknameAvailability": {},
+        "getAvailableAuthEntityId": {},
+        "getNewAuthEntity": {},
+        "saveAuthEntity": {},
+        "updateAuthEntity": {},
+        "getAuthEntity": {},
+        "sendTemporaryPasswordViaEmail": {},
+        "generateKey": {},
+        "checkKey": {}
     }
 }

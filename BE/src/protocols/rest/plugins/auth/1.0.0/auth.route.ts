@@ -56,11 +56,13 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     // /auth/log-in
     LogInOPTIONS: {
         method: 'OPTIONS',
-        path: '/auth/log-in'
+        path: '/auth/log-in',
+        options: { cors: { origin: ['*'], credentials: false } }
     },
     LogInPOST: {
         method: 'POST',
         path: '/auth/log-in',
+        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'AuthStrategy', mode: 'required', payload: 'required' } },
         masks: {
             maskO: { authenticated: 'boolean' }
         }
