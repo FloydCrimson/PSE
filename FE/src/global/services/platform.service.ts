@@ -18,15 +18,20 @@ export class PlatformService {
 
     public getPlatform(): PlatformEnum {
         let platformEnum: PlatformEnum = PlatformEnum.Unknown;
-        if (this.platform.is('mobileweb')) {
+        if (this.platform.is('desktop')) {
+            platformEnum |= PlatformEnum.Desktop;
             platformEnum |= PlatformEnum.Browser;
         } else {
-            platformEnum |= PlatformEnum.Mobile;
-        }
-        if (this.platform.is('android')) {
-            platformEnum |= PlatformEnum.Android;
-        } else if (this.platform.is('ios')) {
-            platformEnum |= PlatformEnum.iOS;
+            if (this.platform.is('mobileweb')) {
+                platformEnum |= PlatformEnum.Browser;
+            } else {
+                platformEnum |= PlatformEnum.Mobile;
+            }
+            if (this.platform.is('android')) {
+                platformEnum |= PlatformEnum.Android;
+            } else if (this.platform.is('ios')) {
+                platformEnum |= PlatformEnum.iOS;
+            }
         }
         return platformEnum;
     }
