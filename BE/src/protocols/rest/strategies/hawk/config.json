@@ -1,5 +1,5 @@
 {
-    "name": "auth",
+    "name": "hawk",
     "version": "1.0.0",
     "methods": {
         "test": {}

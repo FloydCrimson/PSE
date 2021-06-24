@@ -1,1 +1,1 @@
-export { AuthStrategy } from './strategies/auth/index';
+export { HawkStrategy } from './strategies/hawk/index';

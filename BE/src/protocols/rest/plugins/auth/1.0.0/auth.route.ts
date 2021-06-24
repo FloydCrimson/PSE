@@ -62,7 +62,7 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     LogInPOST: {
         method: 'POST',
         path: '/auth/log-in',
-        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'AuthStrategy', mode: 'required', payload: 'required' } },
+        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy', mode: 'required', payload: 'required' } },
         masks: {
             maskO: { authenticated: 'boolean' }
         }
