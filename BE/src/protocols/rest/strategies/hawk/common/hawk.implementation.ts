@@ -1,3 +1,6 @@
+import { Request } from '@hapi/hapi';
+
 export interface HawkMethodImplementation {
-    test(): Promise<boolean>;
+    credentialsFunc(encoded: string): Promise<any>;
+    requestMapper(request: Request): any;
 }
