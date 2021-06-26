@@ -8,20 +8,26 @@ import { DispatcherService } from '../../../services/dispatcher.service';
 import { HawkMethod } from '../common/hawk.method';
 
 export const HawkScheme: SchemeStrategyType<HawkMethodImplementation> = {
-    api: {},
     authenticate: (dispatcherService: DispatcherService) => async function (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<any> {
         try {
-            const options = {};
-            const { artifacts, credentials } = await this.parseRequest(request, options);
-            await this.checkMac(artifacts, credentials, options);
-            await this.checkNonce(artifacts, credentials, options);
-            if (credentials.user.attempts === HawkMethod.ATTEMPS_MAX) {
-                throw Object.assign(Hawk.utils.unauthorized('Max attemps reached'), { artifacts, credentials });
-            } else if (credentials.user.attempts > 0) {
-                credentials.user.attempts = 0;
-                await dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityUpdate', { eid: credentials.user.eid }, { attempts: credentials.user.attempts });
+            const { api } = h.context;
+            if (api.options.type === 'full') {
+                const options = {};
+                const { artifacts, credentials } = await this.parseRequest(request, options);
+                await this.checkMac(artifacts, credentials, options);
+                await this.checkNonce(artifacts, credentials, options);
+                if (credentials.user.attempts === HawkMethod.ATTEMPS_MAX) {
+                    throw Object.assign(Hawk.utils.unauthorized('Max attemps reached'), { artifacts, credentials });
+                } else if (credentials.user.attempts > 0) {
+                    credentials.user.attempts = 0;
+                    await dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityUpdate', { eid: credentials.user.eid }, { attempts: credentials.user.attempts });
+                }
+                return h.authenticated({ artifacts, credentials });
+            } else if (api.options.type === 'partial') {
+                throw new Error('Authentication hawk.partial not supported');
+            } else {
+                throw new Error('Authentication type not recognized');
             }
-            return h.authenticated({ artifacts, credentials });
         } catch (error) {
             return h.unauthenticated(new Boom.Boom(error, { override: !error.isBoom }));
         }

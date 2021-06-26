@@ -27,11 +27,11 @@ export const EchoRoute: RouteType<EchoRouteImplementation> = {
     EchoAuthGET: {
         method: 'GET',
         path: '/echo/echo-auth',
-        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy', mode: 'required', payload: 'required' } }
+        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Full', mode: 'required', payload: 'required' } }
     },
     EchoAuthPOST: {
         method: 'POST',
         path: '/echo/echo-auth',
-        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy', mode: 'required', payload: 'required' } }
+        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Full', mode: 'required', payload: 'required' } }
     }
 };

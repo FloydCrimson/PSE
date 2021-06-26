@@ -55,7 +55,7 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     SignOutPOST: {
         method: 'POST',
         path: '/auth/sign-out',
-        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy', mode: 'required', payload: 'required' } }
+        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Full', mode: 'required', payload: 'required' } }
     },
     // /auth/log-in
     LogInOPTIONS: {
@@ -66,7 +66,7 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     LogInPOST: {
         method: 'POST',
         path: '/auth/log-in',
-        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy', mode: 'required', payload: 'required' } },
+        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Full', mode: 'required', payload: 'required' } },
         masks: {
             maskO: { authenticated: 'boolean' }
         }
@@ -80,7 +80,7 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     LogOutPOST: {
         method: 'POST',
         path: '/auth/log-out',
-        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy', mode: 'required', payload: 'required' } }
+        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Full', mode: 'required', payload: 'required' } }
     },
     // /auth/recover-key
     RecoverKeyOPTIONS: {
@@ -91,7 +91,7 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     RecoverKeyPOST: {
         method: 'POST',
         path: '/auth/recover-key',
-        options: { cors: { origin: ['*'], credentials: false } },
+        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Partial', mode: 'required', payload: 'required' } },
         masks: {
             maskB: { type: 'string', value: 'string' }
         }
@@ -105,7 +105,7 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     ChangeKeyPOST: {
         method: 'POST',
         path: '/auth/change-key',
-        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy', mode: 'required', payload: 'required' } },
+        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Full', mode: 'required', payload: 'required' } },
         masks: {
             maskB: { key: 'string' }
         }

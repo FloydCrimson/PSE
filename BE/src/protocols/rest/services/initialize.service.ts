@@ -9,6 +9,7 @@ import { CommunicationImplementationType } from '../../common/implementations/co
 import { RouteImplementation } from '../implementations/route.implementation';
 import { ControllerMethodType } from '../types/controller.type';
 import { ExtensionObjectType } from '../types/extension.type';
+import { SchemeStrategyType } from '../types/scheme.type';
 import { DispatcherService } from './dispatcher.service';
 import { StrategyService, StrategyServiceImplementation } from './strategy.service';
 import { PluginService, PluginServiceImplementation } from './plugin.service';
@@ -16,7 +17,6 @@ import { CommunicationService } from './communication.service';
 
 import * as SI from '../strategies.index';
 import * as PI from '../plugins.index';
-import { SchemeStrategyType } from '../types/scheme.type';
 
 export class InitializeService implements InitializeImplementation {
 
@@ -39,11 +39,10 @@ export class InitializeService implements InitializeImplementation {
                 debug: { log: ['*'], request: ['*'] }
             });
             for (const strategy in SI) {
-                server.auth.scheme(strategy, await this.getStrategy(strategy as keyof StrategyServiceImplementation));
-                server.auth.strategy(strategy, strategy);
+                await this.addSchemeAndStrategies(strategy as keyof StrategyServiceImplementation, server);
             }
             for (const plugin in PI) {
-                await server.register({ plugin: await this.getPlugin(plugin as keyof PluginServiceImplementation) });
+                await this.addPlugin(plugin as keyof PluginServiceImplementation, server);
             }
             return server;
         }));
@@ -64,34 +63,35 @@ export class InitializeService implements InitializeImplementation {
 
     // STRATEGY
 
-    private async getStrategy<K extends keyof StrategyServiceImplementation>(type: K): Promise<Hapi.ServerAuthScheme> {
+    private async addSchemeAndStrategies<K extends keyof StrategyServiceImplementation>(type: K, server: Hapi.Server): Promise<void> {
         const prefix = ['Strategy', type].join('.');
         const strategies = this.strategyService.get(type);
         const config = await strategies.config();
         const instance = strategies.common.method ? new (await strategies.common.method())(this.dispatcherService) : undefined;
-        const version = config.version;
-        const strategy = await strategies.version[version]();
-        return (server) => {
-            if (instance && config.methods) {
-                for (const method in config.methods) {
-                    server.method({
-                        name: [prefix, method].join('.'),
-                        method: instance[method],
-                        options: {
-                            bind: instance
-                        }
-                    });
-                }
+        if (instance && config.methods) {
+            for (const method in config.methods) {
+                server.method({
+                    name: [prefix, method].join('.'),
+                    method: instance[method],
+                    options: { bind: instance }
+                });
             }
+        }
+        const version = config.version;
+        const scheme = await strategies.version[version]();
+        server.auth.scheme(type, (server, options?) => {
             return {
-                api: strategy.scheme.api,
-                authenticate: this.authenticateMapper(strategy.scheme.authenticate, this.getChild(server.methods, prefix)),
-                payload: this.payloadMapper(strategy.scheme.payload, this.getChild(server.methods, prefix)),
-                response: this.responseMapper(strategy.scheme.response, this.getChild(server.methods, prefix)),
-                verify: this.verifyMapper(strategy.scheme.verify, this.getChild(server.methods, prefix)),
-                options: strategy.scheme.options
+                api: { config: scheme.scheme.config || {}, options: options || {} },
+                authenticate: this.authenticateMapper(scheme.scheme.authenticate, this.getChild(server.methods, prefix)),
+                payload: this.payloadMapper(scheme.scheme.payload, this.getChild(server.methods, prefix)),
+                response: this.responseMapper(scheme.scheme.response, this.getChild(server.methods, prefix)),
+                verify: this.verifyMapper(scheme.scheme.verify, this.getChild(server.methods, prefix)),
+                options: scheme.scheme.options
             };
-        };
+        });
+        for (const strategy in scheme.strategies) {
+            server.auth.strategy([type, strategy].join('.'), type, scheme.strategies[strategy]);
+        }
     }
 
     private authenticateMapper<M = any>(authenticate: SchemeStrategyType<M>['authenticate'], methods?: M): Hapi.ServerAuthSchemeObject['authenticate'] {
@@ -112,43 +112,43 @@ export class InitializeService implements InitializeImplementation {
 
     // PLUGIN
 
-    private async getPlugin<K extends keyof PluginServiceImplementation>(type: K): Promise<Hapi.Plugin<any>> {
+    private async addPlugin<K extends keyof PluginServiceImplementation>(type: K, server: Hapi.Server): Promise<void> {
         const prefix = ['Plugin', type].join('.');
         const plugins = this.pluginService.get(type);
         const config = await plugins.config();
         const instance = plugins.common.method ? new (await plugins.common.method())(this.dispatcherService) : undefined;
-        return {
-            name: config.name,
-            register: async (server) => {
-                if (instance && config.methods) {
-                    for (const method in config.methods) {
-                        server.method({
-                            name: [prefix, method].join('.'),
-                            method: instance[method],
-                            options: {
-                                bind: instance
-                            }
-                        });
-                    }
-                }
-                if (config.routes) {
-                    for (const route in config.routes) {
-                        const version = config.routes[route].version;
-                        const plugin = await plugins.version[version]();
-                        server.route({
-                            method: plugin.route[route].method,
-                            path: plugin.route[route].path,
-                            handler: this.controllerMapper(plugin.controller ? plugin.controller[route] : undefined, this.getChild(server.methods, prefix)),
-                            options: {
-                                ext: this.extensionMapper(plugin.extension ? plugin.extension[route] : undefined, this.getChild(server.methods, prefix)),
-                                cors: this.corsMapper(plugin.route[route].options ? plugin.route[route].options.cors : undefined),
-                                auth: this.authMapper(plugin.route[route].options ? plugin.route[route].options.auth : undefined)
-                            }
-                        });
+        if (instance && config.methods) {
+            for (const method in config.methods) {
+                server.method({
+                    name: [prefix, method].join('.'),
+                    method: instance[method],
+                    options: { bind: instance }
+                });
+            }
+        }
+        await server.register({
+            plugin: {
+                name: config.name,
+                register: async (server) => {
+                    if (config.routes) {
+                        for (const route in config.routes) {
+                            const version = config.routes[route].version;
+                            const plugin = await plugins.version[version]();
+                            server.route({
+                                method: plugin.route[route].method,
+                                path: plugin.route[route].path,
+                                handler: this.controllerMapper(plugin.controller ? plugin.controller[route] : undefined, this.getChild(server.methods, prefix)),
+                                options: {
+                                    ext: this.extensionMapper(plugin.extension ? plugin.extension[route] : undefined, this.getChild(server.methods, prefix)),
+                                    cors: this.corsMapper(plugin.route[route].options ? plugin.route[route].options.cors : undefined),
+                                    auth: this.authMapper(plugin.route[route].options ? plugin.route[route].options.auth : undefined)
+                                }
+                            });
+                        }
                     }
                 }
             }
-        };
+        });
     }
 
     private controllerMapper<R extends RouteImplementation, M = any>(controller?: ControllerMethodType<R, M>, methods?: M): Hapi.ServerRoute['handler'] {
