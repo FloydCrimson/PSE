@@ -35,11 +35,13 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     // /auth/sign-in
     SignInOPTIONS: {
         method: 'OPTIONS',
-        path: '/auth/sign-in'
+        path: '/auth/sign-in',
+        options: { cors: { origin: ['*'], credentials: false } }
     },
     SignInPOST: {
         method: 'POST',
         path: '/auth/sign-in',
+        options: { cors: { origin: ['*'], credentials: false } },
         masks: {
             maskB: { email: 'string', nickname: 'string' }
         }
@@ -47,11 +49,13 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     // /auth/sign-out
     SignOutOPTIONS: {
         method: 'OPTIONS',
-        path: '/auth/sign-out'
+        path: '/auth/sign-out',
+        options: { cors: { origin: ['*'], credentials: false } }
     },
     SignOutPOST: {
         method: 'POST',
-        path: '/auth/sign-out'
+        path: '/auth/sign-out',
+        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy', mode: 'required', payload: 'required' } }
     },
     // /auth/log-in
     LogInOPTIONS: {
@@ -70,20 +74,24 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     // /auth/log-out
     LogOutOPTIONS: {
         method: 'OPTIONS',
-        path: '/auth/log-out'
+        path: '/auth/log-out',
+        options: { cors: { origin: ['*'], credentials: false } }
     },
     LogOutPOST: {
         method: 'POST',
-        path: '/auth/log-out'
+        path: '/auth/log-out',
+        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy', mode: 'required', payload: 'required' } }
     },
     // /auth/recover-key
     RecoverKeyOPTIONS: {
         method: 'OPTIONS',
-        path: '/auth/recover-key'
+        path: '/auth/recover-key',
+        options: { cors: { origin: ['*'], credentials: false } }
     },
     RecoverKeyPOST: {
         method: 'POST',
         path: '/auth/recover-key',
+        options: { cors: { origin: ['*'], credentials: false } },
         masks: {
             maskB: { type: 'string', value: 'string' }
         }
@@ -91,11 +99,13 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     // /auth/change-key
     ChangeKeyOPTIONS: {
         method: 'OPTIONS',
-        path: '/auth/change-key'
+        path: '/auth/change-key',
+        options: { cors: { origin: ['*'], credentials: false } }
     },
     ChangeKeyPOST: {
         method: 'POST',
         path: '/auth/change-key',
+        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy', mode: 'required', payload: 'required' } },
         masks: {
             maskB: { key: 'string' }
         }
