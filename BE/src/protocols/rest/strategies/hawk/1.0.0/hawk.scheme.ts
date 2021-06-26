@@ -1,52 +1,59 @@
-import { Request, RequestAuth, ResponseObject, ResponseToolkit } from '@hapi/hapi';
-import * as hawk from 'hawk';
-
-import { NonceProvider } from 'pse-global-providers';
+import * as Hapi from '@hapi/hapi';
+import * as Boom from '@hapi/boom';
+import * as Hawk from 'hawk';
 
 import { SchemeStrategyType } from '../../../types/scheme.type';
-import { HawkMethodImplementation } from '../common/hawk.implementation';
+import { Artifacts, Credentials, HawkMethodImplementation } from '../common/hawk.implementation';
 import { DispatcherService } from '../../../services/dispatcher.service';
 import { HawkMethod } from '../common/hawk.method';
 
 export const HawkScheme: SchemeStrategyType<HawkMethodImplementation> = {
     api: {},
-    authenticate: (dispatcherService: DispatcherService) => async function (request: Request, h: ResponseToolkit): Promise<any> {
+    authenticate: (dispatcherService: DispatcherService) => async function (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<any> {
         try {
-            const options = { nonceFunc: NonceProvider.check };
-            const { credentials, artifacts } = await hawk.server.authenticate(this.requestMapper(request), this.credentialsFunc, options);
-            if (credentials.attempts === HawkMethod.ATTEMPS_MAX) {
-                throw Object.assign(hawk.utils.unauthorized('Max attemps reached'), { credentials, artifacts });
-            } else if (credentials.attempts > 0) {
-                credentials.attempts = 0;
-                await dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityUpdate', { eid: credentials.eid }, { attempts: credentials.attempts });
+            const options = {};
+            const { artifacts, credentials } = await this.parseRequest(request, options);
+            await this.checkMac(artifacts, credentials, options);
+            await this.checkNonce(artifacts, credentials, options);
+            if (credentials.user.attempts === HawkMethod.ATTEMPS_MAX) {
+                throw Object.assign(Hawk.utils.unauthorized('Max attemps reached'), { artifacts, credentials });
+            } else if (credentials.user.attempts > 0) {
+                credentials.user.attempts = 0;
+                await dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityUpdate', { eid: credentials.user.eid }, { attempts: credentials.user.attempts });
             }
-            return h.authenticated({ credentials, artifacts });
+            return h.authenticated({ artifacts, credentials });
         } catch (error) {
-            return h.unauthenticated(error);
+            return h.unauthenticated(new Boom.Boom(error, { override: !error.isBoom }));
         }
     },
-    payload: (dispatcherService: DispatcherService) => async function (request: Request, h: ResponseToolkit): Promise<any> {
+    payload: (dispatcherService: DispatcherService) => async function (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<any> {
         try {
-            const options = { payload: JSON.stringify({ body: request.payload || {}, params: request.query || {} }) };
-            await hawk.server.authenticate(this.requestMapper(request), this.credentialsFunc, options);
+            if (request.auth.isAuthenticated) {
+                const options = { payload: JSON.stringify({ body: request.payload || {}, params: request.query || {} }) };
+                const { artifacts, credentials } = request.auth as unknown as { artifacts: Artifacts, credentials: Credentials };
+                await this.checkPayload(artifacts, credentials, options);
+            }
             return h.continue;
         } catch (error) {
-            throw error;
+            throw new Boom.Boom(error, { override: !error.isBoom });
         }
     },
-    response: (dispatcherService: DispatcherService) => async function (request: Request, h: ResponseToolkit): Promise<any> {
+    response: (dispatcherService: DispatcherService) => async function (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<any> {
         try {
-            const response = request.response as ResponseObject;
-            const { credentials, artifacts } = request.auth;
-            const options = { payload: JSON.stringify(response.source || {}), contentType: 'application/json' };
-            response.header('Access-Control-Expose-Headers', 'Server-Authorization');
-            response.header('Server-Authorization', hawk.server.header(credentials, artifacts, options));
+            if (request.auth.isAuthenticated) {
+                const response = request.response as Hapi.ResponseObject;
+                const options = { payload: JSON.stringify(response.source || {}), contentType: 'application/json' };
+                const { artifacts, credentials } = request.auth as unknown as { artifacts: Artifacts, credentials: Credentials };
+                response.header('Access-Control-Expose-Headers', 'Server-Authorization');
+                response.header('Server-Authorization', Hawk.server.header(credentials.user, artifacts, options));
+                await this.checkTimestamp(artifacts, credentials, options);
+            }
             return h.continue;
         } catch (error) {
-            throw error;
+            throw new Boom.Boom(error, { override: !error.isBoom });
         }
     },
-    verify: (dispatcherService: DispatcherService) => async function (auth: RequestAuth): Promise<void> {
+    verify: (dispatcherService: DispatcherService) => async function (auth: Hapi.RequestAuth): Promise<void> {
 
     },
     options: { payload: true }

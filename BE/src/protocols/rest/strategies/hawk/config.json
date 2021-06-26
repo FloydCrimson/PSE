@@ -2,7 +2,10 @@
     "name": "hawk",
     "version": "1.0.0",
     "methods": {
-        "credentialsFunc": {},
-        "requestMapper": {}
+        "parseRequest": {},
+        "checkMac": {},
+        "checkPayload": {},
+        "checkNonce": {},
+        "checkTimestamp": {}
     }
 }

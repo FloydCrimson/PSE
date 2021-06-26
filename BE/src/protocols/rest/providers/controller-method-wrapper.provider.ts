@@ -1,11 +1,11 @@
-import { Request } from '@hapi/hapi';
+import * as Hapi from '@hapi/hapi';
 
 import { RouteImplementation } from '../implementations/route.implementation';
 import { CustomError, CustomErrorProvider } from '../../common/providers/error.provider';
 
 export class ControllerMethodWrapperProvider {
 
-    public static async wrap<B, P, O>(route: RouteImplementation<B, P, O>, request: Request, callback: (body: B, params: P, output: O) => Promise<O>): Promise<O> {
+    public static async wrap<B, P, O>(route: RouteImplementation<B, P, O>, request: Hapi.Request, callback: (body: B, params: P, output: O) => Promise<O>): Promise<O> {
         let result: O;
         try {
             if (route.masks) {

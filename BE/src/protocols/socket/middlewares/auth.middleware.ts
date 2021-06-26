@@ -1,5 +1,5 @@
 import { NextFunction } from 'express';
-import * as hapi from '@hapi/hapi';
+import * as Hapi from '@hapi/hapi';
 import { CoderProvider, NonceProvider } from 'pse-global-providers';
 
 import { MiddlewareImplementation } from '../implementations/middleware.implementation';

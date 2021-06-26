@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 
-import * as hapi from '@hapi/hapi';
-import { Plugin, RouteExtObject, RouteOptions, RouteOptionsAccess, RouteOptionsCors, RouteRequestExtType, ServerAuthScheme, ServerAuthSchemeObject, ServerRoute } from '@hapi/hapi';
+import * as Hapi from '@hapi/hapi';
 
 import { InitializeImplementation } from '../../../global/common/implementations/initialize.implementation';
 import { ProtocolConfigurationsType } from '../../../global/common/types/protocol-options.type';
@@ -34,7 +33,7 @@ export class InitializeService implements InitializeImplementation {
 
     public async initialize(configurations: ProtocolConfigurationsType[]): Promise<boolean> {
         const servers = await Promise.all(configurations.map(async (configuration) => {
-            const server = hapi.server({
+            const server = Hapi.server({
                 port: configuration.port,
                 host: 'localhost',
                 debug: { log: ['*'], request: ['*'] }
@@ -65,7 +64,7 @@ export class InitializeService implements InitializeImplementation {
 
     // STRATEGY
 
-    private async getStrategy<K extends keyof StrategyServiceImplementation>(type: K): Promise<ServerAuthScheme> {
+    private async getStrategy<K extends keyof StrategyServiceImplementation>(type: K): Promise<Hapi.ServerAuthScheme> {
         const prefix = ['Strategy', type].join('.');
         const strategies = this.strategyService.get(type);
         const config = await strategies.config();
@@ -95,25 +94,25 @@ export class InitializeService implements InitializeImplementation {
         };
     }
 
-    private authenticateMapper<M = any>(authenticate: SchemeStrategyType<M>['authenticate'], methods?: M): ServerAuthSchemeObject['authenticate'] {
+    private authenticateMapper<M = any>(authenticate: SchemeStrategyType<M>['authenticate'], methods?: M): Hapi.ServerAuthSchemeObject['authenticate'] {
         return (request, h) => authenticate(this.dispatcherService).apply(methods ? methods : void undefined, [request, h]);
     }
 
-    private payloadMapper<M = any>(payload?: SchemeStrategyType<M>['payload'], methods?: M): ServerAuthSchemeObject['payload'] {
+    private payloadMapper<M = any>(payload?: SchemeStrategyType<M>['payload'], methods?: M): Hapi.ServerAuthSchemeObject['payload'] {
         return payload ? (request, h) => payload(this.dispatcherService).apply(methods ? methods : void undefined, [request, h]) : undefined;
     }
 
-    private responseMapper<M = any>(response?: SchemeStrategyType<M>['response'], methods?: M): ServerAuthSchemeObject['response'] {
+    private responseMapper<M = any>(response?: SchemeStrategyType<M>['response'], methods?: M): Hapi.ServerAuthSchemeObject['response'] {
         return response ? (request, h) => response(this.dispatcherService).apply(methods ? methods : void undefined, [request, h]) : undefined;
     }
 
-    private verifyMapper<M = any>(verify?: SchemeStrategyType<M>['verify'], methods?: M): ServerAuthSchemeObject['verify'] {
+    private verifyMapper<M = any>(verify?: SchemeStrategyType<M>['verify'], methods?: M): Hapi.ServerAuthSchemeObject['verify'] {
         return verify ? (auth) => verify(this.dispatcherService).apply(methods ? methods : void undefined, [auth]) : undefined;
     }
 
     // PLUGIN
 
-    private async getPlugin<K extends keyof PluginServiceImplementation>(type: K): Promise<Plugin<any>> {
+    private async getPlugin<K extends keyof PluginServiceImplementation>(type: K): Promise<Hapi.Plugin<any>> {
         const prefix = ['Plugin', type].join('.');
         const plugins = this.pluginService.get(type);
         const config = await plugins.config();
@@ -152,12 +151,12 @@ export class InitializeService implements InitializeImplementation {
         };
     }
 
-    private controllerMapper<R extends RouteImplementation, M = any>(controller?: ControllerMethodType<R, M>, methods?: M): ServerRoute['handler'] {
+    private controllerMapper<R extends RouteImplementation, M = any>(controller?: ControllerMethodType<R, M>, methods?: M): Hapi.ServerRoute['handler'] {
         return (request, h, err) => controller ? controller(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]) : h.response().code(200);
     }
 
-    private extensionMapper<R extends RouteImplementation, M = any>(extension?: { [KR in RouteRequestExtType]?: ExtensionObjectType<R, M>[] }, methods?: M): RouteOptions['ext'] {
-        return extension ? Object.entries(extension).reduce<RouteOptions['ext']>((r, [p, a]) => {
+    private extensionMapper<R extends RouteImplementation, M = any>(extension?: { [KR in Hapi.RouteRequestExtType]?: ExtensionObjectType<R, M>[] }, methods?: M): Hapi.RouteOptions['ext'] {
+        return extension ? Object.entries(extension).reduce<Hapi.RouteOptions['ext']>((r, [p, a]) => {
             r[p] = a.map((o) => {
                 return {
                     method: (request, h, err) => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]),
@@ -168,11 +167,11 @@ export class InitializeService implements InitializeImplementation {
         }, {}) : {};
     }
 
-    private corsMapper(cors?: RouteOptionsCors): RouteOptions['cors'] {
+    private corsMapper(cors?: Hapi.RouteOptionsCors): Hapi.RouteOptions['cors'] {
         return cors ? cors : false;
     }
 
-    private authMapper(auth?: RouteOptionsAccess): RouteOptions['auth'] {
+    private authMapper(auth?: Hapi.RouteOptionsAccess): Hapi.RouteOptions['auth'] {
         return auth ? auth : false;
     }
 

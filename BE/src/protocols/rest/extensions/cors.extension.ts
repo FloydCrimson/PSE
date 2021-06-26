@@ -1,4 +1,4 @@
-import { Request, ResponseObject, ResponseToolkit } from '@hapi/hapi';
+import * as Hapi from '@hapi/hapi';
 
 import { RouteImplementation } from '../implementations/route.implementation';
 import { DispatcherService } from '../services/dispatcher.service';
@@ -8,8 +8,8 @@ export type CORSExtensionObjectFactoryParams = { ACAOrigin?: '*' | string[]; ACA
 
 export const CORSExtensionObjectFactory: ExtensionObjectFactoryType<CORSExtensionObjectFactoryParams> = (params: CORSExtensionObjectFactoryParams) => {
     return {
-        method: (dispatcherService: DispatcherService) => async function (request: Request, h: ResponseToolkit, err?: Error): Promise<any> {
-            const response = request.response as ResponseObject;
+        method: (dispatcherService: DispatcherService) => async function (request: Hapi.Request, h: Hapi.ResponseToolkit, err?: Error): Promise<any> {
+            const response = request.response as Hapi.ResponseObject;
             if (params.ACAOrigin === '*') {
                 response.header('Access-Control-Allow-Origin', '*');
             } else if (params.ACAOrigin?.length > 0) {
