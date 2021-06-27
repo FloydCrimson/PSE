@@ -14,15 +14,17 @@ class BackendAuthEndpoint implements RestFT.RestFactoryTypeBackendAuth {
     SignOutPOST = { auth: 'full', timeout: TIMEOUT, method: 'POST', url: '/auth/sign-out' } as RestFT.RestFactoryTypeBackendAuth['SignOutPOST'];
     LogInPOST = { auth: 'full', timeout: TIMEOUT, method: 'POST', url: '/auth/log-in' } as RestFT.RestFactoryTypeBackendAuth['LogInPOST'];
     LogOutPOST = { auth: 'full', timeout: TIMEOUT, method: 'POST', url: '/auth/log-out' } as RestFT.RestFactoryTypeBackendAuth['LogOutPOST'];
-    RecoverKeyPOST = { auth: 'none', timeout: TIMEOUT, method: 'POST', url: '/auth/recover-key' } as RestFT.RestFactoryTypeBackendAuth['RecoverKeyPOST'];
+    RecoverKeyPOST = { auth: 'partial', timeout: TIMEOUT, method: 'POST', url: '/auth/recover-key' } as RestFT.RestFactoryTypeBackendAuth['RecoverKeyPOST'];
     ChangeKeyPOST = { auth: 'full', timeout: TIMEOUT, method: 'POST', url: '/auth/change-key' } as RestFT.RestFactoryTypeBackendAuth['ChangeKeyPOST'];
 }
 
 class BackendEchoEndpoint implements RestFT.RestFactoryTypeBackendEcho {
     EchoGET = { auth: 'none', timeout: TIMEOUT, method: 'GET', url: '/echo/echo' } as RestFT.RestFactoryTypeBackendEcho['EchoGET'];
     EchoPOST = { auth: 'none', timeout: TIMEOUT, method: 'POST', url: '/echo/echo' } as RestFT.RestFactoryTypeBackendEcho['EchoPOST'];
-    EchoAuthGET = { auth: 'full', timeout: TIMEOUT, method: 'GET', url: '/echo/echo-auth' } as RestFT.RestFactoryTypeBackendEcho['EchoAuthGET'];
-    EchoAuthPOST = { auth: 'full', timeout: TIMEOUT, method: 'POST', url: '/echo/echo-auth' } as RestFT.RestFactoryTypeBackendEcho['EchoAuthPOST'];
+    EchoAuthFullGET = { auth: 'full', timeout: TIMEOUT, method: 'GET', url: '/echo/echo-auth-full' } as RestFT.RestFactoryTypeBackendEcho['EchoAuthFullGET'];
+    EchoAuthFullPOST = { auth: 'full', timeout: TIMEOUT, method: 'POST', url: '/echo/echo-auth-full' } as RestFT.RestFactoryTypeBackendEcho['EchoAuthFullPOST'];
+    EchoAuthPartialGET = { auth: 'partial', timeout: TIMEOUT, method: 'GET', url: '/echo/echo-auth-partial' } as RestFT.RestFactoryTypeBackendEcho['EchoAuthPartialGET'];
+    EchoAuthPartialPOST = { auth: 'partial', timeout: TIMEOUT, method: 'POST', url: '/echo/echo-auth-partial' } as RestFT.RestFactoryTypeBackendEcho['EchoAuthPartialPOST'];
 }
 
 export const RestFactoryEndpoint: RestFT.RestFactoryTypes = {

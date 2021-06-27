@@ -10,13 +10,22 @@
         "EchoPOST": {
             "version": "1.0.0"
         },
-        "EchoAuthOPTIONS": {
+        "EchoAuthFullOPTIONS": {
             "version": "1.0.0"
         },
-        "EchoAuthGET": {
+        "EchoAuthFullGET": {
             "version": "1.0.0"
         },
-        "EchoAuthPOST": {
+        "EchoAuthFullPOST": {
+            "version": "1.0.0"
+        },
+        "EchoAuthPartialOPTIONS": {
+            "version": "1.0.0"
+        },
+        "EchoAuthPartialGET": {
+            "version": "1.0.0"
+        },
+        "EchoAuthPartialPOST": {
             "version": "1.0.0"
         }
     },

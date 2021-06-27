@@ -10,24 +10,18 @@ import { HawkMethod } from '../common/hawk.method';
 export const HawkScheme: SchemeStrategyType<HawkMethodImplementation> = {
     authenticate: (dispatcherService: DispatcherService) => async function (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<any> {
         try {
-            const { api } = h.context;
-            if (api.options.type === 'full') {
-                const options = {};
-                const { artifacts, credentials } = await this.parseRequest(request, options);
-                await this.checkMac(artifacts, credentials, options);
-                await this.checkNonce(artifacts, credentials, options);
-                if (credentials.user.attempts === HawkMethod.ATTEMPS_MAX) {
-                    throw Object.assign(Hawk.utils.unauthorized('Max attemps reached'), { artifacts, credentials });
-                } else if (credentials.user.attempts > 0) {
-                    credentials.user.attempts = 0;
-                    await dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityUpdate', { eid: credentials.user.eid }, { attempts: credentials.user.attempts });
-                }
-                return h.authenticated({ artifacts, credentials });
-            } else if (api.options.type === 'partial') {
-                throw new Error('Authentication hawk.partial not supported');
-            } else {
-                throw new Error('Authentication type not recognized');
+            const options = { keys: ['id', 'ts', 'nonce', 'hash', 'ext', 'mac', 'app', 'dlg'] };
+            const { artifacts, credentials } = await this.parseRequest(request, options);
+            credentials.user.key = h.context.api.options.type === 'full' ? credentials.user.key : 'password';
+            await this.checkMac(artifacts, credentials, options);
+            await this.checkNonce(artifacts, credentials, options);
+            if (credentials.user.attempts === HawkMethod.ATTEMPS_MAX) {
+                throw Object.assign(Hawk.utils.unauthorized('Max attemps reached'), { artifacts, credentials });
+            } else if (credentials.user.attempts > 0) {
+                credentials.user.attempts = 0;
+                await dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityUpdate', { eid: credentials.user.eid }, { attempts: credentials.user.attempts });
             }
+            return h.authenticated({ artifacts, credentials });
         } catch (error) {
             return h.unauthenticated(new Boom.Boom(error, { override: !error.isBoom }));
         }
@@ -47,11 +41,9 @@ export const HawkScheme: SchemeStrategyType<HawkMethodImplementation> = {
     response: (dispatcherService: DispatcherService) => async function (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<any> {
         try {
             if (request.auth.isAuthenticated) {
-                const response = request.response as Hapi.ResponseObject;
-                const options = { payload: JSON.stringify(response.source || {}), contentType: 'application/json' };
+                const options = { payload: JSON.stringify((request.response as Hapi.ResponseObject).source || {}), contentType: 'application/json' };
                 const { artifacts, credentials } = request.auth as unknown as { artifacts: Artifacts, credentials: Credentials };
-                response.header('Access-Control-Expose-Headers', 'Server-Authorization');
-                response.header('Server-Authorization', Hawk.server.header(credentials.user, artifacts, options));
+                await this.decorateResponse(request, options);
                 await this.checkTimestamp(artifacts, credentials, options);
             }
             return h.continue;

@@ -15,12 +15,21 @@ export const EchoController: ControllerPluginType<EchoRouteImplementation, EchoM
         const output = Object.keys(request.payload).length > 0 ? request.payload : { echo: 'Hello POST World!' };
         return h.response(output).code(200);
     },
-    // /echo/echo-auth
-    EchoAuthGET: (dispatcherService: DispatcherService) => async function (request: Hapi.Request, h: Hapi.ResponseToolkit, err?: Error): Promise<any> {
+    // /echo/echo-auth-full
+    EchoAuthFullGET: (dispatcherService: DispatcherService) => async function (request: Hapi.Request, h: Hapi.ResponseToolkit, err?: Error): Promise<any> {
         const output = Object.keys(request.query).length > 0 ? request.query : { echo: 'Hello AuthGET World!' };
         return h.response(output).code(200);
     },
-    EchoAuthPOST: (dispatcherService: DispatcherService) => async function (request: Hapi.Request, h: Hapi.ResponseToolkit, err?: Error): Promise<any> {
+    EchoAuthFullPOST: (dispatcherService: DispatcherService) => async function (request: Hapi.Request, h: Hapi.ResponseToolkit, err?: Error): Promise<any> {
+        const output = Object.keys(request.payload).length > 0 ? request.payload : { echo: 'Hello AuthPOST World!' };
+        return h.response(output).code(200);
+    },
+    // /echo/echo-auth-partial
+    EchoAuthPartialGET: (dispatcherService: DispatcherService) => async function (request: Hapi.Request, h: Hapi.ResponseToolkit, err?: Error): Promise<any> {
+        const output = Object.keys(request.query).length > 0 ? request.query : { echo: 'Hello AuthGET World!' };
+        return h.response(output).code(200);
+    },
+    EchoAuthPartialPOST: (dispatcherService: DispatcherService) => async function (request: Hapi.Request, h: Hapi.ResponseToolkit, err?: Error): Promise<any> {
         const output = Object.keys(request.payload).length > 0 ? request.payload : { echo: 'Hello AuthPOST World!' };
         return h.response(output).code(200);
     }

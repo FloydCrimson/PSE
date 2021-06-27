@@ -22,6 +22,14 @@ export class HawkMethod implements HawkMethodImplementation {
         return { artifacts, credentials };
     }
 
+    public async decorateResponse(request: Hapi.Request, options: ParseRequestOptions): Promise<Hapi.ResponseObject> {
+        const response = request.response as Hapi.ResponseObject;
+        const { artifacts, credentials } = request.auth as unknown as { artifacts: Artifacts, credentials: Credentials };
+        response.header('Access-Control-Expose-Headers', 'Server-Authorization');
+        response.header('Server-Authorization', Hawk.server.header(credentials.user, artifacts, options));
+        return response;
+    }
+
     public async checkMac(artifacts: Artifacts, credentials: Credentials, options: ParseRequestOptions): Promise<void> {
         if (!credentials.user.key || !credentials.user.algorithm) {
             throw Boom.boomify(new Error('Invalid credentials'), { decorate: { artifacts, credentials } });
@@ -86,7 +94,7 @@ export class HawkMethod implements HawkMethodImplementation {
         const parsed = Hawk.utils.parseRequest({ headers: request.headers, method: request.method, url: request.url.toString() }, options);
         const attributes = Hawk.utils.parseAuthorizationHeader(parsed.authorization, options.keys);
         const artifacts = { method: parsed.method, host: parsed.host, port: parsed.port, resource: parsed.url, ct: parsed.contentType, ts: parseInt(attributes.ts), tsss, tsn, nonce: attributes.nonce, hash: attributes.hash, ext: attributes.ext, app: attributes.app, dlg: attributes.dlg, mac: attributes.mac, id: attributes.id };
-        if (!attributes.id || !attributes.ts || !attributes.nonce || !attributes.mac) {
+        if (['id', 'ts', 'nonce', 'hash', 'mac'].filter((key) => options.keys.includes(key)).some((key) => !artifacts[key])) {
             throw Boom.badRequest('Missing attributes', { decorate: { artifacts } });
         }
         return Promise.resolve(artifacts);

@@ -8,13 +8,19 @@ const EchoOPTIONSExtension: ExtensionPluginType<EchoRouteImplementation, EchoMet
     onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'GET', 'POST'], ACAHeaders: ['content-type'] })]
 };
 
-const EchoAuthOPTIONSExtension: ExtensionPluginType<EchoRouteImplementation, EchoMethodImplementation>['EchoAuthOPTIONS'] = {
+const EchoAuthFullOPTIONSExtension: ExtensionPluginType<EchoRouteImplementation, EchoMethodImplementation>['EchoAuthFullOPTIONS'] = {
+    onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'GET', 'POST'], ACAHeaders: ['content-type', 'authorization'] })]
+};
+
+const EchoAuthPartialOPTIONSExtension: ExtensionPluginType<EchoRouteImplementation, EchoMethodImplementation>['EchoAuthPartialOPTIONS'] = {
     onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'GET', 'POST'], ACAHeaders: ['content-type', 'authorization'] })]
 };
 
 export const EchoExtension: ExtensionPluginType<EchoRouteImplementation, EchoMethodImplementation> = {
     // /echo/echo
     EchoOPTIONS: EchoOPTIONSExtension,
-    // /echo/echo-auth
-    EchoAuthOPTIONS: EchoAuthOPTIONSExtension
+    // /echo/echo-auth-full
+    EchoAuthFullOPTIONS: EchoAuthFullOPTIONSExtension,
+    // /echo/echo-auth-partial
+    EchoAuthPartialOPTIONS: EchoAuthPartialOPTIONSExtension
 };

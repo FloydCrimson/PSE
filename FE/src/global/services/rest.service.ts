@@ -134,11 +134,8 @@ export class RestService {
         const credentials = auth ? { id: CoderProvider.encode(JSON.stringify({ [auth.type]: auth.value })), key: auth.key, algorithm: auth.algorithm } : undefined;
         let headers: { [key: string]: string } = {};
         let artifacts;
-        if (endpoint.auth === 'partial') {
-            const timestamp: number = Math.floor(Date.now() / 1000);
-            const nonce: string = NonceProvider.generate(credentials.key, timestamp);
-            headers['Authorization'] = `Hawk id="${credentials.id}", ts="${timestamp}", nonce="${nonce}"`;
-        } else if (endpoint.auth === 'full') {
+        if (endpoint.auth !== 'none') {
+            credentials.key = endpoint.auth === 'full' ? credentials.key : 'password';
             const timestamp: number = Math.floor(Date.now() / 1000);
             const nonce: string = NonceProvider.generate(credentials.key, timestamp);
             const options = { credentials, timestamp, nonce, payload: JSON.stringify(request.input), contentType: 'application/json' };
@@ -148,7 +145,7 @@ export class RestService {
         }
         return this.getMethod(type, endpoint, url, headers, request.input).pipe(
             map((result) => {
-                if (endpoint.auth === 'full') {
+                if (endpoint.auth !== 'none') {
                     const options = { payload: JSON.stringify(result.output.data), required: true };
                     const output = hawk.client.authenticate(result, credentials, artifacts, options);
                     if (!output) {

@@ -28,8 +28,16 @@ export class HomePage {
     });
   }
 
-  public onEchoAuthClicked(): void {
-    this.BackendEchoRestService.EchoAuth({ text: 'Echo' }).subscribe((result) => {
+  public onEchoAuthFullClicked(): void {
+    this.BackendEchoRestService.EchoAuthFull({ text: 'EchoAuthFull' }).subscribe((result) => {
+      console.log('Echo', result);
+    }, (error) => {
+      alert(JSON.stringify(error));
+    });
+  }
+
+  public onEchoAuthPartialClicked(): void {
+    this.BackendEchoRestService.EchoAuthPartial({ text: 'EchoAuthPartial' }).subscribe((result) => {
       console.log('Echo', result);
     }, (error) => {
       alert(JSON.stringify(error));

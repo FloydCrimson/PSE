@@ -4,6 +4,7 @@ import * as EI from '../../../../database/entities.index';
 
 export interface HawkMethodImplementation {
     parseRequest(request: Hapi.Request, options: ParseRequestOptions): Promise<{ artifacts: Artifacts, credentials: Credentials }>;
+    decorateResponse(request: Hapi.Request, options: ParseRequestOptions): Promise<Hapi.ResponseObject>;
     checkMac(artifacts: Artifacts, credentials: Credentials, options: ParseRequestOptions): Promise<void>;
     checkPayload(artifacts: Artifacts, credentials: Credentials, options: ParseRequestOptions): Promise<void>;
     checkNonce(artifacts: Artifacts, credentials: Credentials, options: ParseRequestOptions): Promise<void>;

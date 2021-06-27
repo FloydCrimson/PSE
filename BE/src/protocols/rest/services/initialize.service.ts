@@ -47,11 +47,11 @@ export class InitializeService implements InitializeImplementation {
             return server;
         }));
         const result = await Promise.all(servers.map((server) => {
-            return server.start().then((result) => {
-                console.log(`Express Rest server has started on port ${server.info.port}. Open ${server.info.uri}/echo/echo to see results.`, result);
+            return server.start().then(_ => {
+                console.log(`Express Rest server has started on port ${server.info.port}. Open ${server.info.uri}/echo/echo to see results.`);
                 return true;
             }).catch((error) => {
-                console.error(`Express Rest server has not started on port ${server.info.port}. Open ${server.info.uri}/echo/echo to see results.`, error);
+                console.error(`Express Rest server has not started on port ${server.info.port}.`, error);
                 return false;
             });
         })).then((results) => !results.some(c => !c));
