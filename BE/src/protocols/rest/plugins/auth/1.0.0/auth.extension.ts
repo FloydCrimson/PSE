@@ -17,7 +17,7 @@ const SignInOPTIONSExtension: ExtensionPluginType<AuthRouteImplementation, AuthM
 };
 
 const SignOutOPTIONSExtension: ExtensionPluginType<AuthRouteImplementation, AuthMethodImplementation>['SignOutOPTIONS'] = {
-    onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'POST'], ACAHeaders: ['content-type'] })]
+    onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'POST'], ACAHeaders: ['content-type', 'authorization'] })]
 };
 
 const LogInOPTIONSExtension: ExtensionPluginType<AuthRouteImplementation, AuthMethodImplementation>['LogInOPTIONS'] = {
@@ -29,7 +29,7 @@ const LogOutOPTIONSExtension: ExtensionPluginType<AuthRouteImplementation, AuthM
 };
 
 const RecoverKeyOPTIONSExtension: ExtensionPluginType<AuthRouteImplementation, AuthMethodImplementation>['RecoverKeyOPTIONS'] = {
-    onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'POST'], ACAHeaders: ['content-type'] })]
+    onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'POST'], ACAHeaders: ['content-type', 'authorization'] })]
 };
 
 const ChangeKeyOPTIONSExtension: ExtensionPluginType<AuthRouteImplementation, AuthMethodImplementation>['ChangeKeyOPTIONS'] = {

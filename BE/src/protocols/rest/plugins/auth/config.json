@@ -57,6 +57,7 @@
         "getNewAuthEntity": {},
         "saveAuthEntity": {},
         "updateAuthEntity": {},
+        "deleteAuthEntity": {},
         "getAuthEntity": {},
         "sendTemporaryPasswordViaEmail": {},
         "generateKey": {},

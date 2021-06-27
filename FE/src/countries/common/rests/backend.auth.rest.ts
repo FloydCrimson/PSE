@@ -34,6 +34,12 @@ export class BackendAuthRest {
         return this.restService.makeCall('Backend', endpoint, request);
     }
 
+    public SignOutPOST() {
+        const endpoint = RestFactoryEndpoint.Backend.Auth.SignOutPOST;
+        const request = this.restService.getRequest('Backend', endpoint);
+        return this.restService.makeCall('Backend', endpoint, request);
+    }
+
     public LogInPOST() {
         const endpoint = RestFactoryEndpoint.Backend.Auth.LogInPOST;
         const request = this.restService.getRequest('Backend', endpoint);

@@ -91,10 +91,7 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     RecoverKeyPOST: {
         method: 'POST',
         path: '/auth/recover-key',
-        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Partial', mode: 'required', payload: 'required' } },
-        masks: {
-            maskB: { type: 'string', value: 'string' }
-        }
+        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Partial', mode: 'required', payload: 'required' } }
     },
     // /auth/change-key
     ChangeKeyOPTIONS: {

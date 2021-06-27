@@ -14,7 +14,7 @@ export interface AuthRouteImplementation {
     LogOutOPTIONS: RouteImplementation;
     LogOutPOST: RouteImplementation;
     RecoverKeyOPTIONS: RouteImplementation;
-    RecoverKeyPOST: RouteImplementation<{ type: 'id' | 'email' | 'nickname'; value: string; }>;
+    RecoverKeyPOST: RouteImplementation;
     ChangeKeyOPTIONS: RouteImplementation;
     ChangeKeyPOST: RouteImplementation<{ key: string; }>;
 }

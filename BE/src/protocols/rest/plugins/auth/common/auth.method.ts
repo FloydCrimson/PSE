@@ -22,7 +22,7 @@ export class AuthMethod implements AuthMethodImplementation {
     public async checkAuthEntityEmailAvailability(email: string, throwIfNotAvailable: boolean): Promise<boolean> {
         let authEntity: EI.AuthEntity;
         try {
-            authEntity = await this.dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityFindOne', { email });
+            authEntity = await this.dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityFindOne', { email: email.toLowerCase() });
         } catch (error) {
             throw CustomErrorProvider.getError('Rest', 'AUTH', 'EMAIL_NOT_RECOVERED');
         }
@@ -36,7 +36,7 @@ export class AuthMethod implements AuthMethodImplementation {
     public async checkAuthEntityNicknameAvailability(nickname: string, throwIfNotAvailable: boolean): Promise<boolean> {
         let authEntity: EI.AuthEntity;
         try {
-            authEntity = await this.dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityFindOne', { nickname });
+            authEntity = await this.dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityFindOne', { nickname: nickname.toLowerCase() });
         } catch (error) {
             throw CustomErrorProvider.getError('Rest', 'AUTH', 'NICKNAME_NOT_RECOVERED');
         }
@@ -84,7 +84,15 @@ export class AuthMethod implements AuthMethodImplementation {
         try {
             await this.dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityUpdate', criteria, partialEntity);
         } catch (error) {
-            throw CustomErrorProvider.getError('Rest', 'AUTH', 'AUTH_ENTITY_NOT_SAVED');
+            throw CustomErrorProvider.getError('Rest', 'AUTH', 'AUTH_ENTITY_NOT_UPDATED');
+        }
+    }
+
+    public async deleteAuthEntity(criteria: FindConditions<EI.AuthEntity>): Promise<void> {
+        try {
+            await this.dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityDelete', criteria);
+        } catch (error) {
+            throw CustomErrorProvider.getError('Rest', 'AUTH', 'AUTH_ENTITY_NOT_DELETED');
         }
     }
 

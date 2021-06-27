@@ -105,7 +105,7 @@ export class HawkMethod implements HawkMethodImplementation {
         if ('id' in decoded || 'email' in decoded || 'nickname' in decoded) {
             try {
                 const credentials = { user: await this.dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityFindOne', decoded, { relations: ['user'] }) };
-                if (!credentials) {
+                if (!credentials.user) {
                     throw Object.assign(Hawk.utils.unauthorized('Unknown credentials'), { artifacts });
                 }
                 return credentials;

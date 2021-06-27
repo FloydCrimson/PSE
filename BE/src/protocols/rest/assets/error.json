@@ -56,8 +56,16 @@
                     "CODE": "0018",
                     "DESCRIPTION": "Failed to save auth entity in database."
                 },
-                "EMAIL_NOT_SENT": {
+                "AUTH_ENTITY_NOT_UPDATED": {
                     "CODE": "0019",
+                    "DESCRIPTION": "Failed to update auth entity in database."
+                },
+                "AUTH_ENTITY_NOT_DELETED": {
+                    "CODE": "0020",
+                    "DESCRIPTION": "Failed to delete auth entity in database."
+                },
+                "EMAIL_NOT_SENT": {
+                    "CODE": "0021",
                     "DESCRIPTION": "Failed to send email with temporary password."
                 }
             }

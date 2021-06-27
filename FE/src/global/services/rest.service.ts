@@ -146,7 +146,7 @@ export class RestService {
         return this.getMethod(type, endpoint, url, headers, request.input).pipe(
             map((result) => {
                 if (endpoint.auth !== 'none') {
-                    const options = { payload: JSON.stringify(result.output.data), required: true };
+                    const options = { payload: JSON.stringify(result.output.data || {}), required: true };
                     const output = hawk.client.authenticate(result, credentials, artifacts, options);
                     if (!output) {
                         throw 'Server not recognized.';

@@ -10,6 +10,7 @@ export interface AuthMethodImplementation {
     getNewAuthEntity(email: string, nickname: string): Promise<EI.AuthEntity>;
     saveAuthEntity(authEntity: EI.AuthEntity, options?: SaveOptions): Promise<void>;
     updateAuthEntity(criteria: FindConditions<EI.AuthEntity>, partialEntity: QueryDeepPartialEntity<EI.AuthEntity>): Promise<void>;
+    deleteAuthEntity(criteria: FindConditions<EI.AuthEntity>): Promise<void>;
     getAuthEntity(type: 'id' | 'email' | 'nickname', value: string): Promise<EI.AuthEntity>;
     sendTemporaryPasswordViaEmail(authEntity: EI.AuthEntity): Promise<void>;
     generateKey(): string;
