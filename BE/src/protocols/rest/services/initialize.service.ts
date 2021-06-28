@@ -15,9 +15,6 @@ import { StrategyService, StrategyServiceImplementation } from './strategy.servi
 import { PluginService, PluginServiceImplementation } from './plugin.service';
 import { CommunicationService } from './communication.service';
 
-import * as SI from '../strategies.index';
-import * as PI from '../plugins.index';
-
 export class InitializeService implements InitializeImplementation {
 
     private readonly dispatcherService = new DispatcherService();
@@ -38,11 +35,11 @@ export class InitializeService implements InitializeImplementation {
                 host: 'localhost',
                 debug: { log: ['*'], request: ['*'] }
             });
-            for (const strategy in SI) {
-                await this.addSchemeAndStrategies(strategy as keyof StrategyServiceImplementation, server);
+            for (const strategy of this.strategyService.keys()) {
+                await this.addSchemeAndStrategies(strategy, server);
             }
-            for (const plugin in PI) {
-                await this.addPlugin(plugin as keyof PluginServiceImplementation, server);
+            for (const plugin of this.pluginService.keys()) {
+                await this.addPlugin(plugin, server);
             }
             return server;
         }));
