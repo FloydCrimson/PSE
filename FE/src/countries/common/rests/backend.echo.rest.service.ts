@@ -13,19 +13,25 @@ export class BackendEchoRestService {
         private readonly backendEchoRest: BackendEchoRest
     ) { }
 
-    public Echo(message: any): Observable<any> {
+    public EchoGET(message: any): Observable<any> {
+        return this.backendEchoRest.EchoGET(message).pipe(
+            exhaustMap((result) => result.success ? of(result.response.output) : throwError(result.error))
+        );
+    }
+
+    public EchoPOST(message: any): Observable<any> {
         return this.backendEchoRest.EchoPOST(message).pipe(
             exhaustMap((result) => result.success ? of(result.response.output) : throwError(result.error))
         );
     }
 
-    public EchoAuthFull(message: any): Observable<any> {
+    public EchoAuthFullPOST(message: any): Observable<any> {
         return this.backendEchoRest.EchoAuthFullPOST(message).pipe(
             exhaustMap((result) => result.success ? of(result.response.output) : throwError(result.error))
         );
     }
 
-    public EchoAuthPartial(message: any): Observable<any> {
+    public EchoAuthPartialPOST(message: any): Observable<any> {
         return this.backendEchoRest.EchoAuthPartialPOST(message).pipe(
             exhaustMap((result) => result.success ? of(result.response.output) : throwError(result.error))
         );

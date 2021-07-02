@@ -10,6 +10,7 @@ import { RouteImplementation } from '../implementations/route.implementation';
 import { ControllerMethodType } from '../types/controller.type';
 import { ExtensionObjectType } from '../types/extension.type';
 import { SchemeStrategyType } from '../types/scheme.type';
+import { ValidateObjectType } from '../types/validate.type';
 import { DispatcherService } from './dispatcher.service';
 import { StrategyService, StrategyServiceImplementation } from './strategy.service';
 import { PluginService, PluginServiceImplementation } from './plugin.service';
@@ -137,6 +138,8 @@ export class InitializeService implements InitializeImplementation {
                                 handler: this.controllerMapper(plugin.controller ? plugin.controller[route] : undefined, this.getChild(server.methods, prefix)),
                                 options: {
                                     ext: this.extensionMapper(plugin.extension ? plugin.extension[route] : undefined, this.getChild(server.methods, prefix)),
+                                    validate: this.validateMapper(plugin.validate ? plugin.validate[route] : undefined, this.getChild(server.methods, prefix)),
+                                    response: this.outputMapper(plugin.validate ? plugin.validate[route] : undefined, this.getChild(server.methods, prefix)),
                                     cors: this.corsMapper(plugin.route[route].options ? plugin.route[route].options.cors : undefined),
                                     auth: this.authMapper(plugin.route[route].options ? plugin.route[route].options.auth : undefined)
                                 }
@@ -149,19 +152,37 @@ export class InitializeService implements InitializeImplementation {
     }
 
     private controllerMapper<R extends RouteImplementation, M = any>(controller?: ControllerMethodType<R, M>, methods?: M): Hapi.ServerRoute['handler'] {
-        return (request, h, err) => controller ? controller(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]) : h.response().code(200);
+        return (request, h, err) => controller ? controller(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]) : h.response({}).code(200);
     }
 
     private extensionMapper<R extends RouteImplementation, M = any>(extension?: { [KR in Hapi.RouteRequestExtType]?: ExtensionObjectType<R, M>[] }, methods?: M): Hapi.RouteOptions['ext'] {
-        return extension ? Object.entries(extension).reduce<Hapi.RouteOptions['ext']>((r, [p, a]) => {
-            r[p] = a.map((o) => {
-                return {
-                    method: (request, h, err) => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]),
-                    options: o.options
-                };
-            });
-            return r;
-        }, {}) : {};
+        return extension ? {
+            onCredentials: extension.onCredentials ? extension.onCredentials.map((o) => { return { method: (request, h, err) => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]), options: o.options }; }) : undefined,
+            onPostAuth: extension.onPostAuth ? extension.onPostAuth.map((o) => { return { method: (request, h, err) => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]), options: o.options }; }) : undefined,
+            onPostHandler: extension.onPostHandler ? extension.onPostHandler.map((o) => { return { method: (request, h, err) => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]), options: o.options }; }) : undefined,
+            onPostResponse: extension.onPostResponse ? extension.onPostResponse.map((o) => { return { method: (request, h, err) => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]), options: o.options }; }) : undefined,
+            onPreAuth: extension.onPreAuth ? extension.onPreAuth.map((o) => { return { method: (request, h, err) => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]), options: o.options }; }) : undefined,
+            onPreHandler: extension.onPreHandler ? extension.onPreHandler.map((o) => { return { method: (request, h, err) => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]), options: o.options }; }) : undefined,
+            onPreResponse: extension.onPreResponse ? extension.onPreResponse.map((o) => { return { method: (request, h, err) => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]), options: o.options }; }) : undefined,
+        } : undefined;
+    }
+
+    private validateMapper<R extends RouteImplementation, M = any>(validate?: ValidateObjectType<R, M>, methods?: M): Hapi.RouteOptions['validate'] {
+        return validate ? {
+            headers: validate.headers ? (value, options) => validate.headers(this.dispatcherService).apply(methods ? methods : void undefined, [value, options]) : undefined,
+            params: validate.params ? (value, options) => validate.params(this.dispatcherService).apply(methods ? methods : void undefined, [value, options]) : undefined,
+            payload: validate.payload ? (value, options) => validate.payload(this.dispatcherService).apply(methods ? methods : void undefined, [value, options]) : undefined,
+            query: validate.query ? (value, options) => validate.query(this.dispatcherService).apply(methods ? methods : void undefined, [value, options]) : undefined,
+            state: validate.state ? (value, options) => validate.state(this.dispatcherService).apply(methods ? methods : void undefined, [value, options]) : undefined,
+            options: validate.options
+        } : undefined;
+    }
+
+    private outputMapper<R extends RouteImplementation, M = any>(validate?: ValidateObjectType<R, M>, methods?: M): Hapi.RouteOptions['response'] {
+        return validate ? {
+            schema: validate.output ? (value, options) => validate.output(this.dispatcherService).apply(methods ? methods : void undefined, [value, options]) : undefined,
+            options: validate.options
+        } : undefined;
     }
 
     private corsMapper(cors?: Hapi.RouteOptionsCors): Hapi.RouteOptions['cors'] {

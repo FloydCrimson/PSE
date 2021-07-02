@@ -20,24 +20,32 @@ export class HomePage {
     private readonly backendAuthRestService: BackendAuthRestService
   ) { }
 
-  public onEchoClicked(): void {
-    this.backendEchoRestService.Echo({ text: 'Echo' }).subscribe((result) => {
+  public onEchoGETClicked(): void {
+    this.backendEchoRestService.EchoGET({ text: 'Echo' }).subscribe((result) => {
       console.log('Echo', result);
     }, (error) => {
       alert(JSON.stringify(error));
     });
   }
 
-  public onEchoAuthFullClicked(): void {
-    this.backendEchoRestService.EchoAuthFull({ text: 'EchoAuthFull' }).subscribe((result) => {
+  public onEchoPOSTClicked(): void {
+    this.backendEchoRestService.EchoPOST({ text: 'Echo' }).subscribe((result) => {
       console.log('Echo', result);
     }, (error) => {
       alert(JSON.stringify(error));
     });
   }
 
-  public onEchoAuthPartialClicked(): void {
-    this.backendEchoRestService.EchoAuthPartial({ text: 'EchoAuthPartial' }).subscribe((result) => {
+  public onEchoAuthFullPOSTClicked(): void {
+    this.backendEchoRestService.EchoAuthFullPOST({ text: 'EchoAuthFull' }).subscribe((result) => {
+      console.log('Echo', result);
+    }, (error) => {
+      alert(JSON.stringify(error));
+    });
+  }
+
+  public onEchoAuthPartialPOSTClicked(): void {
+    this.backendEchoRestService.EchoAuthPartialPOST({ text: 'EchoAuthPartial' }).subscribe((result) => {
       console.log('Echo', result);
     }, (error) => {
       alert(JSON.stringify(error));

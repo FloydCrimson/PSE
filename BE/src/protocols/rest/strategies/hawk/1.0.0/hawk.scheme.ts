@@ -10,14 +10,15 @@ import { HawkMethod } from '../common/hawk.method';
 export const HawkScheme: SchemeStrategyType<HawkMethodImplementation> = {
     authenticate: (dispatcherService: DispatcherService) => async function (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<any> {
         try {
+            const { api } = h.context;
             const options = { keys: ['id', 'ts', 'nonce', 'hash', 'ext', 'mac', 'app', 'dlg'] };
             const { artifacts, credentials } = await this.parseRequest(request, options);
-            credentials.user.key = h.context.api.options.type === 'full' ? credentials.user.key : 'password';
+            credentials.user.key = api.options.type === 'full' ? credentials.user.key : 'password';
             await this.checkMac(artifacts, credentials, options);
             await this.checkNonce(artifacts, credentials, options);
             if (credentials.user.attempts === HawkMethod.ATTEMPS_MAX) {
                 throw Object.assign(Hawk.utils.unauthorized('Max attemps reached'), { artifacts, credentials });
-            } else if (credentials.user.attempts > 0) {
+            } else if (api.options.type === 'full' && credentials.user.attempts > 0) {
                 credentials.user.attempts = 0;
                 await dispatcherService.get('CommunicationClientService').send('database', 'AuthEntityUpdate', { eid: credentials.user.eid }, { attempts: credentials.user.attempts });
             }

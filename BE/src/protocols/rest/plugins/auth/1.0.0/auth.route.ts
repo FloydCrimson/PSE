@@ -11,11 +11,7 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     EmailAvailablePOST: {
         method: 'POST',
         path: '/auth/email-available',
-        options: { cors: { origin: ['*'], credentials: false } },
-        masks: {
-            maskB: { email: 'string' },
-            maskO: { available: 'boolean' }
-        }
+        options: { cors: { origin: ['*'], credentials: false } }
     },
     // /auth/nickname-available
     NicknameAvailableOPTIONS: {
@@ -26,11 +22,7 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     NicknameAvailablePOST: {
         method: 'POST',
         path: '/auth/nickname-available',
-        options: { cors: { origin: ['*'], credentials: false } },
-        masks: {
-            maskB: { nickname: 'string' },
-            maskO: { available: 'boolean' }
-        }
+        options: { cors: { origin: ['*'], credentials: false } }
     },
     // /auth/sign-in
     SignInOPTIONS: {
@@ -41,10 +33,7 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     SignInPOST: {
         method: 'POST',
         path: '/auth/sign-in',
-        options: { cors: { origin: ['*'], credentials: false } },
-        masks: {
-            maskB: { email: 'string', nickname: 'string' }
-        }
+        options: { cors: { origin: ['*'], credentials: false } }
     },
     // /auth/sign-out
     SignOutOPTIONS: {
@@ -66,10 +55,7 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     LogInPOST: {
         method: 'POST',
         path: '/auth/log-in',
-        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Full', mode: 'required', payload: 'required' } },
-        masks: {
-            maskO: { authenticated: 'boolean' }
-        }
+        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Full', mode: 'required', payload: 'required' } }
     },
     // /auth/log-out
     LogOutOPTIONS: {
@@ -102,9 +88,6 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     ChangeKeyPOST: {
         method: 'POST',
         path: '/auth/change-key',
-        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Full', mode: 'required', payload: 'required' } },
-        masks: {
-            maskB: { key: 'string' }
-        }
+        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Full', mode: 'required', payload: 'required' } }
     }
 };
