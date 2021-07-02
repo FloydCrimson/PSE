@@ -1,5 +1,6 @@
 import { RouteType } from '../../../types/route.type';
 import { EchoRouteImplementation } from './echo.implementation';
+import { HawkVersionStrategy as HVS_1_0_0 } from '../../../strategies/hawk/1.0.0/hawk.strategy';
 
 export const EchoRoute: RouteType<EchoRouteImplementation> = {
     // /echo/echo
@@ -27,12 +28,12 @@ export const EchoRoute: RouteType<EchoRouteImplementation> = {
     EchoAuthFullGET: {
         method: 'GET',
         path: '/echo/echo-auth-full',
-        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Full', mode: 'required', payload: 'required' } }
+        options: { cors: { origin: ['*'], credentials: true }, auth: HVS_1_0_0.strategies.Full }
     },
     EchoAuthFullPOST: {
         method: 'POST',
         path: '/echo/echo-auth-full',
-        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Full', mode: 'required', payload: 'required' } }
+        options: { cors: { origin: ['*'], credentials: true }, auth: HVS_1_0_0.strategies.Full }
     },
     // /echo/echo-auth-partial
     EchoAuthPartialOPTIONS: {
@@ -43,11 +44,11 @@ export const EchoRoute: RouteType<EchoRouteImplementation> = {
     EchoAuthPartialGET: {
         method: 'GET',
         path: '/echo/echo-auth-partial',
-        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Partial', mode: 'required', payload: 'required' } }
+        options: { cors: { origin: ['*'], credentials: true }, auth: HVS_1_0_0.strategies.Partial }
     },
     EchoAuthPartialPOST: {
         method: 'POST',
         path: '/echo/echo-auth-partial',
-        options: { cors: { origin: ['*'], credentials: true }, auth: { strategy: 'HawkStrategy.Partial', mode: 'required', payload: 'required' } }
+        options: { cors: { origin: ['*'], credentials: true }, auth: HVS_1_0_0.strategies.Partial }
     }
 };

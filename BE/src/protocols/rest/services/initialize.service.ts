@@ -11,6 +11,7 @@ import { ControllerMethodType } from '../types/controller.type';
 import { ExtensionObjectType } from '../types/extension.type';
 import { SchemeStrategyType } from '../types/scheme.type';
 import { ValidateObjectType } from '../types/validate.type';
+import { StrategyOptionsType } from '../types/strategy.type';
 import { DispatcherService } from './dispatcher.service';
 import { StrategyService, StrategyServiceImplementation } from './strategy.service';
 import { PluginService, PluginServiceImplementation } from './plugin.service';
@@ -88,7 +89,7 @@ export class InitializeService implements InitializeImplementation {
             };
         });
         for (const strategy in scheme.strategies) {
-            server.auth.strategy([type, strategy].join('.'), type, scheme.strategies[strategy]);
+            server.auth.strategy(scheme.strategies[strategy].auth.strategy, type, scheme.strategies[strategy].options);
         }
     }
 
@@ -189,8 +190,8 @@ export class InitializeService implements InitializeImplementation {
         return cors ? cors : false;
     }
 
-    private authMapper(auth?: Hapi.RouteOptionsAccess): Hapi.RouteOptions['auth'] {
-        return auth ? auth : false;
+    private authMapper(auth?: StrategyOptionsType): Hapi.RouteOptions['auth'] {
+        return auth ? auth.auth : false;
     }
 
     // SUPPORT

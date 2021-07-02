@@ -1,3 +1,4 @@
 export interface HawkStrategyImplementation {
-    type: 'full' | 'partial'
+    Full: { type: 'full' | 'partial'; };
+    Partial: { type: 'full' | 'partial'; };
 }

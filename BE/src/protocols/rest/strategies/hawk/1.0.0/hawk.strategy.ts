@@ -6,7 +6,7 @@ import { HawkScheme } from './hawk.scheme';
 export const HawkVersionStrategy: StrategyVersionType<HawkMethodImplementation, HawkStrategyImplementation> = {
     scheme: HawkScheme,
     strategies: {
-        Full: { type: 'full' },
-        Partial: { type: 'partial' }
+        Full: { auth: { strategy: 'HawkStrategy.Full', mode: 'required', payload: 'required' }, options: { type: 'full' } },
+        Partial: { auth: { strategy: 'HawkStrategy.Partial', mode: 'required', payload: 'required' }, options: { type: 'partial' } }
     }
 };
