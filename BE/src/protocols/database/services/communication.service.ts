@@ -3,6 +3,7 @@ import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity
 
 import { CommunicationMethodImplementation } from '../../../global/common/implementations/communication.implementation';
 import { RepositoryService } from './repository.service';
+
 import * as EI from '../entities.index';
 
 export class CommunicationService implements CommunicationServiceImplementation {

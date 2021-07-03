@@ -20,14 +20,10 @@ import { CommunicationService } from './communication.service';
 export class InitializeService implements InitializeImplementation {
 
     private readonly dispatcherService = new DispatcherService();
-    private readonly strategyService = new StrategyService(this.dispatcherService);
-    private readonly pluginService = new PluginService(this.dispatcherService);
-    private readonly communicationClientService = new CommunicationClientService<CommunicationImplementationType, 'rest'>(new CommunicationService(), 'rest');
 
     constructor() {
-        this.dispatcherService.set('StrategyService', this.strategyService);
-        this.dispatcherService.set('PluginService', this.pluginService);
-        this.dispatcherService.set('CommunicationClientService', this.communicationClientService);
+        this.dispatcherService.set('StrategyService', new StrategyService(this.dispatcherService));
+        this.dispatcherService.set('PluginService', new PluginService(this.dispatcherService));
     }
 
     public async initialize(configurations: ProtocolConfigurationsType[]): Promise<boolean> {
@@ -37,10 +33,10 @@ export class InitializeService implements InitializeImplementation {
                 host: 'localhost',
                 debug: { log: ['*'], request: ['*'] }
             });
-            for (const strategy of this.strategyService.keys()) {
+            for (const strategy of this.dispatcherService.get('StrategyService').keys()) {
                 await this.addSchemeAndStrategies(strategy, server);
             }
-            for (const plugin of this.pluginService.keys()) {
+            for (const plugin of this.dispatcherService.get('PluginService').keys()) {
                 await this.addPlugin(plugin, server);
             }
             return server;
@@ -55,7 +51,8 @@ export class InitializeService implements InitializeImplementation {
             });
         })).then((results) => !results.some(c => !c));
         if (result) {
-            this.communicationClientService.receive();
+            this.dispatcherService.set('CommunicationClientService', new CommunicationClientService<CommunicationImplementationType, 'rest'>(new CommunicationService(), 'rest'));
+            this.dispatcherService.get('CommunicationClientService').receive();
         }
         return result;
     }
@@ -64,7 +61,7 @@ export class InitializeService implements InitializeImplementation {
 
     private async addSchemeAndStrategies<K extends keyof StrategyServiceImplementation>(type: K, server: Hapi.Server): Promise<void> {
         const prefix = ['Strategy', type].join('.');
-        const strategies = this.strategyService.get(type);
+        const strategies = this.dispatcherService.get('StrategyService').get(type);
         const config = await strategies.config();
         const instance = strategies.common.method ? new (await strategies.common.method())(this.dispatcherService) : undefined;
         if (instance && config.methods) {
@@ -113,7 +110,7 @@ export class InitializeService implements InitializeImplementation {
 
     private async addPlugin<K extends keyof PluginServiceImplementation>(type: K, server: Hapi.Server): Promise<void> {
         const prefix = ['Plugin', type].join('.');
-        const plugins = this.pluginService.get(type);
+        const plugins = this.dispatcherService.get('PluginService').get(type);
         const config = await plugins.config();
         const instance = plugins.common.method ? new (await plugins.common.method())(this.dispatcherService) : undefined;
         if (instance && config.methods) {
