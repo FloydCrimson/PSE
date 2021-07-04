@@ -8,7 +8,6 @@ import { InitializeImplementation } from '../../../global/common/implementations
 import { ProtocolConfigurationsType } from '../../../global/common/types/protocol-options.type';
 import { ServerProvider } from '../../../global/providers/server.provider';
 import { CommunicationClientService } from '../../../global/services/communication.service';
-import { CommunicationImplementationType } from '../../common/implementations/communication.implementation.type';
 import { RouteImplementation } from '../implementations/route.implementation';
 import { RequestImplementation } from '../implementations/request.implementation';
 import { DispatcherService } from './dispatcher.service';
@@ -47,11 +46,11 @@ export class InitializeService implements InitializeImplementation {
         const servers = await Promise.all(configurations.map(async (configuration) => {
             const server = ServerProvider.getServer(app, configuration);
             const sockets = new WebSocket.Server({ server: server.instance });
-            sockets.on('close', (socket: WebSocket, message: http.IncomingMessage) => { console.info('socket server close', socket, message); });
+            // sockets.on('close', (socket: WebSocket, message: http.IncomingMessage) => { console.info('Socket server close', socket, message); });
             sockets.on('connection', (socket: WebSocket, message: http.IncomingMessage) => {
-                console.info('socket server connection', socket, message);
-                socket.on('close', (code: number, reason: string) => { console.info('socket connection close', code, reason); });
-                socket.on('error', (error: Error) => { console.error('socket connection error', error); });
+                // console.info('Socket server connection', socket, message);
+                // socket.on('close', (code: number, reason: string) => { console.info('Socket connection close', code, reason); });
+                // socket.on('error', (error: Error) => { console.error('Socket connection error', error); });
                 socket.on('message', (data: WebSocket.Data) => {
                     let request: RequestImplementation = {
                         socket: socket,
@@ -79,15 +78,15 @@ export class InitializeService implements InitializeImplementation {
                     };
                     next();
                 });
-                socket.on('open', (code: number, reason: string) => { console.info('socket connection open', code, reason); });
-                socket.on('ping', (code: number, reason: string) => { console.info('socket connection ping', code, reason); });
-                socket.on('pong', (code: number, reason: string) => { console.info('socket connection pong', code, reason); });
-                socket.on('unexpected-response', (code: number, reason: string) => { console.info('socket connection unexpected-response', code, reason); });
-                socket.on('upgrade', (code: number, reason: string) => { console.info('socket connection upgrade', code, reason); });
+                // socket.on('open', (code: number, reason: string) => { console.info('Socket connection open', code, reason); });
+                // socket.on('ping', (code: number, reason: string) => { console.info('Socket connection ping', code, reason); });
+                // socket.on('pong', (code: number, reason: string) => { console.info('Socket connection pong', code, reason); });
+                // socket.on('unexpected-response', (code: number, reason: string) => { console.info('Socket connection unexpected-response', code, reason); });
+                // socket.on('upgrade', (code: number, reason: string) => { console.info('Socket connection upgrade', code, reason); });
             });
-            sockets.on('error', (error: Error) => { console.error('socket server error', error); });
-            sockets.on('headers', (headers: string[], message: http.IncomingMessage) => { console.info('socket server headers', headers, message); });
-            sockets.on('listening', (socket: WebSocket, message: http.IncomingMessage) => { console.info('socket server listening', socket, message); });
+            // sockets.on('error', (error: Error) => { console.error('Socket server error', error); });
+            // sockets.on('headers', (headers: string[], message: http.IncomingMessage) => { console.info('Socket server headers', headers, message); });
+            // sockets.on('listening', (socket: WebSocket, message: http.IncomingMessage) => { console.info('Socket server listening', socket, message); });
             return server;
         }));
         const result = await Promise.all(servers.map((server) => {
@@ -104,7 +103,7 @@ export class InitializeService implements InitializeImplementation {
             });
         })).then((results) => !results.some(c => !c));
         if (result) {
-            this.dispatcherService.set('CommunicationClientService', new CommunicationClientService<CommunicationImplementationType, 'socket'>(new CommunicationService(), 'socket'));
+            this.dispatcherService.set('CommunicationClientService', new CommunicationClientService(new CommunicationService(this.dispatcherService), 'socket'));
             this.dispatcherService.get('CommunicationClientService').receive();
         }
         return result;

@@ -2,7 +2,7 @@ import { FactoryExtension } from '../../../global/common/extensions/factory.exte
 import { StrategyService } from './strategy.service';
 import { PluginService } from './plugin.service';
 import { CommunicationClientService } from '../../../global/services/communication.service';
-import { CommunicationImplementationType } from '../../common/implementations/communication.implementation.type';
+import { CommunicationServiceImplementation } from '../../common/implementations/communication-service.implementation';
 
 export class DispatcherService extends FactoryExtension<DispatcherServiceImplementation> {
 
@@ -15,5 +15,5 @@ export class DispatcherService extends FactoryExtension<DispatcherServiceImpleme
 export interface DispatcherServiceImplementation {
     StrategyService: StrategyService;
     PluginService: PluginService;
-    CommunicationClientService: CommunicationClientService<CommunicationImplementationType, 'rest'>;
+    CommunicationClientService: CommunicationClientService<CommunicationServiceImplementation, 'rest'>;
 }

@@ -1,6 +1,6 @@
 import { ChildProcess } from 'child_process';
 
-import { CommunicationMessageImplementation, CommunicationErrorImplementation, CommunicationMethodImplementation } from '../common/implementations/communication.implementation';
+import { CommunicationMessageImplementation, CommunicationErrorImplementation } from '../common/implementations/communication.implementation';
 
 export class CommunicationServerService<C> {
 
@@ -50,7 +50,7 @@ export class CommunicationClientService<C, S extends keyof C> {
                 }
             } else if (message.receiver === this.sender) {
                 if (message.name in this.communicationService) {
-                    (this.communicationService[message.name] as CommunicationMethodImplementation<(...params: any) => Promise<any>>)(...message.params).then((result) => {
+                    (this.communicationService[message.name] as (...args: any) => Promise<any>)(...message.params).then((result) => {
                         process.send({ ...message, output: result, answered: true } as CommunicationMessageImplementation<C, S, keyof C, any>);
                     }, (error) => {
                         process.send({ ...message, error: { type: 'REJECT', value: error }, answered: true } as CommunicationMessageImplementation<C, S, keyof C, any>);
@@ -64,7 +64,7 @@ export class CommunicationClientService<C, S extends keyof C> {
         });
     }
 
-    public send<R extends keyof C, N extends keyof C[R]>(receiver: R, name: N, ...params: C[R][N] extends (...args: infer P) => any ? P : never): C[R][N] extends (...args: any) => infer R ? R : any {
+    public send<R extends keyof C, N extends keyof C[R]>(receiver: R, name: N, ...params: C[R][N] extends (...args: infer P) => Promise<any> ? P : never): C[R][N] extends (...args: any) => Promise<infer O> ? Promise<O> : never {
         return new Promise<any>((resolve, reject) => {
             const timeout = 30000;
             const id = this.id++;

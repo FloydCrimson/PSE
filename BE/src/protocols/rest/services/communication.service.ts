@@ -1,9 +1,9 @@
-import { CommunicationMethodImplementation } from '../../../global/common/implementations/communication.implementation';
+import { DispatcherService } from './dispatcher.service';
 
-export class CommunicationService implements CommunicationServiceImplementation {
+export class CommunicationService {
 
-    constructor() { }
+    constructor(
+        private readonly dispatcherService: DispatcherService
+    ) { }
 
 }
-
-export interface CommunicationServiceImplementation { }

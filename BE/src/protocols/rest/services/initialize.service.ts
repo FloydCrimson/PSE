@@ -5,7 +5,6 @@ import * as Hapi from '@hapi/hapi';
 import { InitializeImplementation } from '../../../global/common/implementations/initialize.implementation';
 import { ProtocolConfigurationsType } from '../../../global/common/types/protocol-options.type';
 import { CommunicationClientService } from '../../../global/services/communication.service';
-import { CommunicationImplementationType } from '../../common/implementations/communication.implementation.type';
 import { RouteImplementation } from '../implementations/route.implementation';
 import { ControllerMethodType } from '../types/controller.type';
 import { ExtensionObjectType } from '../types/extension.type';
@@ -51,7 +50,7 @@ export class InitializeService implements InitializeImplementation {
             });
         })).then((results) => !results.some(c => !c));
         if (result) {
-            this.dispatcherService.set('CommunicationClientService', new CommunicationClientService<CommunicationImplementationType, 'rest'>(new CommunicationService(), 'rest'));
+            this.dispatcherService.set('CommunicationClientService', new CommunicationClientService(new CommunicationService(this.dispatcherService), 'rest'));
             this.dispatcherService.get('CommunicationClientService').receive();
         }
         return result;
