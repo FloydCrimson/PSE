@@ -1,6 +1,9 @@
 export interface EndpointRestImplementation<B = undefined, P = undefined, O = undefined> {
-    auth: 'full' | 'partial' | 'none';
-    timeout: number;
-    method: 'GET' | 'POST';
-    url: string;
+    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+    path: string;
+    options?: {
+        auth?: 'full' | 'partial';
+        crypted?: boolean;
+        timeout?: number;
+    };
 }

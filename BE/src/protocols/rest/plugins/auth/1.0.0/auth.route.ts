@@ -7,40 +7,40 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     EmailAvailableOPTIONS: {
         method: 'OPTIONS',
         path: '/auth/email-available',
-        options: { cors: { origin: ['*'], credentials: false } }
+        options: { cors: { origin: ['*'] } }
     },
     EmailAvailablePOST: {
         method: 'POST',
         path: '/auth/email-available',
-        options: { cors: { origin: ['*'], credentials: false } }
+        options: { cors: { origin: ['*'] } }
     },
     // /auth/nickname-available
     NicknameAvailableOPTIONS: {
         method: 'OPTIONS',
         path: '/auth/nickname-available',
-        options: { cors: { origin: ['*'], credentials: false } }
+        options: { cors: { origin: ['*'] } }
     },
     NicknameAvailablePOST: {
         method: 'POST',
         path: '/auth/nickname-available',
-        options: { cors: { origin: ['*'], credentials: false } }
+        options: { cors: { origin: ['*'] } }
     },
     // /auth/sign-in
     SignInOPTIONS: {
         method: 'OPTIONS',
         path: '/auth/sign-in',
-        options: { cors: { origin: ['*'], credentials: false } }
+        options: { cors: { origin: ['*'] } }
     },
     SignInPOST: {
         method: 'POST',
         path: '/auth/sign-in',
-        options: { cors: { origin: ['*'], credentials: false } }
+        options: { cors: { origin: ['*'] } }
     },
     // /auth/sign-out
     SignOutOPTIONS: {
         method: 'OPTIONS',
         path: '/auth/sign-out',
-        options: { cors: { origin: ['*'], credentials: false } }
+        options: { cors: { origin: ['*'] } }
     },
     SignOutPOST: {
         method: 'POST',
@@ -51,7 +51,7 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     LogInOPTIONS: {
         method: 'OPTIONS',
         path: '/auth/log-in',
-        options: { cors: { origin: ['*'], credentials: false } }
+        options: { cors: { origin: ['*'] } }
     },
     LogInPOST: {
         method: 'POST',
@@ -62,7 +62,7 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     LogOutOPTIONS: {
         method: 'OPTIONS',
         path: '/auth/log-out',
-        options: { cors: { origin: ['*'], credentials: false } }
+        options: { cors: { origin: ['*'] } }
     },
     LogOutPOST: {
         method: 'POST',
@@ -73,7 +73,7 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     RecoverKeyOPTIONS: {
         method: 'OPTIONS',
         path: '/auth/recover-key',
-        options: { cors: { origin: ['*'], credentials: false } }
+        options: { cors: { origin: ['*'] } }
     },
     RecoverKeyPOST: {
         method: 'POST',
@@ -84,7 +84,7 @@ export const AuthRoute: RouteType<AuthRouteImplementation> = {
     ChangeKeyOPTIONS: {
         method: 'OPTIONS',
         path: '/auth/change-key',
-        options: { cors: { origin: ['*'], credentials: false } }
+        options: { cors: { origin: ['*'] } }
     },
     ChangeKeyPOST: {
         method: 'POST',

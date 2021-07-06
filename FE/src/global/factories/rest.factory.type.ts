@@ -27,6 +27,10 @@ export interface RestFactoryTypeBackendEcho {
     EchoPOST: EndpointRestImplementation<any, undefined, any>;
     EchoAuthFullGET: EndpointRestImplementation<undefined, any, any>;
     EchoAuthFullPOST: EndpointRestImplementation<any, undefined, any>;
+    EchoAuthFullCryptedGET: EndpointRestImplementation<undefined, any, any>;
+    EchoAuthFullCryptedPOST: EndpointRestImplementation<any, undefined, any>;
     EchoAuthPartialGET: EndpointRestImplementation<undefined, any, any>;
     EchoAuthPartialPOST: EndpointRestImplementation<any, undefined, any>;
+    EchoAuthPartialCryptedGET: EndpointRestImplementation<undefined, any, any>;
+    EchoAuthPartialCryptedPOST: EndpointRestImplementation<any, undefined, any>;
 }

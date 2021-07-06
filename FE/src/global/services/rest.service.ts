@@ -58,7 +58,7 @@ export class RestService {
         if (!request.options.wait || mapRequest[1] === 0) {
             mapRequest[1]++;
             merge(
-                timer(endpoint.timeout || 60000).pipe(switchMap(_ => throwError({ error: new TimeoutError(), status: 408 } as ErrorRestImplementation))),
+                timer(endpoint.options?.timeout || 30000).pipe(switchMap(_ => throwError({ error: new TimeoutError(), status: 408 } as ErrorRestImplementation))),
                 this.callMethod(type, endpoint, request)
             ).pipe(
                 take(1),
@@ -117,7 +117,7 @@ export class RestService {
     //
 
     private generateHashEndpoint<K extends keyof RestFactoryTypes, B, P, O>(type: K, endpoint: EndpointRestImplementation<B, P, O>): string {
-        return `${type}:${endpoint.method}-${endpoint.url}`;
+        return `${type}:${endpoint.method}-${endpoint.path}`;
     }
 
     private generateHashRequest<B, P>(request: RequestRestImplementation<B, P>): string {
@@ -125,17 +125,17 @@ export class RestService {
     }
 
     private callMethod<K extends keyof RestFactoryTypes, B, P, O>(type: K, endpoint: EndpointRestImplementation<B, P, O>, request: RequestRestImplementation<B, P>): Observable<ResponseRestImplementation<O>> {
-        const auth = (endpoint.auth !== 'none') ? this.eStorageFactory.get('In').get('auth') : undefined;
+        const auth = endpoint.options?.auth ? this.eStorageFactory.get('In').get('auth') : undefined;
         request.input = request.input || { body: undefined, params: undefined };
         request.input.body = request.input.body || {} as B;
         request.input.params = request.input.params || {} as P;
         const protocol = DomainConfig.protocols['rest'];
-        const url: string = `${protocol.secure ? 'https' : 'http'}://${protocol.url}:${protocol.port}${endpoint.url}`;
+        const url: string = `${protocol.secure ? 'https' : 'http'}://${protocol.url}:${protocol.port}${endpoint.path}`;
         const credentials = auth ? { id: CoderProvider.encode(JSON.stringify({ [auth.type]: auth.value })), key: auth.key, algorithm: auth.algorithm } : undefined;
         let headers: { [key: string]: string } = {};
         let artifacts;
-        if (endpoint.auth !== 'none') {
-            credentials.key = endpoint.auth === 'full' ? credentials.key : 'password';
+        if (endpoint.options?.auth) {
+            credentials.key = endpoint.options?.auth === 'full' ? credentials.key : 'password';
             const timestamp: number = Math.floor(Date.now() / 1000);
             const nonce: string = NonceProvider.generate(credentials.key, timestamp);
             const options = { credentials, timestamp, nonce, payload: JSON.stringify(request.input), contentType: 'application/json' };
@@ -145,7 +145,7 @@ export class RestService {
         }
         return this.getMethod(type, endpoint, url, headers, request.input).pipe(
             map((result) => {
-                if (endpoint.auth !== 'none') {
+                if (endpoint.options?.auth) {
                     const options = { payload: JSON.stringify(result.output.data || {}), required: true };
                     const output = hawk.client.authenticate(result, credentials, artifacts, options);
                     if (!output) {

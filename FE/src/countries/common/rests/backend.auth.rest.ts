@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { RestService } from 'global/services/rest.service';
 
-import { RestFactoryEndpoint } from '@countries/endpoints/rest-factory.endpoint';
+import { RestFactoryEndpoint } from '@countries/endpoints/rest/rest-factory.endpoint';
 
 @Injectable({
     providedIn: 'root'
