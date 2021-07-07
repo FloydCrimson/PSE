@@ -1,6 +1,6 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
-import { AlertController } from '@ionic/angular';
+import { AlertController, IonSlides } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of, timer } from 'rxjs';
 import { switchMap, map, finalize } from 'rxjs/operators';
@@ -38,6 +38,8 @@ export class UnauthPage implements OnDestroy {
   public readonly logInBusy = this.pseBusyService.check([UnauthPageBusyEnum.LogIn]);
 
   private readonly loadingSubscription = this.pseLoadingService.subscribe([UnauthPageBusyEnum.SignIn, UnauthPageBusyEnum.LogIn], LoadersIndex.MainLoader);
+
+  @ViewChild(IonSlides) public ionSlides: IonSlides;
 
   constructor(
     private readonly pseRouteController: PSERouteController,
@@ -160,6 +162,11 @@ export class UnauthPage implements OnDestroy {
       finalize(() => this.pseBusyService.unmark([UnauthPageBusyEnum.SignIn]))
     ).subscribe(async _ => {
       alert('An email with a Temporary Password has been sent to ' + email + '. After you first login you will be asked to change it.');
+      await this.ionSlides.slideTo(1);
+      this.logInForm.get('nickname').setValue(this.signInForm.get('nickname').value);
+      this.logInForm.get('password').setValue('');
+      this.signInForm.get('email').setValue('');
+      this.signInForm.get('nickname').setValue('');
     }, async (error) => {
       alert(JSON.stringify(error));
     });

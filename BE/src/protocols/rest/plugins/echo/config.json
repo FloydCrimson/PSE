@@ -19,6 +19,15 @@
         "EchoAuthFullPOST": {
             "version": "1.0.0"
         },
+        "EchoAuthFullCryptedOPTIONS": {
+            "version": "1.0.0"
+        },
+        "EchoAuthFullCryptedGET": {
+            "version": "1.0.0"
+        },
+        "EchoAuthFullCryptedPOST": {
+            "version": "1.0.0"
+        },
         "EchoAuthPartialOPTIONS": {
             "version": "1.0.0"
         },
@@ -26,6 +35,15 @@
             "version": "1.0.0"
         },
         "EchoAuthPartialPOST": {
+            "version": "1.0.0"
+        },
+        "EchoAuthPartialCryptedOPTIONS": {
+            "version": "1.0.0"
+        },
+        "EchoAuthPartialCryptedGET": {
+            "version": "1.0.0"
+        },
+        "EchoAuthPartialCryptedPOST": {
             "version": "1.0.0"
         }
     },

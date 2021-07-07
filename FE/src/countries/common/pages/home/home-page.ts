@@ -14,41 +14,23 @@ import * as RoutesIndex from '@countries/indexes/routes.index';
 })
 export class HomePage {
 
+  public readonly echoes: { name: string; method: () => void; }[];
+
   constructor(
     private readonly pseRouteController: PSERouteController,
     private readonly backendEchoRestService: BackendEchoRestService,
     private readonly backendAuthRestService: BackendAuthRestService
-  ) { }
-
-  public onEchoGETClicked(): void {
-    this.backendEchoRestService.EchoGET({ text: 'Echo' }).subscribe((result) => {
-      console.log('Echo', result);
-    }, (error) => {
-      alert(JSON.stringify(error));
-    });
-  }
-
-  public onEchoPOSTClicked(): void {
-    this.backendEchoRestService.EchoPOST({ text: 'Echo' }).subscribe((result) => {
-      console.log('Echo', result);
-    }, (error) => {
-      alert(JSON.stringify(error));
-    });
-  }
-
-  public onEchoAuthFullPOSTClicked(): void {
-    this.backendEchoRestService.EchoAuthFullPOST({ text: 'EchoAuthFull' }).subscribe((result) => {
-      console.log('Echo', result);
-    }, (error) => {
-      alert(JSON.stringify(error));
-    });
-  }
-
-  public onEchoAuthPartialPOSTClicked(): void {
-    this.backendEchoRestService.EchoAuthPartialPOST({ text: 'EchoAuthPartial' }).subscribe((result) => {
-      console.log('Echo', result);
-    }, (error) => {
-      alert(JSON.stringify(error));
+  ) {
+    const methods: (keyof BackendEchoRestService)[] = ['EchoGET', 'EchoPOST', 'EchoAuthFullGET', 'EchoAuthFullPOST', 'EchoAuthFullCryptedGET', 'EchoAuthFullCryptedPOST', 'EchoAuthPartialGET', 'EchoAuthPartialPOST', 'EchoAuthPartialCryptedGET', 'EchoAuthPartialCryptedPOST'];
+    this.echoes = methods.map((method) => {
+      return {
+        name: method,
+        method: () => this.backendEchoRestService[method]({ text: method }).subscribe((result) => {
+          console.log(method, result);
+        }, (error) => {
+          alert(JSON.stringify(error));
+        })
+      };
     });
   }
 

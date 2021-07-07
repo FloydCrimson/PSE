@@ -136,6 +136,14 @@ export class RestService {
         let artifacts;
         if (endpoint.options?.auth) {
             credentials.key = endpoint.options?.auth === 'full' ? credentials.key : 'password';
+            if (endpoint.options?.crypted) {
+                try {
+                    request.input.body = Object.keys(request.input.body).length > 0 ? { plec: CrypterProvider.encrypt(JSON.stringify(request.input.body), credentials.key) } as any : request.input.body;
+                    request.input.params = Object.keys(request.input.params).length > 0 ? { plec: CrypterProvider.encrypt(JSON.stringify(request.input.params), credentials.key) } as any : request.input.params;
+                } catch (error) {
+                    throw 'Invalid decrypted value received.';
+                }
+            }
             const timestamp: number = Math.floor(Date.now() / 1000);
             const nonce: string = NonceProvider.generate(credentials.key, timestamp);
             const options = { credentials, timestamp, nonce, payload: JSON.stringify(request.input), contentType: 'application/json' };
@@ -150,6 +158,16 @@ export class RestService {
                     const output = hawk.client.authenticate(result, credentials, artifacts, options);
                     if (!output) {
                         throw 'Server not recognized.';
+                    }
+                    if (endpoint.options?.crypted) {
+                        try {
+                            if (Object.keys(result.output.data).length > 1 || (Object.keys(result.output.data).length === 1 && (!('plec' in result.output.data) || typeof result.output.data['plec'] !== 'string'))) {
+                                throw 'Invalid encrypted value received.';
+                            }
+                            result.output.data = Object.keys(result.output.data).length === 1 ? JSON.parse(CrypterProvider.decrypt(result.output.data['plec'], credentials.key)) : result.output.data;
+                        } catch (error) {
+                            throw 'Invalid encrypted value received.';
+                        }
                     }
                 }
                 const response: ResponseRestImplementation<O> = { output: result.output.data, status: result.status };

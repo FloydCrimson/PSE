@@ -19,7 +19,7 @@ const NicknameAvailablePOSTValidate: ValidatePluginType<AuthRouteImplementation,
 const SignInPOSTValidate: ValidatePluginType<AuthRouteImplementation, AuthMethodImplementation>['SignInPOST'] = {
     payload: VI.PayloadMaskValidateMethodFactory({ mask: { email: 'string', nickname: 'string' } }),
     query: VI.QueryMaskValidateMethodFactory({ mask: {} }),
-    output: VI.OutputMaskValidateMethodFactory({ mask: { available: 'boolean' } })
+    output: VI.OutputMaskValidateMethodFactory({ mask: {} })
 };
 
 const SignOutPOSTValidate: ValidatePluginType<AuthRouteImplementation, AuthMethodImplementation>['SignOutPOST'] = {
@@ -47,9 +47,9 @@ const RecoverKeyPOSTValidate: ValidatePluginType<AuthRouteImplementation, AuthMe
 };
 
 const ChangeKeyPOSTValidate: ValidatePluginType<AuthRouteImplementation, AuthMethodImplementation>['ChangeKeyPOST'] = {
-    payload: VI.PayloadMaskValidateMethodFactory({ mask: { key: 'string' } }),
-    query: VI.QueryMaskValidateMethodFactory({ mask: {} }),
-    output: VI.OutputMaskValidateMethodFactory({ mask: {} })
+    payload: VI.PayloadMaskValidateMethodFactory({ mask: { key: 'string' }, crypted: true }),
+    query: VI.QueryMaskValidateMethodFactory({ mask: {}, crypted: true }),
+    output: VI.OutputMaskValidateMethodFactory({ mask: {}, crypted: true })
 };
 
 export const AuthValidate: ValidatePluginType<AuthRouteImplementation, AuthMethodImplementation> = {

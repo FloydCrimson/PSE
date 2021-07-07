@@ -41,6 +41,20 @@ export class BackendEchoRest {
         return this.restService.makeCall('Backend', endpoint, request);
     }
 
+    public EchoAuthFullCryptedGET(params: any) {
+        const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthFullCryptedGET;
+        const request = this.restService.getRequest('Backend', endpoint);
+        request.input.params = params;
+        return this.restService.makeCall('Backend', endpoint, request);
+    }
+
+    public EchoAuthFullCryptedPOST(body: any) {
+        const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthFullCryptedPOST;
+        const request = this.restService.getRequest('Backend', endpoint);
+        request.input.body = body;
+        return this.restService.makeCall('Backend', endpoint, request);
+    }
+
     public EchoAuthPartialGET(params: any) {
         const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthPartialGET;
         const request = this.restService.getRequest('Backend', endpoint);
@@ -50,6 +64,20 @@ export class BackendEchoRest {
 
     public EchoAuthPartialPOST(body: any) {
         const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthPartialPOST;
+        const request = this.restService.getRequest('Backend', endpoint);
+        request.input.body = body;
+        return this.restService.makeCall('Backend', endpoint, request);
+    }
+
+    public EchoAuthPartialCryptedGET(params: any) {
+        const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthPartialCryptedGET;
+        const request = this.restService.getRequest('Backend', endpoint);
+        request.input.params = params;
+        return this.restService.makeCall('Backend', endpoint, request);
+    }
+
+    public EchoAuthPartialCryptedPOST(body: any) {
+        const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthPartialCryptedPOST;
         const request = this.restService.getRequest('Backend', endpoint);
         request.input.body = body;
         return this.restService.makeCall('Backend', endpoint, request);

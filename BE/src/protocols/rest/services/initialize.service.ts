@@ -178,7 +178,8 @@ export class InitializeService implements InitializeImplementation {
     private outputMapper<R extends RouteImplementation, M = any>(validate?: ValidateObjectType<R, M>, methods?: M): Hapi.RouteOptions['response'] {
         return validate ? {
             schema: validate.output ? (value, options) => validate.output(this.dispatcherService).apply(methods ? methods : void undefined, [value, options]) : undefined,
-            options: validate.options
+            options: validate.options,
+            modify: true
         } : undefined;
     }
 

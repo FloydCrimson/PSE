@@ -12,7 +12,15 @@ const EchoAuthFullOPTIONSExtension: ExtensionPluginType<EchoRouteImplementation,
     onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'GET', 'POST'], ACAHeaders: ['Content-Type', 'Authorization'] })]
 };
 
+const EchoAuthFullCryptedOPTIONSExtension: ExtensionPluginType<EchoRouteImplementation, EchoMethodImplementation>['EchoAuthFullCryptedOPTIONS'] = {
+    onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'GET', 'POST'], ACAHeaders: ['Content-Type', 'Authorization'] })]
+};
+
 const EchoAuthPartialOPTIONSExtension: ExtensionPluginType<EchoRouteImplementation, EchoMethodImplementation>['EchoAuthPartialOPTIONS'] = {
+    onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'GET', 'POST'], ACAHeaders: ['Content-Type', 'Authorization'] })]
+};
+
+const EchoAuthPartialCryptedOPTIONSExtension: ExtensionPluginType<EchoRouteImplementation, EchoMethodImplementation>['EchoAuthPartialCryptedOPTIONS'] = {
     onPreResponse: [EI.CORSExtensionObjectFactory({ ACAMethods: ['OPTIONS', 'GET', 'POST'], ACAHeaders: ['Content-Type', 'Authorization'] })]
 };
 
@@ -21,6 +29,10 @@ export const EchoExtension: ExtensionPluginType<EchoRouteImplementation, EchoMet
     EchoOPTIONS: EchoOPTIONSExtension,
     // /echo/echo-auth-full
     EchoAuthFullOPTIONS: EchoAuthFullOPTIONSExtension,
+    // /echo/echo-auth-full-crypted
+    EchoAuthFullCryptedOPTIONS: EchoAuthFullCryptedOPTIONSExtension,
     // /echo/echo-auth-partial
-    EchoAuthPartialOPTIONS: EchoAuthPartialOPTIONSExtension
+    EchoAuthPartialOPTIONS: EchoAuthPartialOPTIONSExtension,
+    // /echo/echo-auth-partial-crypted
+    EchoAuthPartialCryptedOPTIONS: EchoAuthPartialCryptedOPTIONSExtension
 };

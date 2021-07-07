@@ -91,7 +91,7 @@ export class HawkMethod implements HawkMethodImplementation {
     private async getArtifacts(request: Hapi.Request, options: ParseRequestOptions): Promise<Artifacts> {
         const tsss = options.timestampSkewSec || 60;
         const tsn = Hawk.utils.now(options.localtimeOffsetMsec);
-        const parsed = Hawk.utils.parseRequest({ headers: request.headers, method: request.method, url: request.url.toString() }, options);
+        const parsed = Hawk.utils.parseRequest({ headers: request.headers, method: request.method, url: request.url.pathname }, options);
         const attributes = Hawk.utils.parseAuthorizationHeader(parsed.authorization, options.keys);
         const artifacts = { method: parsed.method, host: parsed.host, port: parsed.port, resource: parsed.url, ct: parsed.contentType, ts: parseInt(attributes.ts), tsss, tsn, nonce: attributes.nonce, hash: attributes.hash, ext: attributes.ext, app: attributes.app, dlg: attributes.dlg, mac: attributes.mac, id: attributes.id };
         if (['id', 'ts', 'nonce', 'hash', 'mac'].filter((key) => options.keys.includes(key)).some((key) => !artifacts[key])) {

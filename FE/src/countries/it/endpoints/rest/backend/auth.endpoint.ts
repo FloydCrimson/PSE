@@ -44,6 +44,6 @@ export const BackendAuthEndpoint: RestFT.RestFactoryTypeBackendAuth = {
     ChangeKeyPOST: {
         method: 'POST',
         path: '/auth/change-key',
-        options: { auth: 'full' }
+        options: { auth: 'full', crypted: true }
     }
 };
