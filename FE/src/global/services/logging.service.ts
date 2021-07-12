@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as moment from 'moment';
+import * as Moment from 'moment';
 
 import { EnvironmentConfig } from '@environments/environment';
 
@@ -17,7 +17,7 @@ export class LoggingService implements LoggingServiceImplementation {
     public LOG(log: keyof LoggingTypeEnum, message: { class: string; function: string; text?: string; }, ...data: any[]): void {
         const type = LoggingTypeMap[log];
         if ((LoggingLevelMap[EnvironmentConfig.loggingLevel] & type) === type) {
-            const date = moment().format();
+            const date = Moment().format();
             const prefix = log;
             this.getConsoleLogger(log)(`[PSE] [${prefix}] [${date}] [${message.class}.${message.function}]`, ...(message.text ? [message.text, ...data] : data));
         }

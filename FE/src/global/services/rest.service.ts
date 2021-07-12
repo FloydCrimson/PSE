@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, merge, Observable, throwError, TimeoutError, timer } from 'rxjs';
 import { take, catchError, finalize, skip, map, switchMap } from 'rxjs/operators';
-import * as hawk from 'hawk';
 import { CoderProvider, CrypterProvider, NonceProvider } from 'pse-global-providers';
+import * as Hawk from 'hawk';
 
 import { DomainConfig } from '@domains/domain';
 
@@ -147,7 +147,7 @@ export class RestService {
             const timestamp: number = Math.floor(Date.now() / 1000);
             const nonce: string = NonceProvider.generate(credentials.key, timestamp);
             const options = { credentials, timestamp, nonce, payload: JSON.stringify(request.input), contentType: 'application/json' };
-            const output = hawk.client.header(url, endpoint.method, options);
+            const output = Hawk.client.header(url, endpoint.method, options);
             artifacts = output.artifacts;
             headers['Authorization'] = output.header;
         }
@@ -155,7 +155,7 @@ export class RestService {
             map((result) => {
                 if (endpoint.options?.auth) {
                     const options = { payload: JSON.stringify(result.output.data || {}), required: true };
-                    const output = hawk.client.authenticate(result, credentials, artifacts, options);
+                    const output = Hawk.client.authenticate(result, credentials, artifacts, options);
                     if (!output) {
                         throw 'Server not recognized.';
                     }

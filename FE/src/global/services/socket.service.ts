@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
-import * as hawk from 'hawk';
 import { CoderProvider, NonceProvider } from 'pse-global-providers';
+import * as Hawk from 'hawk';
 
 import { DomainConfig } from '@domains/domain';
 
@@ -47,7 +47,7 @@ export class SocketService {
             const timestamp: number = Math.floor(Date.now() / 1000);
             const nonce: string = NonceProvider.generate(credentials.key, timestamp);
             const options = { credentials, timestamp, nonce, payload: JSON.stringify(params), contentType: 'application/json' };
-            const output = hawk.client.header(url, 'GET', options);
+            const output = Hawk.client.header(url, 'GET', options);
             message.auth = output.header;
         }
         return this.socketFactory.get(type).send(message);

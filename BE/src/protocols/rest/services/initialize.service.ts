@@ -42,10 +42,10 @@ export class InitializeService implements InitializeImplementation {
         }));
         const result = await Promise.all(servers.map((server) => {
             return server.start().then(_ => {
-                console.log(`Express Rest server has started on port ${server.info.port}. Open ${server.info.uri}/echo/echo to see results.`);
+                console.log(`Hapi Rest server has started on port ${server.info.port}. Open ${server.info.uri}/echo/echo to see results.`);
                 return true;
             }).catch((error) => {
-                console.error(`Express Rest server has not started on port ${server.info.port}.`, error);
+                console.error(`Hapi Rest server has not started on port ${server.info.port}.`, error);
                 return false;
             });
         })).then((results) => !results.some(c => !c));

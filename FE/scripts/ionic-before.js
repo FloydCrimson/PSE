@@ -44,21 +44,6 @@ const addUnoverwritableParameters = (context) => {
     }
 };
 
-const patchHapiLibrary = (context) => {
-    const projectDirectory = path.resolve(__dirname, '../');
-
-    const packageLocation = path.resolve(projectDirectory, 'node_modules', 'hawk', 'package.json');
-    if (fs.existsSync(packageLocation)) {
-        const package = require(packageLocation);
-        package.main = 'lib/browser.js';
-        // package.dependencies = {};
-        // package.devDependencies = {};
-        fs.writeFileSync(packageLocation, JSON.stringify(package, undefined, '\t'));
-    } else {
-        console.warn('[ionic-before] package.json not found:   ' + packageLocation);
-    }
-};
-
 const createTSConfigCustomJSON = (context) => {
     const projectDirectory = path.resolve(__dirname, '../');
     const parameters = commandParameters.loadParameters(projectDirectory);
@@ -116,7 +101,6 @@ const createParametersExtraJSON = (context) => {
 
 module.exports = (context) => {
     addUnoverwritableParameters(context);
-    patchHapiLibrary(context);
     createTSConfigCustomJSON(context);
     createParametersExtraJSON(context);
 };

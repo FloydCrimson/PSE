@@ -41,7 +41,7 @@
     "cordova-plugin-nativestorage": "^2.3.2",
     "cordova-sqlite-storage": "^5.1.0",
     "crypto-js": "^4.0.0",
-    "hawk": "^8.0.1",
+    "hawk": "^9.0.0",
     "ionic-plugin-deeplinks": "^1.0.20",
     "moment": "^2.27.0",
     "pse-global-providers": "file:../global/libs/providers/pse-global-providers-0.0.1.tgz",

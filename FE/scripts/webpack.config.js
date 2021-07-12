@@ -5,6 +5,8 @@ module.exports = (config, options) => {
     const projectDirectory = path.resolve(__dirname, '../');
     const parameters = commandParameters.loadParameters(projectDirectory);
 
+    // ALIAS
+
     const placeholder = '{{ALIAS}}';
     const aliasArray = [
         { name: 'country', alias: '@countries', url: `countries/${placeholder}` },
@@ -15,6 +17,15 @@ module.exports = (config, options) => {
     aliasArray.forEach((alias) => {
         config.resolve.alias[alias.alias] = alias.url.replace(placeholder, parameters[alias.name]);
     });
+
+    // NODE
+
+    config.node = {
+        crypto: true,
+        stream: true
+    };
+
+    //
 
     return config;
 };
