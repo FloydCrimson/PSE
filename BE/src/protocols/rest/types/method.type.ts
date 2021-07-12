@@ -1,26 +1,3 @@
-export enum MethodType {
-    ALL = 'all',
-    GET = 'get',
-    POST = 'post',
-    PUT = 'put',
-    DELETE = 'delete',
-    PATCH = 'patch',
-    OPTIONS = 'options',
-    HEAD = 'head',
-    CHECKOUT = 'checkout',
-    COPY = 'copy',
-    LOCK = 'lock',
-    MERGE = 'merge',
-    MKACTIVITY = 'mkactivity',
-    MKCOL = 'mkcol',
-    MOVE = 'move',
-    MSEARCH = 'm-search',
-    NOTIFY = 'notify',
-    PURGE = 'purge',
-    REPORT = 'report',
-    SEARCH = 'search',
-    SUBSCRIBE = 'subscribe',
-    TRACE = 'trace',
-    UNLOCK = 'unlock',
-    UNSUBSCRIBE = 'unsubscribe'
-}
+import { DispatcherService } from '../services/dispatcher.service';
+
+export type MethodPluginType<M = any> = M extends infer C ? { new(dispatcherService: DispatcherService): C; } : unknown;

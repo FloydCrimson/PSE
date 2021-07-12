@@ -14,31 +14,35 @@ import * as RoutesIndex from '@countries/indexes/routes.index';
 })
 export class HomePage {
 
+  public readonly echoes: { name: string; method: () => void; }[];
+
   constructor(
     private readonly pseRouteController: PSERouteController,
-    private readonly BackendEchoRestService: BackendEchoRestService,
+    private readonly backendEchoRestService: BackendEchoRestService,
     private readonly backendAuthRestService: BackendAuthRestService
-  ) { }
-
-  public onEchoClicked(): void {
-    this.BackendEchoRestService.Echo({ text: 'Echo' }).subscribe((result) => {
-      console.log('Echo', result);
-    }, (error) => {
-      alert(JSON.stringify(error));
-    });
-  }
-
-  public onEchoAuthClicked(): void {
-    this.BackendEchoRestService.EchoAuth({ text: 'Echo' }).subscribe((result) => {
-      console.log('Echo', result);
-    }, (error) => {
-      alert(JSON.stringify(error));
+  ) {
+    const methods: (keyof BackendEchoRestService)[] = ['EchoGET', 'EchoPOST', 'EchoAuthFullGET', 'EchoAuthFullPOST', 'EchoAuthFullCryptedGET', 'EchoAuthFullCryptedPOST', 'EchoAuthPartialGET', 'EchoAuthPartialPOST', 'EchoAuthPartialCryptedGET', 'EchoAuthPartialCryptedPOST'];
+    this.echoes = methods.map((method) => {
+      return {
+        name: method,
+        method: () => this.backendEchoRestService[method]({ text: method }).subscribe((result) => {
+          console.log(method, result);
+        }, (error) => {
+          alert(JSON.stringify(error));
+        })
+      };
     });
   }
 
   public onLogOutClicked(): void {
     this.backendAuthRestService.LogOut().subscribe(_ => {
       this.pseRouteController.navigate('NavigateRoot', RoutesIndex.AuthPageRoute, undefined, { animationDirection: 'back' });
+    });
+  }
+
+  public onSignOutClicked(): void {
+    this.backendAuthRestService.SignOut().subscribe(_ => {
+      this.pseRouteController.navigate('NavigateRoot', RoutesIndex.UnauthPageRoute, undefined, { animationDirection: 'back' });
     });
   }
 

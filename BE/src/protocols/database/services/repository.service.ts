@@ -2,6 +2,7 @@ import { Repository, getRepository } from 'typeorm';
 
 import { FactoryExtension } from '../../../global/common/extensions/factory.extension';
 import { DispatcherService } from './dispatcher.service';
+
 import * as EI from '../entities.index';
 
 export class RepositoryService extends FactoryExtension<RepositoryServiceImplementation> {
@@ -14,8 +15,9 @@ export class RepositoryService extends FactoryExtension<RepositoryServiceImpleme
     }
 
     private initialize(): void {
-        super.set('AuthEntity', getRepository(EI.AuthEntity));
-        super.set('UserEntity', getRepository(EI.UserEntity));
+        for (const entity in EI) {
+            super.set(entity as keyof RepositoryServiceImplementation, getRepository<any>(EI[entity]));
+        }
     }
 
 }

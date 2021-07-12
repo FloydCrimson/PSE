@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { RestService } from 'global/services/rest.service';
 
-import { RestFactoryEndpoint } from '@countries/endpoints/rest-factory.endpoint';
+import { RestFactoryEndpoint } from '@countries/endpoints/rest/rest-factory.endpoint';
 
 @Injectable({
     providedIn: 'root'
@@ -27,15 +27,57 @@ export class BackendEchoRest {
         return this.restService.makeCall('Backend', endpoint, request);
     }
 
-    public EchoAuthGET(params: any) {
-        const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthGET;
+    public EchoAuthFullGET(params: any) {
+        const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthFullGET;
         const request = this.restService.getRequest('Backend', endpoint);
         request.input.params = params;
         return this.restService.makeCall('Backend', endpoint, request);
     }
 
-    public EchoAuthPOST(body: any) {
-        const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthPOST;
+    public EchoAuthFullPOST(body: any) {
+        const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthFullPOST;
+        const request = this.restService.getRequest('Backend', endpoint);
+        request.input.body = body;
+        return this.restService.makeCall('Backend', endpoint, request);
+    }
+
+    public EchoAuthFullCryptedGET(params: any) {
+        const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthFullCryptedGET;
+        const request = this.restService.getRequest('Backend', endpoint);
+        request.input.params = params;
+        return this.restService.makeCall('Backend', endpoint, request);
+    }
+
+    public EchoAuthFullCryptedPOST(body: any) {
+        const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthFullCryptedPOST;
+        const request = this.restService.getRequest('Backend', endpoint);
+        request.input.body = body;
+        return this.restService.makeCall('Backend', endpoint, request);
+    }
+
+    public EchoAuthPartialGET(params: any) {
+        const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthPartialGET;
+        const request = this.restService.getRequest('Backend', endpoint);
+        request.input.params = params;
+        return this.restService.makeCall('Backend', endpoint, request);
+    }
+
+    public EchoAuthPartialPOST(body: any) {
+        const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthPartialPOST;
+        const request = this.restService.getRequest('Backend', endpoint);
+        request.input.body = body;
+        return this.restService.makeCall('Backend', endpoint, request);
+    }
+
+    public EchoAuthPartialCryptedGET(params: any) {
+        const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthPartialCryptedGET;
+        const request = this.restService.getRequest('Backend', endpoint);
+        request.input.params = params;
+        return this.restService.makeCall('Backend', endpoint, request);
+    }
+
+    public EchoAuthPartialCryptedPOST(body: any) {
+        const endpoint = RestFactoryEndpoint.Backend.Echo.EchoAuthPartialCryptedPOST;
         const request = this.restService.getRequest('Backend', endpoint);
         request.input.body = body;
         return this.restService.makeCall('Backend', endpoint, request);

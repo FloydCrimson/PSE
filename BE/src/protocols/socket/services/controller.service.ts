@@ -1,5 +1,6 @@
 import { FactoryExtension } from '../../../global/common/extensions/factory.extension';
 import { DispatcherService } from './dispatcher.service';
+
 import * as CI from '../controllers.index';
 
 export class ControllerService extends FactoryExtension<ControllerServiceImplementation> {
@@ -12,7 +13,9 @@ export class ControllerService extends FactoryExtension<ControllerServiceImpleme
     }
 
     private initialize(): void {
-        super.set('EchoController', new CI.EchoController(this.dispatcherService));
+        for (const controller in CI) {
+            super.set(controller as keyof ControllerServiceImplementation, new CI[controller](this.dispatcherService));
+        }
     }
 
 }

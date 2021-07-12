@@ -1,0 +1,66 @@
+{
+    "name": "auth",
+    "routes": {
+        "EmailAvailableOPTIONS": {
+            "version": "1.0.0"
+        },
+        "EmailAvailablePOST": {
+            "version": "1.0.0"
+        },
+        "NicknameAvailableOPTIONS": {
+            "version": "1.0.0"
+        },
+        "NicknameAvailablePOST": {
+            "version": "1.0.0"
+        },
+        "SignInOPTIONS": {
+            "version": "1.0.0"
+        },
+        "SignInPOST": {
+            "version": "1.0.0"
+        },
+        "SignOutOPTIONS": {
+            "version": "1.0.0"
+        },
+        "SignOutPOST": {
+            "version": "1.0.0"
+        },
+        "LogInOPTIONS": {
+            "version": "1.0.0"
+        },
+        "LogInPOST": {
+            "version": "1.0.0"
+        },
+        "LogOutOPTIONS": {
+            "version": "1.0.0"
+        },
+        "LogOutPOST": {
+            "version": "1.0.0"
+        },
+        "RecoverKeyOPTIONS": {
+            "version": "1.0.0"
+        },
+        "RecoverKeyPOST": {
+            "version": "1.0.0"
+        },
+        "ChangeKeyOPTIONS": {
+            "version": "1.0.0"
+        },
+        "ChangeKeyPOST": {
+            "version": "1.0.0"
+        }
+    },
+    "methods": {
+        "checkAuthEntityEmailAvailability": {},
+        "checkAuthEntityNicknameAvailability": {},
+        "getAvailableAuthEntityId": {},
+        "getNewAuthEntity": {},
+        "saveAuthEntity": {},
+        "updateAuthEntity": {},
+        "deleteAuthEntity": {},
+        "getAuthEntity": {},
+        "sendTemporaryPasswordViaEmail": {},
+        "generateKey": {},
+        "checkKey": {}
+    }
+}

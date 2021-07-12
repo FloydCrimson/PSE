@@ -26,6 +26,25 @@ export class BackendAuthRestService {
         );
     }
 
+    public SignOut(): Observable<void> {
+        return this.backendAuthRest.SignOutPOST().pipe(
+            exhaustMap((result) => {
+                if (result.success) {
+                    return from((async () => {
+                        await this.pStorageFactory.get('Local').clear();
+                        this.eStorageFactory.get('Out').clear();
+                        this.eStorageFactory.get('In').clear();
+                        // await this.socketService.open('Backend').toPromise();
+                    })()).pipe(
+                        exhaustMap(_ => of(result.response.output))
+                    );
+                } else {
+                    return throwError(result.error);
+                }
+            })
+        );
+    }
+
     public LogIn(auth: { type: 'id' | 'email' | 'nickname'; value: string; key: string; algorithm: 'sha256' | 'sha1'; }): Observable<{ authenticated: boolean; }> {
         this.eStorageFactory.get('In').set('auth', auth);
         return this.backendAuthRest.LogInPOST().pipe(

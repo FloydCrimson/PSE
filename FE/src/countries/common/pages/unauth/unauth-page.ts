@@ -1,5 +1,7 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
+import { AlertController, IonSlides } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable, of, timer } from 'rxjs';
 import { switchMap, map, finalize } from 'rxjs/operators';
 import { PasswordCheckerProvider } from 'pse-global-providers';
@@ -37,12 +39,16 @@ export class UnauthPage implements OnDestroy {
 
   private readonly loadingSubscription = this.pseLoadingService.subscribe([UnauthPageBusyEnum.SignIn, UnauthPageBusyEnum.LogIn], LoadersIndex.MainLoader);
 
+  @ViewChild(IonSlides) public ionSlides: IonSlides;
+
   constructor(
     private readonly pseRouteController: PSERouteController,
     private readonly pseBusyService: PSEBusyService,
     private readonly pseLoadingService: PSELoadingService,
     private readonly backendAuthRest: BackendAuthRest,
-    private readonly backendAuthRestService: BackendAuthRestService
+    private readonly backendAuthRestService: BackendAuthRestService,
+    private readonly translateService: TranslateService,
+    private readonly alertController: AlertController
   ) { }
 
   public ngOnDestroy(): void {
@@ -119,6 +125,35 @@ export class UnauthPage implements OnDestroy {
 
   // Events
 
+  public async onToolbarClicked(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Select language',
+      inputs: this.translateService.getLangs().map((language) => {
+        return {
+          type: 'radio',
+          label: this.translateService.instant('LANGUAGE.' + language.toUpperCase()),
+          value: language,
+          checked: language === this.translateService.currentLang
+        };
+      }),
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Ok',
+          role: 'ok'
+        }
+      ]
+    });
+    await alert.present();
+    const result = await alert.onDidDismiss<{ values: string; }>();
+    if (result.role === 'ok' && result.data.values !== this.translateService.currentLang) {
+      await this.translateService.use(result.data.values).toPromise();
+    }
+  }
+
   public onSignInClicked(): void {
     const email: string = this.signInForm.get('email').value;
     const nickname: string = this.signInForm.get('nickname').value;
@@ -127,6 +162,11 @@ export class UnauthPage implements OnDestroy {
       finalize(() => this.pseBusyService.unmark([UnauthPageBusyEnum.SignIn]))
     ).subscribe(async _ => {
       alert('An email with a Temporary Password has been sent to ' + email + '. After you first login you will be asked to change it.');
+      await this.ionSlides.slideTo(1);
+      this.logInForm.get('nickname').setValue(this.signInForm.get('nickname').value);
+      this.logInForm.get('password').setValue('');
+      this.signInForm.get('email').setValue('');
+      this.signInForm.get('nickname').setValue('');
     }, async (error) => {
       alert(JSON.stringify(error));
     });

@@ -58,7 +58,7 @@ export class RestService {
         if (!request.options.wait || mapRequest[1] === 0) {
             mapRequest[1]++;
             merge(
-                timer(endpoint.timeout || 60000).pipe(switchMap(_ => throwError({ error: new TimeoutError(), status: 408 } as ErrorRestImplementation))),
+                timer(endpoint.options?.timeout || 30000).pipe(switchMap(_ => throwError({ error: new TimeoutError(), status: 408 } as ErrorRestImplementation))),
                 this.callMethod(type, endpoint, request)
             ).pipe(
                 take(1),
@@ -117,7 +117,7 @@ export class RestService {
     //
 
     private generateHashEndpoint<K extends keyof RestFactoryTypes, B, P, O>(type: K, endpoint: EndpointRestImplementation<B, P, O>): string {
-        return `${type}:${endpoint.method}-${endpoint.url}`;
+        return `${type}:${endpoint.method}-${endpoint.path}`;
     }
 
     private generateHashRequest<B, P>(request: RequestRestImplementation<B, P>): string {
@@ -125,20 +125,25 @@ export class RestService {
     }
 
     private callMethod<K extends keyof RestFactoryTypes, B, P, O>(type: K, endpoint: EndpointRestImplementation<B, P, O>, request: RequestRestImplementation<B, P>): Observable<ResponseRestImplementation<O>> {
-        const auth = (endpoint.auth !== 'none') ? this.eStorageFactory.get('In').get('auth') : undefined;
+        const auth = endpoint.options?.auth ? this.eStorageFactory.get('In').get('auth') : undefined;
         request.input = request.input || { body: undefined, params: undefined };
         request.input.body = request.input.body || {} as B;
         request.input.params = request.input.params || {} as P;
         const protocol = DomainConfig.protocols['rest'];
-        const url: string = `${protocol.secure ? 'https' : 'http'}://${protocol.url}:${protocol.port}${endpoint.url}`;
+        const url: string = `${protocol.secure ? 'https' : 'http'}://${protocol.url}:${protocol.port}${endpoint.path}`;
         const credentials = auth ? { id: CoderProvider.encode(JSON.stringify({ [auth.type]: auth.value })), key: auth.key, algorithm: auth.algorithm } : undefined;
         let headers: { [key: string]: string } = {};
         let artifacts;
-        if (endpoint.auth === 'partial') {
-            const timestamp: number = Math.floor(Date.now() / 1000);
-            const nonce: string = NonceProvider.generate(credentials.key, timestamp);
-            headers['Authorization'] = `Hawk id="${credentials.id}", ts="${timestamp}", nonce="${nonce}"`;
-        } else if (endpoint.auth === 'full') {
+        if (endpoint.options?.auth) {
+            credentials.key = endpoint.options?.auth === 'full' ? credentials.key : 'password';
+            if (endpoint.options?.crypted) {
+                try {
+                    request.input.body = Object.keys(request.input.body).length > 0 ? { plec: CrypterProvider.encrypt(JSON.stringify(request.input.body), credentials.key) } as any : request.input.body;
+                    request.input.params = Object.keys(request.input.params).length > 0 ? { plec: CrypterProvider.encrypt(JSON.stringify(request.input.params), credentials.key) } as any : request.input.params;
+                } catch (error) {
+                    throw 'Invalid decrypted value received.';
+                }
+            }
             const timestamp: number = Math.floor(Date.now() / 1000);
             const nonce: string = NonceProvider.generate(credentials.key, timestamp);
             const options = { credentials, timestamp, nonce, payload: JSON.stringify(request.input), contentType: 'application/json' };
@@ -148,11 +153,21 @@ export class RestService {
         }
         return this.getMethod(type, endpoint, url, headers, request.input).pipe(
             map((result) => {
-                if (endpoint.auth === 'full') {
-                    const options = { payload: JSON.stringify(result.output.data), required: true };
+                if (endpoint.options?.auth) {
+                    const options = { payload: JSON.stringify(result.output.data || {}), required: true };
                     const output = hawk.client.authenticate(result, credentials, artifacts, options);
                     if (!output) {
                         throw 'Server not recognized.';
+                    }
+                    if (endpoint.options?.crypted) {
+                        try {
+                            if (Object.keys(result.output.data).length > 1 || (Object.keys(result.output.data).length === 1 && (!('plec' in result.output.data) || typeof result.output.data['plec'] !== 'string'))) {
+                                throw 'Invalid encrypted value received.';
+                            }
+                            result.output.data = Object.keys(result.output.data).length === 1 ? JSON.parse(CrypterProvider.decrypt(result.output.data['plec'], credentials.key)) : result.output.data;
+                        } catch (error) {
+                            throw 'Invalid encrypted value received.';
+                        }
                     }
                 }
                 const response: ResponseRestImplementation<O> = { output: result.output.data, status: result.status };

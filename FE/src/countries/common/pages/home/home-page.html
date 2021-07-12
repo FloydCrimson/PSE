@@ -6,13 +6,13 @@
   </ion-toolbar>
 </ion-header>
 <ion-content fullscreen="true">
-  <ion-item>
-    <ion-button (click)="onEchoClicked()">Echo</ion-button>
-  </ion-item>
-  <ion-item>
-    <ion-button (click)="onEchoAuthClicked()">EchoAuth</ion-button>
+  <ion-item *ngFor="let echo of echoes">
+    <ion-button (click)="echo.method()">{{ echo.name }}</ion-button>
   </ion-item>
   <ion-item>
     <ion-button (click)="onLogOutClicked()">LogOut</ion-button>
+  </ion-item>
+  <ion-item>
+    <ion-button (click)="onSignOutClicked()">SignOut</ion-button>
   </ion-item>
 </ion-content>

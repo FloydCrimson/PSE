@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { SocketService } from 'global/services/socket.service';
 
-import { SocketFactoryEndpoint } from '@countries/endpoints/socket-factory.endpoint';
+import { SocketFactoryEndpoint } from '@countries/endpoints/socket/socket-factory.endpoint';
 
 @Injectable({
     providedIn: 'root'

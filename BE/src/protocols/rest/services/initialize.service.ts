@@ -1,78 +1,200 @@
 import 'reflect-metadata';
 
-import * as express from 'express';
+import * as Hapi from '@hapi/hapi';
 
-import { Request, Response } from '../implementations/express.implementation';
 import { InitializeImplementation } from '../../../global/common/implementations/initialize.implementation';
 import { ProtocolConfigurationsType } from '../../../global/common/types/protocol-options.type';
-import { ServerProvider } from '../../../global/providers/server.provider';
 import { CommunicationClientService } from '../../../global/services/communication.service';
-import { CommunicationImplementationType } from '../../common/implementations/communication.implementation.type';
 import { RouteImplementation } from '../implementations/route.implementation';
+import { ControllerMethodType } from '../types/controller.type';
+import { ExtensionObjectType } from '../types/extension.type';
+import { SchemeStrategyType } from '../types/scheme.type';
+import { ValidateObjectType } from '../types/validate.type';
+import { StrategyOptionsType } from '../types/strategy.type';
 import { DispatcherService } from './dispatcher.service';
-import { ControllerService } from './controller.service';
+import { StrategyService, StrategyServiceImplementation } from './strategy.service';
+import { PluginService, PluginServiceImplementation } from './plugin.service';
 import { CommunicationService } from './communication.service';
-import { ControllerMethodWrapperProvider } from '../providers/controller-method-wrapper.provider';
-import { SendProvider } from '../providers/send.provider';
-import * as MI from '../middlewares.index';
-import * as RI from '../routes.index';
 
 export class InitializeService implements InitializeImplementation {
 
-    private readonly dispatcherService: DispatcherService = new DispatcherService();
+    private readonly dispatcherService = new DispatcherService();
 
-    constructor() { }
+    constructor() {
+        this.dispatcherService.set('StrategyService', new StrategyService(this.dispatcherService));
+        this.dispatcherService.set('PluginService', new PluginService(this.dispatcherService));
+    }
 
-    public initialize(configurations: ProtocolConfigurationsType[]): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
-            // SERVER
-            const app = express();
-            app.use(express.json()); // Content-Type: application/json
-            // app.use(express.urlencoded({ extended: true })); // Content-Type: application/x-www-form-urlencoded
-            // app.use(express.text()); // Content-Type: text/plain
-            app.use(MI.LogMiddleware()(this.dispatcherService));
-            app.use(MI.ParamsMiddleware()(this.dispatcherService));
-            for (const group in RI) {
-                for (const item in RI[group]) {
-                    const route: RouteImplementation<any, any, any> = RI[group][item];
-                    app[route.endpoint.method](route.endpoint.route, (route.middlewares || []).map((middleware) => middleware(this.dispatcherService)), async (request: Request, response: Response) => {
-                        if (route.handler) {
-                            try {
-                                const controller = this.dispatcherService.get('ControllerService').get(route.handler.controller);
-                                const action = controller[route.handler.action];
-                                const result = await ControllerMethodWrapperProvider.wrap(route, request, response, (body, params, output) => action.apply(controller, [response.locals, body, params, output]));
-                                SendProvider.sendResponse(request, response, 200, result)
-                            } catch (error) {
-                                SendProvider.sendError(request, response, 500, error);
-                            }
-                        } else {
-                            SendProvider.sendResponse(request, response);
+    public async initialize(configurations: ProtocolConfigurationsType[]): Promise<boolean> {
+        const servers = await Promise.all(configurations.map(async (configuration) => {
+            const server = Hapi.server({
+                port: configuration.port,
+                host: 'localhost',
+                debug: { log: ['*'], request: ['*'] }
+            });
+            for (const strategy of this.dispatcherService.get('StrategyService').keys()) {
+                await this.addSchemeAndStrategies(strategy, server);
+            }
+            for (const plugin of this.dispatcherService.get('PluginService').keys()) {
+                await this.addPlugin(plugin, server);
+            }
+            return server;
+        }));
+        const result = await Promise.all(servers.map((server) => {
+            return server.start().then(_ => {
+                console.log(`Express Rest server has started on port ${server.info.port}. Open ${server.info.uri}/echo/echo to see results.`);
+                return true;
+            }).catch((error) => {
+                console.error(`Express Rest server has not started on port ${server.info.port}.`, error);
+                return false;
+            });
+        })).then((results) => !results.some(c => !c));
+        if (result) {
+            this.dispatcherService.set('CommunicationClientService', new CommunicationClientService(new CommunicationService(this.dispatcherService), 'rest'));
+            this.dispatcherService.get('CommunicationClientService').receive();
+        }
+        return result;
+    }
+
+    // STRATEGY
+
+    private async addSchemeAndStrategies<K extends keyof StrategyServiceImplementation>(type: K, server: Hapi.Server): Promise<void> {
+        const prefix = ['Strategy', type].join('.');
+        const strategies = this.dispatcherService.get('StrategyService').get(type);
+        const config = await strategies.config();
+        const instance = strategies.common.method ? new (await strategies.common.method())(this.dispatcherService) : undefined;
+        if (instance && config.methods) {
+            for (const method in config.methods) {
+                server.method({
+                    name: [prefix, method].join('.'),
+                    method: instance[method],
+                    options: { bind: instance }
+                });
+            }
+        }
+        const version = config.version;
+        const scheme = await strategies.version[version]();
+        server.auth.scheme(type, (server, options?) => {
+            return {
+                api: { config: scheme.scheme.config || {}, options: options || {} },
+                authenticate: this.authenticateMapper(scheme.scheme.authenticate, this.getChild(server.methods, prefix)),
+                payload: this.payloadMapper(scheme.scheme.payload, this.getChild(server.methods, prefix)),
+                response: this.responseMapper(scheme.scheme.response, this.getChild(server.methods, prefix)),
+                verify: this.verifyMapper(scheme.scheme.verify, this.getChild(server.methods, prefix)),
+                options: scheme.scheme.options
+            };
+        });
+        for (const strategy in scheme.strategies) {
+            server.auth.strategy(scheme.strategies[strategy].auth.strategy, type, scheme.strategies[strategy].options);
+        }
+    }
+
+    private authenticateMapper<M = any>(authenticate: SchemeStrategyType<M>['authenticate'], methods?: M): Hapi.ServerAuthSchemeObject['authenticate'] {
+        return (request, h) => authenticate(this.dispatcherService).apply(methods ? methods : void undefined, [request, h]);
+    }
+
+    private payloadMapper<M = any>(payload?: SchemeStrategyType<M>['payload'], methods?: M): Hapi.ServerAuthSchemeObject['payload'] {
+        return payload ? (request, h) => payload(this.dispatcherService).apply(methods ? methods : void undefined, [request, h]) : undefined;
+    }
+
+    private responseMapper<M = any>(response?: SchemeStrategyType<M>['response'], methods?: M): Hapi.ServerAuthSchemeObject['response'] {
+        return response ? (request, h) => response(this.dispatcherService).apply(methods ? methods : void undefined, [request, h]) : undefined;
+    }
+
+    private verifyMapper<M = any>(verify?: SchemeStrategyType<M>['verify'], methods?: M): Hapi.ServerAuthSchemeObject['verify'] {
+        return verify ? (auth) => verify(this.dispatcherService).apply(methods ? methods : void undefined, [auth]) : undefined;
+    }
+
+    // PLUGIN
+
+    private async addPlugin<K extends keyof PluginServiceImplementation>(type: K, server: Hapi.Server): Promise<void> {
+        const prefix = ['Plugin', type].join('.');
+        const plugins = this.dispatcherService.get('PluginService').get(type);
+        const config = await plugins.config();
+        const instance = plugins.common.method ? new (await plugins.common.method())(this.dispatcherService) : undefined;
+        if (instance && config.methods) {
+            for (const method in config.methods) {
+                server.method({
+                    name: [prefix, method].join('.'),
+                    method: instance[method],
+                    options: { bind: instance }
+                });
+            }
+        }
+        await server.register({
+            plugin: {
+                name: config.name,
+                register: async (server) => {
+                    if (config.routes) {
+                        for (const route in config.routes) {
+                            const version = config.routes[route].version;
+                            const plugin = await plugins.version[version]();
+                            server.route({
+                                method: plugin.route[route].method,
+                                path: plugin.route[route].path,
+                                handler: this.controllerMapper(plugin.controller ? plugin.controller[route] : undefined, this.getChild(server.methods, prefix)),
+                                options: {
+                                    ext: this.extensionMapper(plugin.extension ? plugin.extension[route] : undefined, this.getChild(server.methods, prefix)),
+                                    validate: this.validateMapper(plugin.validate ? plugin.validate[route] : undefined, this.getChild(server.methods, prefix)),
+                                    response: this.outputMapper(plugin.validate ? plugin.validate[route] : undefined, this.getChild(server.methods, prefix)),
+                                    cors: this.corsMapper(plugin.route[route].options ? plugin.route[route].options.cors : undefined),
+                                    auth: this.authMapper(plugin.route[route].options ? plugin.route[route].options.auth : undefined)
+                                }
+                            });
                         }
-                    });
+                    }
                 }
             }
-            const servers = ServerProvider.getServers(app, configurations);
-            Promise.all(servers.map((server) => {
-                return new Promise<boolean>((resolve, reject) => {
-                    server.instance.listen(server.port, (...args: any[]) => {
-                        console.log(`Express Rest server has started on port ${server.port}. Open localhost:${server.port}/echo/echo to see results.`);
-                        resolve(true);
-                    });
-                });
-            })).then(result => {
-                resolve(!result.some(c => !c));
-            });
-        }).then((result) => {
-            // DISPATCHER
-            if (result) {
-                const controllerService = new ControllerService(this.dispatcherService);
-                const communicationClientService = new CommunicationClientService<CommunicationImplementationType, 'rest'>(new CommunicationService(), 'rest');
-                this.dispatcherService.set('ControllerService', controllerService);
-                this.dispatcherService.set('CommunicationClientService', communicationClientService);
-                communicationClientService.receive();
-            }
-            return result;
         });
+    }
+
+    private controllerMapper<R extends RouteImplementation, M = any>(controller?: ControllerMethodType<R, M>, methods?: M): Hapi.ServerRoute['handler'] {
+        return (request, h, err) => controller ? controller(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]) : h.response({}).code(200);
+    }
+
+    private extensionMapper<R extends RouteImplementation, M = any>(extension?: { [KR in Hapi.RouteRequestExtType]?: ExtensionObjectType<R, M>[] }, methods?: M): Hapi.RouteOptions['ext'] {
+        return extension ? {
+            onCredentials: extension.onCredentials ? extension.onCredentials.map((o) => { return { method: (request, h, err) => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]), options: o.options }; }) : undefined,
+            onPostAuth: extension.onPostAuth ? extension.onPostAuth.map((o) => { return { method: (request, h, err) => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]), options: o.options }; }) : undefined,
+            onPostHandler: extension.onPostHandler ? extension.onPostHandler.map((o) => { return { method: (request, h, err) => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]), options: o.options }; }) : undefined,
+            onPostResponse: extension.onPostResponse ? extension.onPostResponse.map((o) => { return { method: (request, h, err) => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]), options: o.options }; }) : undefined,
+            onPreAuth: extension.onPreAuth ? extension.onPreAuth.map((o) => { return { method: (request, h, err) => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]), options: o.options }; }) : undefined,
+            onPreHandler: extension.onPreHandler ? extension.onPreHandler.map((o) => { return { method: (request, h, err) => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]), options: o.options }; }) : undefined,
+            onPreResponse: extension.onPreResponse ? extension.onPreResponse.map((o) => { return { method: (request, h, err) => o.method(this.dispatcherService).apply(methods ? methods : void undefined, [request, h, err]), options: o.options }; }) : undefined,
+        } : undefined;
+    }
+
+    private validateMapper<R extends RouteImplementation, M = any>(validate?: ValidateObjectType<R, M>, methods?: M): Hapi.RouteOptions['validate'] {
+        return validate ? {
+            headers: validate.headers ? (value, options) => validate.headers(this.dispatcherService).apply(methods ? methods : void undefined, [value, options]) : undefined,
+            params: validate.params ? (value, options) => validate.params(this.dispatcherService).apply(methods ? methods : void undefined, [value, options]) : undefined,
+            payload: validate.payload ? (value, options) => validate.payload(this.dispatcherService).apply(methods ? methods : void undefined, [value, options]) : undefined,
+            query: validate.query ? (value, options) => validate.query(this.dispatcherService).apply(methods ? methods : void undefined, [value, options]) : undefined,
+            state: validate.state ? (value, options) => validate.state(this.dispatcherService).apply(methods ? methods : void undefined, [value, options]) : undefined,
+            options: validate.options
+        } : undefined;
+    }
+
+    private outputMapper<R extends RouteImplementation, M = any>(validate?: ValidateObjectType<R, M>, methods?: M): Hapi.RouteOptions['response'] {
+        return validate ? {
+            schema: validate.output ? (value, options) => validate.output(this.dispatcherService).apply(methods ? methods : void undefined, [value, options]) : undefined,
+            options: validate.options,
+            modify: true
+        } : undefined;
+    }
+
+    private corsMapper(cors?: Hapi.RouteOptionsCors): Hapi.RouteOptions['cors'] {
+        return cors ? cors : false;
+    }
+
+    private authMapper(auth?: StrategyOptionsType): Hapi.RouteOptions['auth'] {
+        return auth ? auth.auth : false;
+    }
+
+    // SUPPORT
+
+    private getChild(object: any, path: string): any {
+        return path.split('.').reduce((o, k) => o[k], object);
     }
 
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { RestService } from 'global/services/rest.service';
 
-import { RestFactoryEndpoint } from '@countries/endpoints/rest-factory.endpoint';
+import { RestFactoryEndpoint } from '@countries/endpoints/rest/rest-factory.endpoint';
 
 @Injectable({
     providedIn: 'root'
@@ -31,6 +31,12 @@ export class BackendAuthRest {
         const endpoint = RestFactoryEndpoint.Backend.Auth.SignInPOST;
         const request = this.restService.getRequest('Backend', endpoint);
         request.input.body = body;
+        return this.restService.makeCall('Backend', endpoint, request);
+    }
+
+    public SignOutPOST() {
+        const endpoint = RestFactoryEndpoint.Backend.Auth.SignOutPOST;
+        const request = this.restService.getRequest('Backend', endpoint);
         return this.restService.makeCall('Backend', endpoint, request);
     }
 

@@ -1,0 +1,53 @@
+{
+    "name": "echo",
+    "routes": {
+        "EchoOPTIONS": {
+            "version": "1.0.0"
+        },
+        "EchoGET": {
+            "version": "1.0.0"
+        },
+        "EchoPOST": {
+            "version": "1.0.0"
+        },
+        "EchoAuthFullOPTIONS": {
+            "version": "1.0.0"
+        },
+        "EchoAuthFullGET": {
+            "version": "1.0.0"
+        },
+        "EchoAuthFullPOST": {
+            "version": "1.0.0"
+        },
+        "EchoAuthFullCryptedOPTIONS": {
+            "version": "1.0.0"
+        },
+        "EchoAuthFullCryptedGET": {
+            "version": "1.0.0"
+        },
+        "EchoAuthFullCryptedPOST": {
+            "version": "1.0.0"
+        },
+        "EchoAuthPartialOPTIONS": {
+            "version": "1.0.0"
+        },
+        "EchoAuthPartialGET": {
+            "version": "1.0.0"
+        },
+        "EchoAuthPartialPOST": {
+            "version": "1.0.0"
+        },
+        "EchoAuthPartialCryptedOPTIONS": {
+            "version": "1.0.0"
+        },
+        "EchoAuthPartialCryptedGET": {
+            "version": "1.0.0"
+        },
+        "EchoAuthPartialCryptedPOST": {
+            "version": "1.0.0"
+        }
+    },
+    "methods": {
+        "Log": {}
+    }
+}

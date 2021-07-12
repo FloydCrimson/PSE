@@ -5,41 +5,32 @@ import { getConnectionOptions, createConnection } from 'typeorm';
 import { InitializeImplementation } from '../../../global/common/implementations/initialize.implementation';
 import { CommunicationClientService } from '../../../global/services/communication.service';
 import { ProtocolConfigurationsType } from '../../../global/common/types/protocol-options.type';
-import { CommunicationImplementationType } from '../../common/implementations/communication.implementation.type';
 import { DispatcherService } from './dispatcher.service';
 import { RepositoryService } from './repository.service';
 import { CommunicationService } from './communication.service';
 
 export class InitializeService implements InitializeImplementation {
 
-    private readonly dispatcherService: DispatcherService = new DispatcherService();
+    private readonly dispatcherService = new DispatcherService();
 
     constructor() { }
 
-    public initialize(configurations: ProtocolConfigurationsType[]): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
-            // SERVER
+    public async initialize(configurations: ProtocolConfigurationsType[]): Promise<boolean> {
+        const result = await new Promise<boolean>((resolve) => {
             getConnectionOptions().then((connectionOptions) => createConnection(connectionOptions)).then((connection) => {
                 console.log(`Express Database server has started.`);
                 resolve(true);
-            }, (rejected) => {
-                console.error('Express Database server has not started: ', rejected);
-                reject(rejected);
-            }).catch((caught) => {
-                console.error('Express Database server has not started: ', caught);
-                reject(caught);
+            }).catch((error) => {
+                console.error('Express Database server has not started.', error);
+                resolve(false);
             });
-        }).then((result) => {
-            // DISPATCHER
-            if (result) {
-                const repositoryService = new RepositoryService(this.dispatcherService);
-                const communicationClientService = new CommunicationClientService<CommunicationImplementationType, 'database'>(new CommunicationService(repositoryService), 'database');
-                this.dispatcherService.set('RepositoryService', repositoryService);
-                this.dispatcherService.set('CommunicationClientService', communicationClientService);
-                communicationClientService.receive();
-            }
-            return result;
         });
+        if (result) {
+            this.dispatcherService.set('RepositoryService', new RepositoryService(this.dispatcherService));
+            this.dispatcherService.set('CommunicationClientService', new CommunicationClientService(new CommunicationService(this.dispatcherService), 'database'));
+            this.dispatcherService.get('CommunicationClientService').receive();
+        }
+        return result;
     }
 
 }

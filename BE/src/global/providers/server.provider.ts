@@ -7,19 +7,21 @@ import { ProtocolConfigurationsType } from '../common/types/protocol-options.typ
 
 export class ServerProvider {
 
+    public static getServer(app: express.Express, configuration: ProtocolConfigurationsType): { instance: http.Server | https.Server, port: number } {
+        if (configuration.secure) {
+            const options = {
+                key: configuration.key && fs.readFileSync(configuration.key),
+                cert: configuration.cert && fs.readFileSync(configuration.cert),
+                passphrase: configuration.passphrase
+            };
+            return { instance: https.createServer(options, app), port: configuration.port };
+        } else {
+            return { instance: http.createServer(app), port: configuration.port };
+        }
+    }
+
     public static getServers(app: express.Express, configurations: ProtocolConfigurationsType[]): { instance: http.Server | https.Server, port: number }[] {
-        return configurations.map((configuration) => {
-            if (configuration.secure) {
-                const options = {
-                    key: configuration.key && fs.readFileSync(configuration.key),
-                    cert: configuration.cert && fs.readFileSync(configuration.cert),
-                    passphrase: configuration.passphrase
-                };
-                return { instance: https.createServer(options, app), port: configuration.port };
-            } else {
-                return { instance: http.createServer(app), port: configuration.port };
-            }
-        });
+        return configurations.map((configuration) => ServerProvider.getServer(app, configuration));
     }
 
 }
