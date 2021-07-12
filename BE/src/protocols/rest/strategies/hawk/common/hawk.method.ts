@@ -97,7 +97,7 @@ export class HawkMethod implements HawkMethodImplementation {
         if (['id', 'ts', 'nonce', 'hash', 'mac'].filter((key) => options.keys.includes(key)).some((key) => !artifacts[key])) {
             throw Boom.badRequest('Missing attributes', { decorate: { artifacts } });
         }
-        return Promise.resolve(artifacts);
+        return artifacts;
     }
 
     private async getCredentials(artifacts: Artifacts, options: ParseRequestOptions): Promise<Credentials> {

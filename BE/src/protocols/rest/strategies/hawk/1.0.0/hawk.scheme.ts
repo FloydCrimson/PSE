@@ -24,7 +24,9 @@ export const HawkScheme: SchemeStrategyType<HawkMethodImplementation> = {
             }
             return h.authenticated({ artifacts, credentials });
         } catch (error) {
-            return h.unauthenticated(new Boom.Boom(error, { override: !error.isBoom }));
+            error = error.isBoom ? error : Boom.boomify(error);
+            // TODO: check
+            return h.unauthenticated(error);
         }
     },
     payload: (dispatcherService: DispatcherService) => async function (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<any> {
@@ -36,7 +38,7 @@ export const HawkScheme: SchemeStrategyType<HawkMethodImplementation> = {
             }
             return h.continue;
         } catch (error) {
-            throw new Boom.Boom(error, { override: !error.isBoom });
+            throw error.isBoom ? error : Boom.boomify(error);
         }
     },
     response: (dispatcherService: DispatcherService) => async function (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<any> {
@@ -49,7 +51,7 @@ export const HawkScheme: SchemeStrategyType<HawkMethodImplementation> = {
             }
             return h.continue;
         } catch (error) {
-            throw new Boom.Boom(error, { override: !error.isBoom });
+            throw error.isBoom ? error : Boom.boomify(error);
         }
     },
     verify: (dispatcherService: DispatcherService) => async function (auth: Hapi.RequestAuth): Promise<void> {
