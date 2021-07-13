@@ -48,6 +48,8 @@ const createTSConfigCustomJSON = (context) => {
     const projectDirectory = path.resolve(__dirname, '../');
     const parameters = commandParameters.loadParameters(projectDirectory);
 
+    // INCLUDE
+
     const tsconfigArray = [
         { alias: 'country', prefix: 'src/countries/', suffix: '/**/*.ts' },
         { alias: 'domain', prefix: 'src/domains/', suffix: '/**/*.ts' },
@@ -67,6 +69,25 @@ const createTSConfigCustomJSON = (context) => {
         }
     });
     tsconfigJSON.include.sort();
+
+    // PATHS
+
+    const placeholder = '{{ALIAS}}';
+    const aliasArray = [
+        { alias: '@countries/*', name: 'country', url: `countries/${placeholder}/*` },
+        { alias: '@domains/*', name: 'domain', url: `domains/${placeholder}/*` },
+        { alias: '@environments/*', name: 'environment', url: `environments/${placeholder}/*` },
+        { alias: '@platforms/*', name: 'platform', url: `platforms/${placeholder}/*` }
+    ];
+    aliasArray.forEach((alias) => {
+        const value = parameters[alias.name];
+        if (value) {
+            tsconfigJSON.compilerOptions.paths[alias.alias] = [alias.url.replace(placeholder, value)];
+        }
+    });
+
+    //
+
     const tsconfigAppCustomDirectory = path.resolve(projectDirectory, 'tsconfig.app.custom.json');
     fs.writeFileSync(tsconfigAppCustomDirectory, JSON.stringify(tsconfigJSON, undefined, '\t'));
 };
@@ -74,6 +95,8 @@ const createTSConfigCustomJSON = (context) => {
 const createParametersExtraJSON = (context) => {
     const projectDirectory = path.resolve(__dirname, '../');
     const parameters = commandParameters.loadParameters(projectDirectory);
+
+    // EXTRA
 
     const extraArray = [
         { alias: 'country-extra', path: path.join(projectDirectory, 'src', 'countries', 'country-extra.json') },

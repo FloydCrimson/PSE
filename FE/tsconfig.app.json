@@ -2,7 +2,21 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": []
+    "types": [],
+    "paths": {
+      "@countries/*": [
+        "countries/en/*"
+      ],
+      "@domains/*": [
+        "domains/localhost/*"
+      ],
+      "@environments/*": [
+        "environments/dev/*"
+      ],
+      "@platforms/*": [
+        "platforms/browser/*"
+      ]
+    }
   },
   "files": [
     "src/main.ts",

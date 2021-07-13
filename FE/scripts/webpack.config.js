@@ -1,29 +1,17 @@
 const path = require('path');
 const commandParameters = require('./command-parameters');
 
-module.exports = (config, options) => {
+module.exports = (config, options, targetOptions) => {
     const projectDirectory = path.resolve(__dirname, '../');
     const parameters = commandParameters.loadParameters(projectDirectory);
 
-    // ALIAS
+    // FALLBACK
 
-    const placeholder = '{{ALIAS}}';
-    const aliasArray = [
-        { name: 'country', alias: '@countries', url: `countries/${placeholder}` },
-        { name: 'platform', alias: '@platforms', url: `platforms/${placeholder}` },
-        { name: 'environment', alias: '@environments', url: `environments/${placeholder}` },
-        { name: 'domain', alias: '@domains', url: `domains/${placeholder}` }
+    const fallbackArray = [
+        { fallback: 'crypto', value: require.resolve('crypto-browserify') },  // @Hapi
+        { fallback: 'stream', value: require.resolve('stream-browserify') }   // @Hapi
     ];
-    aliasArray.forEach((alias) => {
-        config.resolve.alias[alias.alias] = alias.url.replace(placeholder, parameters[alias.name]);
-    });
-
-    // NODE
-
-    config.node = {
-        crypto: true,
-        stream: true
-    };
+    config.resolve.fallback = fallbackArray.reduce((fallback, value) => Object.assign(fallback, { [value.fallback]: value.value }), config.resolve.fallback || {});
 
     //
 
