@@ -44,7 +44,7 @@
     "crypto-js": "^4.0.0",
     "hawk": "^9.0.0",
     "ionic-plugin-deeplinks": "^1.0.20",
-    "moment": "^2.27.0",
+    "moment": "^2.29.4",
     "pse-global-providers": "file:../global/libs/providers/pse-global-providers-0.0.1.tgz",
     "rxjs": "~6.5.1",
     "stream-browserify": "^3.0.0",
